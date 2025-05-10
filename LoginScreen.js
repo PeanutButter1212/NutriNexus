@@ -10,7 +10,7 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import { Image } from "react-native";
 
-export default function SignUpScreen({ navigation }) {
+export default function LoginScreen({ navigation }) {
   return (
     <View className="flex-1 items-center justify-start bg-white pt-32 px-6">
       {/* Logo */}
