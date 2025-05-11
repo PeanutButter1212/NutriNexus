@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "./LoginScreen";
 import SignUpScreen from "./SignUpScreen";
 import OTPScreen from "./OTPScreen";
-import { AuthProvider} from "../context/AuthContext";
+import { AuthProvider } from "../context/AuthContext";
 
 const Stack = createNativeStackNavigator();
 
@@ -25,7 +25,7 @@ export default function App() {
         <Stack.Screen
           name="OTP"
           component={OTPScreen}
-          options={{ headerShown: false }}
+          options={{ headerShown: true }}
         />
       </Stack.Navigator>
     </NavigationContainer></AuthProvider>

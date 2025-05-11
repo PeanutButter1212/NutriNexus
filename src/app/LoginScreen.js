@@ -6,11 +6,27 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  Alert
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { Image } from "react-native";
+import { useState } from "react"
+import { useAuth } from "../context/AuthContext"
 
 export default function LoginScreen({ navigation }) {
+  
+  const { signInWithEmail } = useAuth();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const handleLogin = async () => {
+    if (!username.trim() || !password.trim()) {
+      Alert.alert('Please fill in all fields!')
+      return;
+    } 
+
+    signInWithEmail(username, password, navigation);  
+
+  }
   return (
     <View className="flex-1 items-center justify-start bg-white pt-32 px-6">
       {/* Logo */}
@@ -24,11 +40,13 @@ export default function LoginScreen({ navigation }) {
 
       {/* Username Input */}
       <TextInput
+        onChangeText = {(text) => setUsername(text)}
         placeholder="Username"
         className="w-full border border-gray-300 rounded-xl mt-6 px-4 py-3 text-base"
       />
       {/* Password Input */}
       <TextInput
+        onChangeText = {(text) => setPassword(text)}
         placeholder="Password"
         className="w-full border border-gray-300 rounded-xl mt-4 px-4 py-3 text-base"
       />
@@ -40,7 +58,7 @@ export default function LoginScreen({ navigation }) {
         </Text>
       </TouchableOpacity>
       {/* Login Button */}
-      <TouchableOpacity className="flex-row items-center justify-center w-full bg-green-600 rounded-xl mt-6 py-3">
+      <TouchableOpacity onPress = {handleLogin} className="flex-row items-center justify-center w-full bg-green-600 rounded-xl mt-6 py-3">
         <Text className="text-white text-base font-medium font-bold">
           Login
         </Text>

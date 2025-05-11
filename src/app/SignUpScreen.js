@@ -18,8 +18,7 @@ export default function SignUpScreen({ navigation }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail]  = useState("");
-  const [loading, setLoading] = useState(false)
-
+  
   const handleRegister = async () => {
     if (!username.trim() || !password.trim() || !email.trim()) {
       Alert.alert('Please fill in all fields!')
