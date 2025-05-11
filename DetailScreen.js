@@ -16,6 +16,7 @@ export default function DetailScreen({ navigation }) {
   const [height, setHeight] = useState(150);
   const [age, setAge] = useState(70);
   const [calories, setCalories] = useState(70);
+  const [gender, setGender] = useState(null);
 
   return (
     <ScrollView
@@ -24,7 +25,7 @@ export default function DetailScreen({ navigation }) {
     >
       <View className="items-center px-6 pt-32">
         {/* Details header */}
-        <Text className="text-5xl font-bold text-black">Details</Text>
+        <Text className="text-5xl font-bold text-black underline">Details</Text>
 
         {/* Slider Weight*/}
         <Text className="text-2xl font-semibold mb-4 text-black text-center pt-12">
@@ -146,7 +147,41 @@ export default function DetailScreen({ navigation }) {
           </View>
         </View>
 
-        <TouchableOpacity className="flex-row items-center justify-center w-full bg-green-600 rounded-xl mt-6 py-3">
+        {/* Select Gender */}
+
+        <View className="w-full items-center mt-8">
+          <Text className="text-2xl font-semibold mb-4 text-black pt-12">
+            Gender
+          </Text>
+
+          <View style={{ flexDirection: "row", gap: 32, marginTop: 24 }}>
+            {/* Male Option */}
+            <TouchableOpacity
+              onPress={() => setGender("male")}
+              className={`px-6 py-3 rounded-xl border ${
+                gender === "male"
+                  ? "bg-white border-black"
+                  : "bg-white border-gray-300"
+              }`}
+            >
+              <Text className={`text-base font-medium text-black`}>Male</Text>
+            </TouchableOpacity>
+
+            {/* Female Option */}
+            <TouchableOpacity
+              onPress={() => setGender("female")}
+              className={`px-6 py-3 rounded-xl border ${
+                gender === "female"
+                  ? "bg-white border-black"
+                  : "bg-white border-gray-300"
+              }`}
+            >
+              <Text className={"text-base font-medium text-black"}>Female</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <TouchableOpacity className="flex-row items-center justify-center w-full bg-green-600 rounded-xl mt-12 py-3 ">
           <Text className="text-white text-base font-medium font-bold">
             Submit
           </Text>
