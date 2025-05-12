@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:src/app/LoginScreen.js
 import "../../global.css";
-========
-//import "../global.css";
->>>>>>>> main:Screens/LoginScreen.js
 import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
@@ -50,14 +46,7 @@ export default function LoginScreen({ navigation }) {
   return (
     <View className="flex-1 items-center justify-start bg-white pt-32 px-6">
       {/* Logo */}
-<<<<<<<< HEAD:src/app/LoginScreen.js
       <Image source={require("../../assets/Logo.png")} className="w-40 h-40 mb-4" />
-========
-      <Image
-        source={require("../assets/Logo.png")}
-        className="w-40 h-40 mb-4"
-      />
->>>>>>>> main:Screens/LoginScreen.js
 
       {/* NutriNuxus */}
       <Text className="text-5xl font-bold text-green-600">NutriNuxus</Text>
