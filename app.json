@@ -20,7 +20,6 @@
         }
       ]
     ],
-
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "nutrinuxus.club",
