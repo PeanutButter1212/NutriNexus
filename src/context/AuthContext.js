@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
       console.log("Google Sign-In configured");
     }, []);
    
-    const signUp = async (username, email, password) => {
+    const signUp = async (username, email, password, navigation) => {
         try {
           const { data, error: signUpError } = await supabase.auth.signUp({
             email,
@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }) => {
             throw profileError;
           }
       
-          Alert.alert("Success", "User registered successfully!");
+          navigation.navigate("OTP", { email, action: "signup"})
         } catch (err) {
           console.error("Error Details:", err);
           Alert.alert("Error", err.message || "An unknown error occurred");
@@ -107,7 +107,7 @@ export const AuthProvider = ({ children }) => {
         }
 
           setUser({ ...data.user, ...profile });
-          navigation.navigate("OTP", { email }); 
+          navigation.navigate("OTP", { email, action: "login" }); 
           
 
         } catch (err) {
@@ -124,6 +124,7 @@ export const AuthProvider = ({ children }) => {
             throw new Error("Failed to send OTP. Please try again")
   
           }
+
 
           console.log("OTP sent to", email)
         } catch (err) {
@@ -158,7 +159,7 @@ export const AuthProvider = ({ children }) => {
       }
 
 
-      const googleSignIn = async () => {
+      const googleSignIn = async (navigation) => {
         console.log("Attempting Google Sign-In...");
         try {
         
@@ -182,6 +183,7 @@ export const AuthProvider = ({ children }) => {
       
             console.log("Supabase User Data:", data);
             Alert.alert("Success", "You are now signed in with Google");
+            navigation.navigate("Profile");
             return data.user;
           } else {
             throw new Error("No ID token returned by Google");
