@@ -161,7 +161,7 @@ export const AuthProvider = ({ children }) => {
       const googleSignIn = async () => {
         console.log("Attempting Google Sign-In...");
         try {
-          // On iOS, we don't need to check for Play Services
+        
           if (Platform.OS === "android") {
             await GoogleSignin.hasPlayServices();
           }
@@ -169,10 +169,10 @@ export const AuthProvider = ({ children }) => {
           const userInfo = await GoogleSignin.signIn();
           console.log("User Info after Google Sign-In:", userInfo);
       
-          if (userInfo.idToken) {
+          if (userInfo.data.idToken) {
             const { data, error } = await supabase.auth.signInWithIdToken({
               provider: "google",
-              token: userInfo.idToken,
+              token: userInfo.data.idToken,
             });
       
             if (error) {
