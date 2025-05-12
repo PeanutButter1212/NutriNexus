@@ -31,10 +31,9 @@ export default function LoginScreen({ navigation }) {
   const handleGoogleLogIn = async () => {
     console.log("Google Login Button Pressed");
     try {
-      const user = await googleSignIn();
+      const user = await googleSignIn(navigation);
       if (user) {
         console.log("Google Sign-In Successful:", user);
-        Alert.alert("Success", "You are now signed in with Google");
       } 
     } catch (error) {
       console.error("Google Sign-In Error:", error.message);

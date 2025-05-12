@@ -25,7 +25,7 @@ export default function SignUpScreen({ navigation }) {
       return;
     } 
 
-    signUp(username, email, password); 
+    signUp(username, email, password, navigation); 
 
   }
   return (
@@ -67,15 +67,6 @@ export default function SignUpScreen({ navigation }) {
           secureTextEntry
         />
       </View>
-
-      {/* Google Login Button */}
-
-      <TouchableOpacity className="flex-row items-center justify-center w-full bg-red-500 rounded-xl mt-12 py-3">
-        <AntDesign name="google" size={20} color="white" className="mr-2" />
-        <Text className="text-white text-base font-medium">
-          Continue with Google
-        </Text>
-      </TouchableOpacity>
 
       {/* Sign Up Button*/}
 
