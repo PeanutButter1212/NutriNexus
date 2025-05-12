@@ -1,4 +1,4 @@
-import "./global.css";
+//import "../global.css";
 import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,

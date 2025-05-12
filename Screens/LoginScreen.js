@@ -1,4 +1,4 @@
-import "./global.css";
+//import "../global.css";
 import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
@@ -14,7 +14,10 @@ export default function LoginScreen({ navigation }) {
   return (
     <View className="flex-1 items-center justify-start bg-white pt-32 px-6">
       {/* Logo */}
-      <Image source={require("./assets/Logo.png")} className="w-40 h-40 mb-4" />
+      <Image
+        source={require("../assets/Logo.png")}
+        className="w-40 h-40 mb-4"
+      />
 
       {/* NutriNuxus */}
       <Text className="text-5xl font-bold text-green-600">NutriNuxus</Text>

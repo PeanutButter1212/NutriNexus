@@ -1,4 +1,4 @@
-import "./global.css";
+//import "../global.css";
 import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
@@ -181,7 +181,10 @@ export default function DetailScreen({ navigation }) {
           </View>
         </View>
 
-        <TouchableOpacity className="flex-row items-center justify-center w-full bg-green-600 rounded-xl mt-12 py-3 ">
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Profile")}
+          className="flex-row items-center justify-center w-full bg-green-600 rounded-xl mt-12 py-3 "
+        >
           <Text className="text-white text-base font-medium font-bold">
             Submit
           </Text>

@@ -1,9 +1,11 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import LoginScreen from "./LoginScreen";
-import SignUpScreen from "./SignUpScreen";
-import OTPScreen from "./OTPScreen";
-import DetailScreen from "./DetailScreen";
+import LoginScreen from "./Screens/LoginScreen";
+import SignUpScreen from "./Screens/SignUpScreen";
+import OTPScreen from "./Screens/OTPScreen";
+import DetailScreen from "./Screens/DetailScreen";
+import ProfileScreen from "./Screens/ProfileScreen";
+import "./global.css";
 
 const Stack = createNativeStackNavigator();
 
@@ -29,6 +31,11 @@ export default function App() {
         <Stack.Screen
           name="Detail"
           component={DetailScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={ProfileScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
