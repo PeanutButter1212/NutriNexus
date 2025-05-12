@@ -13,9 +13,9 @@ import { Image } from "react-native";
 import { useState } from "react"
 import { useAuth } from "../context/AuthContext"
 
+
 export default function LoginScreen({ navigation }) {
-  
-  const { signInWithEmail } = useAuth();
+  const { googleSignIn, signInWithEmail } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const handleLogin = async () => {
@@ -27,6 +27,22 @@ export default function LoginScreen({ navigation }) {
     signInWithEmail(username, password, navigation);  
 
   }
+
+  const handleGoogleLogIn = async () => {
+    console.log("Google Login Button Pressed");
+    try {
+      const user = await googleSignIn();
+      if (user) {
+        console.log("Google Sign-In Successful:", user);
+        Alert.alert("Success", "You are now signed in with Google");
+      } 
+    } catch (error) {
+      console.error("Google Sign-In Error:", error.message);
+      Alert.alert("Error", error.message || "An unknown error occurred");
+    }
+  };
+
+
   return (
     <View className="flex-1 items-center justify-start bg-white pt-32 px-6">
       {/* Logo */}
@@ -51,7 +67,9 @@ export default function LoginScreen({ navigation }) {
         className="w-full border border-gray-300 rounded-xl mt-4 px-4 py-3 text-base"
       />
       {/* Google Login Button */}
-      <TouchableOpacity className="flex-row items-center justify-center w-full bg-red-500 rounded-xl mt-6 py-3">
+      <TouchableOpacity 
+      onPress = {handleGoogleLogIn}
+      className="flex-row items-center justify-center w-full bg-red-500 rounded-xl mt-6 py-3">
         <AntDesign name="google" size={20} color="white" className="mr-2" />
         <Text className="text-white text-base font-medium">
           Continue with Google

@@ -1,13 +1,25 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { Alert } from "react-native";
+import { Alert, Platform } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { supabase }  from "../lib/supabase";
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 
 const AuthContext = createContext(); 
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+      console.log("Configuring Google Sign-In");
+      GoogleSignin.configure({
+        scopes: ["https://www.googleapis.com/auth/userinfo.email"],
+        webClientId: "960982903167-8s5ucem4rqhqlbe68f1mml1ngf4b725h.apps.googleusercontent.com",
+        iosClientId: "960982903167-krh2o19m7vtkcrsao5kspkor8qlfu9af.apps.googleusercontent.com", 
+        offlineAccess: true,
+      });
+      console.log("Google Sign-In configured");
+    }, []);
    
     const signUp = async (username, email, password) => {
         try {
@@ -144,6 +156,41 @@ export const AuthProvider = ({ children }) => {
         }
 
       }
+
+
+      const googleSignIn = async () => {
+        console.log("Attempting Google Sign-In...");
+        try {
+          // On iOS, we don't need to check for Play Services
+          if (Platform.OS === "android") {
+            await GoogleSignin.hasPlayServices();
+          }
+      
+          const userInfo = await GoogleSignin.signIn();
+          console.log("User Info after Google Sign-In:", userInfo);
+      
+          if (userInfo.idToken) {
+            const { data, error } = await supabase.auth.signInWithIdToken({
+              provider: "google",
+              token: userInfo.idToken,
+            });
+      
+            if (error) {
+              console.error("Supabase Sign-In Error:", error.message);
+              throw error;
+            }
+      
+            console.log("Supabase User Data:", data);
+            Alert.alert("Success", "You are now signed in with Google");
+            return data.user;
+          } else {
+            throw new Error("No ID token returned by Google");
+          }
+        } catch (error) {
+          console.error("Google Sign-In Error:", error.message);
+          Alert.alert("Error", error.message || "An unknown error occurred");
+        }
+      };
       
   
       const value = {
@@ -152,7 +199,8 @@ export const AuthProvider = ({ children }) => {
         signUp,
         signInWithEmail,
         sendOtpEmail,
-        verifyOtp 
+        verifyOtp,
+        googleSignIn
       };
     
       return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
