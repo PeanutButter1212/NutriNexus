@@ -7,9 +7,13 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
+  Alert
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Slider from "@react-native-community/slider";
+import { useRoute } from "@react-navigation/native"
+import { supabase } from "../lib/supabase"
 
 export default function DetailScreen({ navigation }) {
   const [weight, setWeight] = useState(80);
@@ -17,6 +21,65 @@ export default function DetailScreen({ navigation }) {
   const [age, setAge] = useState(70);
   const [calories, setCalories] = useState(70);
   const [gender, setGender] = useState(null);
+
+  const route = useRoute();
+  const { userId } = route.params;
+
+
+ const handleSubmit = async () => {
+    if (!userId) {
+      Alert.alert("Error", "User ID is missing. Please try again.");
+      return;
+    }
+
+    try {
+    
+      const updateData = {
+        is_first_time: false,
+        weight: weight,
+        height: height,
+        age: age,
+        calories: calories,
+        gender: gender,
+      };
+  
+      console.log("User ID for Update:", userId);
+      console.log("Update Data:", updateData);
+  
+      const { data: currentProfile, error: fetchError } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
+  
+      console.log("Current Profile Data Before Update:", currentProfile);
+  
+      if (fetchError) {
+        console.error("Fetch Error:", fetchError.message);
+      }
+  
+      // Perform update
+      const { data, error } = await supabase
+        .from("profiles")
+        .update(updateData)
+        .eq("id", userId);
+  
+      if (error) {
+        console.error("Profile Update Error:", error.message);
+        throw new Error("Failed to update profile. Please try again.");
+      }
+  
+      console.log("Profile successfully updated. Navigating to ProfileScreen...");
+      console.log("Updated Data:", data);
+  
+      navigation.navigate("Profile", { userId });
+
+    } catch (err) {
+      console.error("Submit Error:", err.message);
+      Alert.alert("Error", err.message);
+    }
+  };
+
 
   return (
     <ScrollView
@@ -182,7 +245,7 @@ export default function DetailScreen({ navigation }) {
         </View>
 
         <TouchableOpacity
-          onPress={() => navigation.navigate("Profile")}
+          onPress= {handleSubmit}
           className="flex-row items-center justify-center w-full bg-green-600 rounded-xl mt-12 py-3 "
         >
           <Text className="text-white text-base font-medium font-bold">

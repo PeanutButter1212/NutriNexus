@@ -10,24 +10,27 @@ import {
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import {useAuth} from '../context/AuthContext';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function SignUpScreen({ navigation }) {
 
-  const { signUp } = useAuth(); 
+  const {  signUp, emailVerified, accessToken, refreshToken } = useAuth(); 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail]  = useState("");
-  
+
   const handleRegister = async () => {
     if (!username.trim() || !password.trim() || !email.trim()) {
-      Alert.alert('Please fill in all fields!')
+      Alert.alert("Please fill in all fields!");
       return;
-    } 
+    }
+  
+    await signUp(username, email, password, navigation);
+  };
 
-    signUp(username, email, password, navigation); 
+  
 
-  }
+  
   return (
     <View className="flex-1 items-center bg-white pt-32 px-6">
       {/* New Account */}

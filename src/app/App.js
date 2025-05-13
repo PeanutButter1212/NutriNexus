@@ -6,11 +6,16 @@ import OTPScreen from "./OTPScreen";
 import DetailScreen from "./DetailScreen";
 import ProfileScreen from "./ProfileScreen"
 import { AuthProvider } from "../context/AuthContext";
+import React, { useEffect } from "react";
+import { Linking, Alert } from "react-native";
 
 const Stack = createNativeStackNavigator();
 
+
 export default function App() {
+
   return (
+
     <AuthProvider> 
       <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
@@ -20,14 +25,14 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="SignUp"
-          component={SignUpScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
           name="OTP"
           component={OTPScreen}
           options={{ headerShown: true }}
+        />
+        <Stack.Screen
+          name="SignUp"
+          component={SignUpScreen}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Detail"

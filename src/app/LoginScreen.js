@@ -18,15 +18,22 @@ export default function LoginScreen({ navigation }) {
   const { googleSignIn, signInWithEmail } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  
   const handleLogin = async () => {
     if (!username.trim() || !password.trim()) {
-      Alert.alert('Please fill in all fields!')
+      setErrorMessage("Please fill in all fields!");
       return;
-    } 
+    }
 
-    signInWithEmail(username, password, navigation);  
+    const error = await signInWithEmail(username, password, navigation);
 
-  }
+
+    if (error) {
+      setErrorMessage("Invalid Login Credentials");  
+    }
+  };
+
 
   const handleGoogleLogIn = async () => {
     console.log("Google Login Button Pressed");
@@ -48,7 +55,7 @@ export default function LoginScreen({ navigation }) {
       <Image source={require("../../assets/Logo.png")} className="w-40 h-40 mb-4" />
 
       {/* NutriNuxus */}
-      <Text className="text-5xl font-bold text-green-600">NutriNuxus</Text>
+      <Text className="text-5xl font-bold text-green-600">NutriNexus</Text>
 
       {/* Login */}
       <Text className="text-2xl mt-2 text-green-600">Login</Text>
@@ -63,8 +70,15 @@ export default function LoginScreen({ navigation }) {
       <TextInput
         onChangeText = {(text) => setPassword(text)}
         placeholder="Password"
+        secureTextEntry
         className="w-full border border-gray-300 rounded-xl mt-4 px-4 py-3 text-base"
       />
+
+      {/* Error Message */}
+         {errorMessage ? (
+        <Text className="text-red-500 font-semibold mt-3" >{errorMessage}</Text>
+      ) : null}
+
       {/* Google Login Button */}
       <TouchableOpacity 
       onPress = {handleGoogleLogIn}

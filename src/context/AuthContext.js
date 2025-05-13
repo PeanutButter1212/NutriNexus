@@ -7,8 +7,10 @@ import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-si
 const AuthContext = createContext(); 
 
 export const AuthProvider = ({ children }) => {
+  const [userId, setUserId] = useState(null);
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [username, setUsername] = useState("");
+
 
     useEffect(() => {
       console.log("Configuring Google Sign-In");
@@ -22,49 +24,51 @@ export const AuthProvider = ({ children }) => {
     }, []);
    
     const signUp = async (username, email, password, navigation) => {
-        try {
-          const { data, error: signUpError } = await supabase.auth.signUp({
-            email,
-            password,
-          });
-      
-          if (signUpError) {
-            console.error("Sign Up Error:", signUpError.message);
-            throw signUpError;
-          }
-      
-          const userId = data.user?.id;
-      
-          if (!userId) {
-            throw new Error("User ID is undefined");
-          }
-      
-          console.log("Insert Payload:", {
-            user_id: userId,
-            username,
-            created_at: new Date().toISOString()
-          });
-      
-          const { error: profileError } = await supabase
-            .from("profiles")
-            .insert({
-              id: userId,
-              username,
-              email,
-              created_at: new Date().toISOString()
-            });
-      
-          if (profileError) {
-            console.error("Profile Insertion Error:", profileError);
-            throw profileError;
-          }
-      
-          navigation.navigate("OTP", { email, action: "signup"})
-        } catch (err) {
-          console.error("Error Details:", err);
-          Alert.alert("Error", err.message || "An unknown error occurred");
+      try {
+        const { data, error: signUpError } = await supabase.auth.signUp({
+          email,
+          password,
+        });
+    
+        if (signUpError) {
+          console.error("Sign Up Error:", signUpError.message);
+          throw signUpError;
         }
-      };
+    
+        const userId = data.user?.id;
+    
+        if (!userId) {
+          throw new Error("User ID is undefined");
+        }
+    
+        console.log("Insert Payload:", {
+          user_id: userId,
+          username,
+          created_at: new Date().toISOString()
+        });
+    
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .insert({
+            id: userId,
+            username,
+            email,
+            created_at: new Date().toISOString(),
+            is_first_time: true
+          });
+    
+        if (profileError) {
+          console.error("Profile Insertion Error:", profileError);
+          throw profileError;
+        }
+
+        Alert.alert("A verification email has been sent to your profile. Please click on the link attached to verify your account")
+        navigation.navigate("Login");
+      } catch (err) {
+        console.error("Error Details:", err);
+        Alert.alert("Error", err.message || "An unknown error occurred");
+      }
+    };
       
       const signInWithEmail = async (username, password, navigation) => {
         try {
@@ -86,33 +90,32 @@ export const AuthProvider = ({ children }) => {
           });
 
           if (error) {
-            console.error("Login Error:" + error.message);
-            throw error; 
+            if (error.message.includes("Email not confirmed")) {
+              throw new Error("Please verify your email before logging in.");
+            }
+            throw error;
           }
-          console.log("Auth Data:", data);
-
+    
           const userId = data.user?.id;
 
 
 
-          const { data: profile, error: profileError } = await supabase
+          const { data: profileData, error: profileError } = await supabase
             .from('profiles')
-            .select('username, email, created_at')
+            .select('username, email, created_at, is_first_time')
             .eq('id', userId)
             .limit(1);
 
+           
           if (profileError) {
-            console.error("Error fetching profile data:", profileError.message);
             throw profileError;
         }
 
-          setUser({ ...data.user, ...profile });
-          navigation.navigate("OTP", { email, action: "login" }); 
+          navigation.navigate("OTP", { email } ); 
           
 
         } catch (err) {
-        console.error("Error in signInWithEmail:", err.message);
-        Alert.alert("Error", err.message || "An unknown error occurred");
+        return err.message;
         }
       }
 
@@ -135,30 +138,56 @@ export const AuthProvider = ({ children }) => {
 
       }
 
-      const verifyOtp = async (email, otp) => {
+      const verifyOtp = async (email, otp, navigation) => {
         try {
           const { data, error } = await supabase.auth.verifyOtp({
             email,
             token: otp,
-            type: "email",
-          })
+            type: "magiclink",
+          });
+      
           if (error) {
             console.error("OTP Verification Error:", error.message);
             throw new Error("OTP verification failed. Please try again.");
-        }
-
-        console.log("OTP Verified:", data);
-        Alert.alert("Success", "OTP Verified Successfully!");
-
-        setUser(data.user);
-
+          }
+      
+          const userId = data.user?.id;
+          setUserId(userId);
+      
+          if (!userId) {
+            throw new Error("User ID not found after OTP verification.");
+          }
+      
+          // Fetch `is_first_time` flag
+          const { data: profileData, error: profileError } = await supabase
+            .from("profiles")
+            .select("is_first_time")
+            .eq("id", userId)
+            .single();
+      
+          if (profileError) {
+            console.error("Profile Fetch Error:", profileError.message);
+            throw profileError;
+          }
+      
+          const { is_first_time } = profileData;
+      
+     
+      
+          if (is_first_time) {
+            console.log("Navigating to DetailScreen...");
+            navigation.navigate("Detail", { userId });
+          } else {
+            console.log("Navigating to ProfileScreen...");
+            navigation.navigate("Profile", { userId });
+          }
+      
         } catch (err) {
-          throw err
+          console.error("OTP Verification Error:", err.message);
+          Alert.alert("Error", err.message);
         }
-
-      }
-
-
+      };
+      
       const googleSignIn = async (navigation) => {
         console.log("Attempting Google Sign-In...");
         try {
@@ -168,7 +197,7 @@ export const AuthProvider = ({ children }) => {
           }
       
           const userInfo = await GoogleSignin.signIn();
-          console.log("User Info after Google Sign-In:", userInfo);
+
       
           if (userInfo.data.idToken) {
             const { data, error } = await supabase.auth.signInWithIdToken({
@@ -180,10 +209,66 @@ export const AuthProvider = ({ children }) => {
               console.error("Supabase Sign-In Error:", error.message);
               throw error;
             }
+    
+            const userId = data.user?.id;
+            const email = data.user?.email;
+            console.log(email); 
+            setUserId(userId);
+
       
-            console.log("Supabase User Data:", data);
-            Alert.alert("Success", "You are now signed in with Google");
-            navigation.navigate("Profile");
+            
+            const { data: profileData, error: profileError } = await supabase
+            .from("profiles")
+            .select("id")
+            .eq("id", userId)
+            .single();
+
+            
+    
+          if (profileError) {
+
+            const username = email ? email.split("@")[0] : "Anonymous";
+            console.log("Generated Username:", username);
+
+          const { error: insertError } = await supabase
+            .from("profiles")
+            .insert({
+              id: userId,
+              username: username,
+              email: email,
+              is_first_time: true,
+            });
+
+        if (insertError) {
+          console.error("Error inserting profile data:", insertError.message);
+          throw insertError;
+        }
+
+        console.log("New profile created for user:", userId);
+      }
+            
+          
+          const { data: profileData2, error: profileError2 } = await supabase
+            .from("profiles")
+            .select("is_first_time")
+            .eq("id", userId)
+            .single();
+      
+          if (profileError2) {
+            console.error("Profile Fetch Error:", profileError.message);
+            throw profileError;
+          }
+      
+          const { is_first_time } = profileData2;
+    
+    
+          if (is_first_time) {
+            console.log("Navigating to DetailScreen...");
+            navigation.navigate("Detail", { userId });
+          } else {
+            console.log("Navigating to ProfileScreen...");
+            navigation.navigate("Profile", { userId });
+          }
             return data.user;
           } else {
             throw new Error("No ID token returned by Google");
@@ -193,16 +278,65 @@ export const AuthProvider = ({ children }) => {
           Alert.alert("Error", error.message || "An unknown error occurred");
         }
       };
+      const getUserData = async () => {
+        try {
+          const { data, error } = await supabase.auth.getUser();
+          if (error) throw error;
+    
+          const userId = data.user?.id;
+          setUserId(userId);
+    
+          if (!userId) return;
+    
+          const { data: profileData, error: profileError } = await supabase
+            .from("profiles")
+            .select("username")
+            .eq("id", userId)
+            .single();
+
+            setUsername(profileData.username);
+    
+          if (profileError) {
+            console.error("Profile Fetch Error:", profileError.message);
+            return;
+          }
+    
+    
+        } catch (err) {
+          console.error("Error fetching user data:", err.message);
+        }
+      };
+    
+     
+      const logout = async (navigation) => {
+        try {
+          const { error } = await supabase.auth.signOut();
+          if (error) throw error;
+    
+          console.log("User successfully logged out.");
+          setUser(null);
+          setUserId(null);
+          setUsername("");
+          navigation.navigate("Login");
+    
+        } catch (err) {
+          console.error("Logout Error:", err.message);
+          Alert.alert("Error", err.message);
+        }
+      };
+    
       
-  
       const value = {
+        userId,
         user,
-        loading,
+        username,
         signUp,
         signInWithEmail,
         sendOtpEmail,
         verifyOtp,
-        googleSignIn
+        googleSignIn,
+        getUserData,
+        logout
       };
     
       return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

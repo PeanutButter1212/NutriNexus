@@ -15,7 +15,7 @@ import React, { useEffect, useState} from "react";
 export default function OTPScreen({ navigation}) {
 
   const route = useRoute(); 
-  const { email, action } = route.params; 
+  const { email } = route.params; 
   const { sendOtpEmail, verifyOtp } = useAuth(); 
 
   const [otp, setOtp] = useState(""); 
@@ -28,22 +28,17 @@ export default function OTPScreen({ navigation}) {
       sendOtpEmail(email)
     }
   }, [email]); 
-
+  
   const handleOtpVerification = async () => { 
     try {
-      await verifyOtp(email, otp); 
       setErrorMessage(""); 
-      if (action === "signup") {
-        navigation.navigate("Profile"); 
-      } else if (action === "login") {
-        navigation.navigate("Detail")
-      }
+      await verifyOtp(email, otp, navigation); 
     } catch (err) {
+      console.error("Error in OTP Verification:", err.message);
       setErrorMessage(err.message);
     }
-
-  }
-
+  };
+  
 
   return (
    
