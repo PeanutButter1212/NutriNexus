@@ -14,26 +14,21 @@ import React, { useState, useEffect } from "react";
 import Slider from "@react-native-community/slider";
 import { useRoute } from "@react-navigation/native"
 import { supabase } from "../lib/supabase"
+import { useAuth } from "../context/AuthContext";
 
-export default function DetailScreen({ navigation }) {
+export default function DetailScreen({ route, navigation }) {
+  const { session, profile } = route.params;
+
   const [weight, setWeight] = useState(80);
   const [height, setHeight] = useState(150);
   const [age, setAge] = useState(70);
   const [calories, setCalories] = useState(70);
-  const [gender, setGender] = useState(null);
+  const [gender, setGender] = useState("male");
 
-  const route = useRoute();
-  const { userId } = route.params;
-
-
- const handleSubmit = async () => {
-    if (!userId) {
-      Alert.alert("Error", "User ID is missing. Please try again.");
-      return;
-    }
-
+  
+  const handleSubmit = async () => {
     try {
-    
+      console.log("handlesubmit")
       const updateData = {
         is_first_time: false,
         weight: weight,
@@ -42,41 +37,37 @@ export default function DetailScreen({ navigation }) {
         calories: calories,
         gender: gender,
       };
-  
-      console.log("User ID for Update:", userId);
-      console.log("Update Data:", updateData);
-  
+
+      const userId = profile?.id || session?.user?.id; 
+      const { data, error } = await supabase
+        .from("profiles")
+        .update(updateData)
+        .eq("id", userId)
+
+
+      if (error) {
+        console.log(error);
+      }
+
       const { data: currentProfile, error: fetchError } = await supabase
         .from("profiles")
         .select("*")
         .eq("id", userId)
-        .single();
-  
-      console.log("Current Profile Data Before Update:", currentProfile);
-  
-      if (fetchError) {
-        console.error("Fetch Error:", fetchError.message);
-      }
-  
-      // Perform update
-      const { data, error } = await supabase
-        .from("profiles")
-        .update(updateData)
-        .eq("id", userId);
-  
+        .single()
+
+      
+      
+      console.log(currentProfile);
+
+
       if (error) {
-        console.error("Profile Update Error:", error.message);
-        throw new Error("Failed to update profile. Please try again.");
+        throw error; 
       }
   
-      console.log("Profile successfully updated. Navigating to ProfileScreen...");
-      console.log("Updated Data:", data);
-  
-      navigation.navigate("Profile", { userId });
+      navigation.navigate("Profile", {session, profile: currentProfile});
 
     } catch (err) {
-      console.error("Submit Error:", err.message);
-      Alert.alert("Error", err.message);
+      console.log(err.message);
     }
   };
 

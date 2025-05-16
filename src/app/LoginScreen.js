@@ -13,9 +13,8 @@ import { Image } from "react-native";
 import { useState } from "react"
 import { useAuth } from "../context/AuthContext"
 
-
 export default function LoginScreen({ navigation }) {
-  const { googleSignIn, signInWithEmail } = useAuth();
+  const { googleSignIn, signInWithUsername } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -25,26 +24,24 @@ export default function LoginScreen({ navigation }) {
       setErrorMessage("Please fill in all fields!");
       return;
     }
+    try {
+      const error = await signInWithUsername(username, password, navigation); 
+      if (error) {
+        setErrorMessage("Invalid Login Credentials");  
+      }
 
-    const error = await signInWithEmail(username, password, navigation);
-
-
-    if (error) {
-      setErrorMessage("Invalid Login Credentials");  
+    } catch (err) {
+      setErrorMessage(err.message);
     }
+  
   };
 
 
   const handleGoogleLogIn = async () => {
-    console.log("Google Login Button Pressed");
     try {
       const user = await googleSignIn(navigation);
-      if (user) {
-        console.log("Google Sign-In Successful:", user);
-      } 
     } catch (error) {
-      console.error("Google Sign-In Error:", error.message);
-      Alert.alert("Error", error.message || "An unknown error occurred");
+      setErrorMessage(error.message); 
     }
   };
 
@@ -64,6 +61,7 @@ export default function LoginScreen({ navigation }) {
       <TextInput
         onChangeText = {(text) => setUsername(text)}
         placeholder="Username"
+        autoCapitalize="none"
         className="w-full border border-gray-300 rounded-xl mt-6 px-4 py-3 text-base"
       />
       {/* Password Input */}
@@ -71,6 +69,7 @@ export default function LoginScreen({ navigation }) {
         onChangeText = {(text) => setPassword(text)}
         placeholder="Password"
         secureTextEntry
+        autoCapitalize="none"
         className="w-full border border-gray-300 rounded-xl mt-4 px-4 py-3 text-base"
       />
 

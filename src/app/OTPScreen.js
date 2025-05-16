@@ -12,29 +12,29 @@ import { useRoute } from "@react-navigation/native";
 import { useAuth } from "../context/AuthContext";
 import React, { useEffect, useState} from "react"; 
 
-export default function OTPScreen({ navigation}) {
+export default function OTPScreen({ navigation }) {
 
   const route = useRoute(); 
   const { email } = route.params; 
-  const { sendOtpEmail, verifyOtp } = useAuth(); 
+  const { verifyOtp, sendOtpEmail } = useAuth(); 
 
   const [otp, setOtp] = useState(""); 
 
   const [errorMessage, setErrorMessage] = useState("");
   
+   
   useEffect(() => {
     if (email) {
       console.log("Sending OTP to:", email);
       sendOtpEmail(email)
     }
   }, [email]); 
-  
+
   const handleOtpVerification = async () => { 
     try {
       setErrorMessage(""); 
       await verifyOtp(email, otp, navigation); 
     } catch (err) {
-      console.error("Error in OTP Verification:", err.message);
       setErrorMessage(err.message);
     }
   };
@@ -42,7 +42,6 @@ export default function OTPScreen({ navigation}) {
 
   return (
    
-    
     <View className="flex-1 bg-white pt-20 px-6 items-center">
     
   

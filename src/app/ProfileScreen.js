@@ -4,22 +4,24 @@ import {  StyleSheet,  Text,  ScrollView,  View,  TextInput,  TouchableOpacity,}
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 
-export default function Profile({ navigation }) {    
-     const { username, logout, getUserData } = useAuth();
+export default function Profile({ route, navigation }) {    
+     const { session, profile, authMethod } = route.params; 
+    
+     const { logout } = useAuth();
 
-     useEffect(() => {
-          getUserData();
-        }, []);
-      
      const handleLogout = () => {
-          logout(navigation);
-        };
-      
+          logout(authMethod, navigation);
+      };
+
+
+     
+
+     
      return (   
      <View className="items-center justify-start bg-white-500 pt-32 px-6 flex-1">      
      <Text className="text-3xl font-bold text-green-600" 
           style= {{textAlign: "center"}} >
-        Welcome Back, {username ? username  : "User"}!
+        Welcome Back, {profile ? profile.username : "User"}!
       </Text>
 
       <TouchableOpacity 

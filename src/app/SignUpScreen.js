@@ -14,7 +14,7 @@ import React, { useState, useEffect } from 'react';
 
 export default function SignUpScreen({ navigation }) {
 
-  const {  signUp, emailVerified, accessToken, refreshToken } = useAuth(); 
+  const { signUp } = useAuth(); 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail]  = useState("");
@@ -43,6 +43,7 @@ export default function SignUpScreen({ navigation }) {
         <Text className="text-base font-bold text-black">Username:</Text>
         <TextInput
           placeholder="Username"
+          autoCapitalize="none"
           className="ml-4 border border-gray-300 rounded-xl mt-2 px-4 py-3 text-base w-80"
           onChangeText = {(text) => setUsername(text)}
         />
@@ -56,6 +57,7 @@ export default function SignUpScreen({ navigation }) {
           placeholder="Email"
           className="ml-12 border border-gray-300 rounded-xl mt-2 px-4 py-3 text-base w-80"
           onChangeText = {(text) => setEmail(text)}
+          autoCapitalize="none"
         />
       </View>
 
@@ -68,6 +70,7 @@ export default function SignUpScreen({ navigation }) {
           className="ml-4 border border-gray-300 rounded-xl mt-2 px-4 py-3 text-base w-80"
           onChangeText = {(text) => setPassword(text)}
           secureTextEntry
+          autoCapitalize="none"
         />
       </View>
 
