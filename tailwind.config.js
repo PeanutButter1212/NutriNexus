@@ -9,7 +9,12 @@ module.exports = {
   ],
   presets: [require("nativewind/preset")],
   theme: {
-    extend: {},
+    gradientColorStops: theme => ({
+     ...theme('colors'),
+     'primary': '#3490dc',
+     'secondary': '#ffed4a',
+     'danger': '#e3342f',
+    })
   },
   plugins: [],
 };

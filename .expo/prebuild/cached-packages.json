@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
 <<<<<<< Updated upstream
   "dependencies": "e6d8053d9a080ff55e2fcd8e83a86868c76dd5fa",
   "devDependencies": "22cea332cd706134262a920c3e22760d9c1d82da"
@@ -6,4 +7,8 @@
   "dependencies": "d6c3d9cc257d99732a6db371df25360d8bb0dbc1",
   "devDependencies": "751c439dfa04a4994376311c194f151f319e5c89"
 >>>>>>> Stashed changes
+=======
+  "dependencies": "3611b6b9e7fea83c964bd0c84854f2a63216edd2",
+  "devDependencies": "751c439dfa04a4994376311c194f151f319e5c89"
+>>>>>>> 0e89c81f923be09fb24988b3dc35dcb6d7714b56
 }

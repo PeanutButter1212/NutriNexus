@@ -56,7 +56,7 @@ export default function App() {
 
     <AuthProvider> 
       <NavigationContainer>
-      <Stack.Navigator initialRouteName={session && session.user ? "Profile" : "Login"} >
+      <Stack.Navigator initialRouteName={"Profile"} >
       <Stack.Screen
       name="Login"
       component={LoginScreen}
