@@ -3,44 +3,25 @@ import { StatusBar } from "expo-status-bar";
 import {  StyleSheet,  Text,  ScrollView,  View,  TextInput,  TouchableOpacity, Image, useWindowDimensions} from "react-native";
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> 0e89c81f923be09fb24988b3dc35dcb6d7714b56
 import { LinearGradient } from "expo-linear-gradient";
 import CircularProgress from 'react-native-circular-progress-indicator';
 import {Canvas, Group} from '@shopify/react-native-skia';
 import * as d3 from 'd3'; 
 import BarPath from '../components/BarPath'
 import XAxisText from "../components/XAxisText";
-<<<<<<< HEAD
 import DropdownComponent from "../components/Dropper";
->>>>>>> Stashed changes
-=======
-import DropdownComponent from "../components/Dropdown";
->>>>>>> 0e89c81f923be09fb24988b3dc35dcb6d7714b56
 
 export default function Profile({ route, navigation }) {    
      const { session, profile, authMethod } = route.params; 
-    
+
      const { logout } = useAuth();
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> 0e89c81f923be09fb24988b3dc35dcb6d7714b56
      const { width } = useWindowDimensions();
 
      const [selectedDataType, setSelectedDataType] = useState('Steps'); 
 
-<<<<<<< HEAD
-
-=======
   
   
->>>>>>> 0e89c81f923be09fb24988b3dc35dcb6d7714b56
       const weeklyStepsData = [
         { day: "MON", value: 3000 },
         { day: "TUES", value: 5500 },
@@ -93,17 +74,14 @@ export default function Profile({ route, navigation }) {
 
      const barWidth = 35;
 
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> 0e89c81f923be09fb24988b3dc35dcb6d7714b56
      const handleLogout = () => {
           logout(authMethod, navigation);
       };
+
      
      
 
-     
+
      return (
       <View className="flex-1 bg-white">
         <LinearGradient 
@@ -198,7 +176,7 @@ export default function Profile({ route, navigation }) {
 
         
           </LinearGradient> 
-     
+
       <View>
       <View className="bg-white py-5 px-4 flex-row justify-between items-center">
       <Text className="text-xl font-bold"> Statistics</Text>
@@ -260,18 +238,16 @@ export default function Profile({ route, navigation }) {
           style= {{textAlign: "center"}} >
         Welcome Back, {profile ? profile.username : "User"}!
       </Text>
+
       
       <TouchableOpacity 
       onPress = {handleLogout}
       className="flex-row items-center justify-center w-full bg-red-500 rounded-xl mt-6 py-3">
-        <Text className="text-white text-base font-medium">
-          Log Out
-        </Text>
-      </TouchableOpacity>
-
+@@ -35,4 +249,7 @@ export default function Profile({ route, navigation }) {
       </View> 
       
      
+     );}
      );
   */
     }
