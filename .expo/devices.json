@@ -1,8 +1,16 @@
 {
   "devices": [
     {
+      "installationId": "815E17F5-CF0C-44B5-A2B5-29FA5D6EF836",
+      "lastUsed": 1747506334978
+    },
+    {
       "installationId": "778BF789-DA7E-48C4-909F-C4C4199C8330",
+<<<<<<< Updated upstream
       "lastUsed": 1747388837565
+=======
+      "lastUsed": 1747506175313
+>>>>>>> Stashed changes
     },
     {
       "installationId": "AE7291A7-DB26-45B8-8029-4E4251FD2B6E",
@@ -35,10 +43,6 @@
     {
       "installationId": "B4167E00-F2F0-40ED-8B48-DF845FE0BFC4",
       "lastUsed": 1747383688042
-    },
-    {
-      "installationId": "2B5FDCA2-A4AD-49A0-804A-05A8F6C377B3",
-      "lastUsed": 1747382476757
     }
   ]
 }
