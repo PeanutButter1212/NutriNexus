@@ -1,5 +1,5 @@
 import "../../global.css";
-import { StatusBar } from "expo-status-bar";
+
 import {
   StyleSheet,
   Text,
@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
+
 import { AntDesign } from "@expo/vector-icons";
 import { Image } from "react-native";
 import { useState } from "react";
@@ -45,6 +46,13 @@ export default function ActivityLogScreen({ navigation }) {
           Date/Time
         </Text>
       </View>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Profile")}
+        className="flex-row items-center justify-center w-full bg-green-600 rounded-xl mt-6 py-3"
+      >
+        <Text className="text-white text-base font-medium font-bold">Back</Text>
+      </TouchableOpacity>
+      Scanner
     </View>
   );
 }

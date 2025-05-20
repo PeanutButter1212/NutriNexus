@@ -6,6 +6,7 @@ import OTPScreen from "./OTPScreen";
 import DetailScreen from "./DetailScreen";
 import ActivityLogScreen from "./ActivityLogScreen";
 import ProfileScreen from "./ProfileScreen";
+import ScannerScreen from "./ScannerScreen";
 import { AuthProvider } from "../context/AuthContext";
 import React, { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
@@ -54,6 +55,7 @@ export default function App() {
     <AuthProvider>
       <NavigationContainer>
         <Stack.Navigator initialRouteName={"Activity Log"}>
+        <Stack.Navigator initialRouteName={"Profile"}>
           <Stack.Screen
             name="Login"
             component={LoginScreen}
@@ -84,6 +86,11 @@ export default function App() {
           <Stack.Screen
             name="Activity Log"
             component={ActivityLogScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Scanner"
+            component={ScannerScreen}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
