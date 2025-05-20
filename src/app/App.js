@@ -54,8 +54,7 @@ export default function App() {
   return (
     <AuthProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={"Activity Log"}>
-        <Stack.Navigator initialRouteName={"Profile"}>
+        <Stack.Navigator initialRouteName={"Login"}>
           <Stack.Screen
             name="Login"
             component={LoginScreen}

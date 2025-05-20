@@ -7,9 +7,6 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import { Image } from "react-native";
-import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
 
 export default function ScannerScreen({ navigation }) {
   return (
