@@ -10,6 +10,7 @@ import {
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const [session, setSession] = useState(null); //added
   useEffect(() => {
     console.log("Configuring Google Sign-In");
     GoogleSignin.configure({
@@ -20,6 +21,18 @@ export const AuthProvider = ({ children }) => {
         "960982903167-krh2o19m7vtkcrsao5kspkor8qlfu9af.apps.googleusercontent.com",
       offlineAccess: true,
     });
+
+    // added
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session);
+    });
+
+    // added
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, newSession) => {
+        setSession(newSession);
+      }
+    );
   }, []);
 
   const signUp = async (username, email, password, navigation) => {
@@ -238,6 +251,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const value = {
+    session, //added
     signUp,
     signInWithUsername,
     verifyOtp,

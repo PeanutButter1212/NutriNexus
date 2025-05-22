@@ -7,6 +7,7 @@ import DetailScreen from "./DetailScreen";
 import ActivityLogScreen from "./ActivityLogScreen";
 import ProfileScreen from "./ProfileScreen";
 import ScannerScreen from "./ScannerScreen";
+import SettingScreen from "./SettingScreen";
 import { AuthProvider } from "../context/AuthContext";
 import React, { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
@@ -90,6 +91,11 @@ export default function App() {
           <Stack.Screen
             name="Scanner"
             component={ScannerScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Setting"
+            component={SettingScreen}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
