@@ -8,12 +8,12 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  Alert
+  Alert,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import Slider from "@react-native-community/slider";
-import { useRoute } from "@react-navigation/native"
-import { supabase } from "../lib/supabase"
+import { useRoute } from "@react-navigation/native";
+import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
 
 export default function DetailScreen({ route, navigation }) {
@@ -25,10 +25,9 @@ export default function DetailScreen({ route, navigation }) {
   const [calories, setCalories] = useState(70);
   const [gender, setGender] = useState("male");
 
-  
   const handleSubmit = async () => {
     try {
-      console.log("handlesubmit")
+      console.log("handlesubmit");
       const updateData = {
         is_first_time: false,
         weight: weight,
@@ -38,12 +37,20 @@ export default function DetailScreen({ route, navigation }) {
         gender: gender,
       };
 
-      const userId = profile?.id || session?.user?.id; 
+      const userId = profile?.id || session?.user?.id;
       const { data, error } = await supabase
         .from("profiles")
         .update(updateData)
-        .eq("id", userId)
+        .eq("id", userId);
 
+      await supabase.from("profile_page").upsert({
+        id: userId,
+        weight,
+        height,
+        age,
+        gender,
+        calorie_goal: calories,
+      });
 
       if (error) {
         console.log(error);
@@ -53,24 +60,19 @@ export default function DetailScreen({ route, navigation }) {
         .from("profiles")
         .select("*")
         .eq("id", userId)
-        .single()
+        .single();
 
-      
-      
       console.log(currentProfile);
 
-
       if (error) {
-        throw error; 
+        throw error;
       }
-  
-      navigation.navigate("Profile", {session, profile: currentProfile});
 
+      navigation.navigate("Profile", { session, profile: currentProfile });
     } catch (err) {
       console.log(err.message);
     }
   };
-
 
   return (
     <ScrollView
@@ -236,7 +238,7 @@ export default function DetailScreen({ route, navigation }) {
         </View>
 
         <TouchableOpacity
-          onPress= {handleSubmit}
+          onPress={handleSubmit}
           className="flex-row items-center justify-center w-full bg-green-600 rounded-xl mt-12 py-3 "
         >
           <Text className="text-white text-base font-medium font-bold">
