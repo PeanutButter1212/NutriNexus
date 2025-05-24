@@ -10,6 +10,14 @@ import {
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  {
+    /*RefreshFlag for updating of actviitylog*/
+  }
+  const [refreshFlag, setRefreshFlag] = useState(false);
+
+  const triggerRefresh = () => {
+    setRefreshFlag((prev) => !prev); // flip the flag
+  };
   const [session, setSession] = useState(null); //added
   useEffect(() => {
     console.log("Configuring Google Sign-In");

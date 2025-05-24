@@ -43,7 +43,7 @@ export default function DetailScreen({ route, navigation }) {
         .update(updateData)
         .eq("id", userId);
 
-      await supabase.from("profile_page").upsert({
+      /*await supabase.from("profile_page").upsert({
         id: userId,
         weight,
         height,
@@ -51,10 +51,12 @@ export default function DetailScreen({ route, navigation }) {
         gender,
         calorie_goal: calories,
       });
+      
 
       if (error) {
         console.log(error);
       }
+        */
 
       const { data: currentProfile, error: fetchError } = await supabase
         .from("profiles")

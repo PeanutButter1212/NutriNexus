@@ -48,6 +48,9 @@ export default function ScannerScreen({ navigation }) {
       setFood("");
       setCalories("");
     }
+
+    await supabase.from("activity_log").insert(newEntry);
+    triggerRefresh();
   };
   return (
     <View className="flex-1 items-center justify-start bg-white pt-28 px-4">

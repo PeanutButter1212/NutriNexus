@@ -7,34 +7,42 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  ScrollView,
 } from "react-native";
 
-import { AntDesign } from "@expo/vector-icons";
 import { Image } from "react-native";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../lib/supabase";
+import { useEffect } from "react";
 
 export default function ActivityLogScreen({ navigation }) {
   const [entries, setEntries] = useState([]);
-  const { session } = useAuth();
+  const { session, refreshFlag } = useAuth();
+
+  const fetchEntries = async () => {
+    const { data, error } = await supabase
+      .from("activity_log")
+      .select("*")
+      .eq("user_id", session.user.id)
+      .order("date", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching logs:", error);
+    } else {
+      console.log("Session.user.id:", session.user.id);
+
+      setEntries(data);
+    }
+  };
 
   useEffect(() => {
-    const fetchEntries = async () => {
-      const { data, error } = await supabase
-        .from("activity_log")
-        .select("*")
-        .eq("user_id", session.user.id)
-        .order("inserted_at", { ascending: false });
-
-      if (error) {
-        console.error("Error fetching logs:", error);
-      } else {
-        setEntries(data);
-      }
-    };
     fetchEntries();
   }, []);
+
+  useEffect(() => {
+    fetchEntries();
+  }, [refreshFlag]); //whenever the refresh flag changes(ie when updated table then it updates log)
 
   return (
     <View className="flex-1 items-center justify-start bg-green-300 pt-28 px-4">
@@ -56,18 +64,33 @@ export default function ActivityLogScreen({ navigation }) {
           className="w-40 h-40"
         />
       </View>
-      {entries.map((item) => (
-        <View
-          key={item.id}
-          className="flex-row justify-between w-full bg-white px-4 py-2 mb-2 rounded-md"
-        >
-          <Text className="w-1/3 text-black">{item.food}</Text>
-          <Text className="w-1/3 text-black text-center">{item.calories}</Text>
-          <Text className="w-1/3 text-black text-right text-xs">
-            {new Date(item.inserted_at).toLocaleString()}
-          </Text>
-        </View>
-      ))}
+      <ScrollView>
+        {entries.map((item) => (
+          <View
+            key={item.id}
+            className="flex-row w-full bg-white px-2 py-2 mb-1 rounded-md"
+          >
+            <Text className="w-1/4 text-black">{item.food}</Text>
+            <Text className="w-1/4 text-black text-center">
+              {item.calories}
+            </Text>
+            <Text className="w-1/4 text-black text-right text-xs">
+              {new Date(item.date).toLocaleDateString()}
+            </Text>
+            <Text className="w-1/4 text-black text-right text-xs">
+              {item.time
+                ? new Date(`1970-01-01T${item.time}Z`).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  })
+                : ""}
+            </Text>
+          </View>
+        ))}
+      </ScrollView>
+
+      {/*Back Button*/}
       <TouchableOpacity
         onPress={() => navigation.navigate("Profile")}
         className="flex-row items-center justify-center w-full bg-green-600 rounded-xl mt-6 py-3"

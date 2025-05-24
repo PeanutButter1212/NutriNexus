@@ -1181,14 +1181,14 @@ ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeD
 
 ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/libtool -V
 
-ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator18.4.sdk -x assembler-with-cpp -c /dev/null
-
 ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator18.4.sdk -x assembler-with-cpp -c /dev/null
 
 ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
 
-Build description signature: 647839024e9db5215602f74a5b4cdad4
-Build description path: /Users/marcusng/Library/Developer/Xcode/DerivedData/NutriNexus-fwpzudgxfatjbsfrhgkwvewknkxj/Build/Intermediates.noindex/XCBuildData/647839024e9db5215602f74a5b4cdad4.xcbuilddata
+Build description signature: aa659988c667fc59fd073933018fa110
+Build description path: /Users/marcusng/Library/Developer/Xcode/DerivedData/NutriNexus-fwpzudgxfatjbsfrhgkwvewknkxj/Build/Intermediates.noindex/XCBuildData/aa659988c667fc59fd073933018fa110.xcbuilddata
 ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator18.4.sdk /Users/marcusng/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator18.4-22E235-71825a6d136aa4733edcbe86ece5525b.sdkstatcache
     cd /Users/marcusng/Documents/GitHub/NutriNuxus/ios
     /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator18.4.sdk -o /Users/marcusng/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator18.4-22E235-71825a6d136aa4733edcbe86ece5525b.sdkstatcache
@@ -5093,14 +5093,14 @@ PhaseScriptExecution [CP]\ Copy\ Pods\ Resources /Users/marcusng/Library/Develop
 Transfer starting: 447 files
 EXConstants.bundle/app.config
 
-sent 44107 bytes  received 42 bytes  1691532 bytes/sec
+sent 44107 bytes  received 42 bytes  1911212 bytes/sec
 total size is 6522901  speedup is 147.75
 
 ExtractAppIntentsMetadata (in target 'NutriNexus' from project 'NutriNexus')
     cd /Users/marcusng/Documents/GitHub/NutriNuxus/ios
     /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name NutriNexus --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator18.4.sdk --xcode-version 16E140 --platform-family iOS --deployment-target 15.1 --bundle-identifier nutrinuxus.club --output /Users/marcusng/Library/Developer/Xcode/DerivedData/NutriNexus-fwpzudgxfatjbsfrhgkwvewknkxj/Build/Products/Debug-iphonesimulator/NutriNexus.app --target-triple arm64-apple-ios15.1-simulator --binary-file /Users/marcusng/Library/Developer/Xcode/DerivedData/NutriNexus-fwpzudgxfatjbsfrhgkwvewknkxj/Build/Products/Debug-iphonesimulator/NutriNexus.app/NutriNexus --dependency-file /Users/marcusng/Library/Developer/Xcode/DerivedData/NutriNexus-fwpzudgxfatjbsfrhgkwvewknkxj/Build/Intermediates.noindex/NutriNexus.build/Debug-iphonesimulator/NutriNexus.build/Objects-normal/arm64/NutriNexus_dependency_info.dat --stringsdata-file /Users/marcusng/Library/Developer/Xcode/DerivedData/NutriNexus-fwpzudgxfatjbsfrhgkwvewknkxj/Build/Intermediates.noindex/NutriNexus.build/Debug-iphonesimulator/NutriNexus.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/marcusng/Library/Developer/Xcode/DerivedData/NutriNexus-fwpzudgxfatjbsfrhgkwvewknkxj/Build/Intermediates.noindex/NutriNexus.build/Debug-iphonesimulator/NutriNexus.build/Objects-normal/arm64/NutriNexus.SwiftFileList --metadata-file-list /Users/marcusng/Library/Developer/Xcode/DerivedData/NutriNexus-fwpzudgxfatjbsfrhgkwvewknkxj/Build/Intermediates.noindex/NutriNexus.build/Debug-iphonesimulator/NutriNexus.build/NutriNexus.DependencyMetadataFileList --static-metadata-file-list /Users/marcusng/Library/Developer/Xcode/DerivedData/NutriNexus-fwpzudgxfatjbsfrhgkwvewknkxj/Build/Intermediates.noindex/NutriNexus.build/Debug-iphonesimulator/NutriNexus.build/NutriNexus.DependencyStaticMetadataFileList --swift-const-vals-list /Users/marcusng/Library/Developer/Xcode/DerivedData/NutriNexus-fwpzudgxfatjbsfrhgkwvewknkxj/Build/Intermediates.noindex/NutriNexus.build/Debug-iphonesimulator/NutriNexus.build/Objects-normal/arm64/NutriNexus.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
-2025-05-22 22:59:35.081 appintentsmetadataprocessor[36223:2329326] Starting appintentsmetadataprocessor export
-2025-05-22 22:59:35.094 appintentsmetadataprocessor[36223:2329326] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+2025-05-24 17:43:51.923 appintentsmetadataprocessor[49178:2843921] Starting appintentsmetadataprocessor export
+2025-05-24 17:43:51.936 appintentsmetadataprocessor[49178:2843921] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
 
 ProcessInfoPlistFile /Users/marcusng/Library/Developer/Xcode/DerivedData/NutriNexus-fwpzudgxfatjbsfrhgkwvewknkxj/Build/Products/Debug-iphonesimulator/NutriNexus.app/Info.plist /Users/marcusng/Documents/GitHub/NutriNuxus/ios/NutriNexus/Info.plist (in target 'NutriNexus' from project 'NutriNexus')
     cd /Users/marcusng/Documents/GitHub/NutriNuxus/ios
