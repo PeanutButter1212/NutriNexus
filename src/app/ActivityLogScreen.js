@@ -30,8 +30,6 @@ export default function ActivityLogScreen({ navigation }) {
     if (error) {
       console.error("Error fetching logs:", error);
     } else {
-      console.log("Session.user.id:", session.user.id);
-
       setEntries(data);
     }
   };
@@ -63,6 +61,21 @@ export default function ActivityLogScreen({ navigation }) {
           source={require("../../assets/Folder.png")}
           className="w-40 h-40"
         />
+      </View>
+
+      {/*Headings*/}
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 40,
+          marginTop: 3,
+        }}
+      >
+        <Text className="text-xl font-semibold text-black">Food</Text>
+        <Text className="text-xl font-semibold text-black">Calories(kcal)</Text>
+        <Text className="text-xl font-semibold text-black">Date</Text>
+        <Text className="text-xl font-semibold text-black">Time </Text>
       </View>
       <ScrollView>
         {entries.map((item) => (

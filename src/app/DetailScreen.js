@@ -58,10 +58,23 @@ export default function DetailScreen({ route, navigation }) {
       }
         */
 
+      const updateData2 = {
+        weight: weight,
+        height: height,
+        age: age,
+        calories: calories,
+        gender: gender,
+      };
+
+      const { error: profilePageError } = await supabase
+        .from("profile_page")
+        .update(updateData2)
+        .eq("id", session.user.id);
+
       const { data: currentProfile, error: fetchError } = await supabase
         .from("profiles")
         .select("*")
-        .eq("id", userId)
+        .eq("id", session.user.id)
         .single();
 
       console.log(currentProfile);
