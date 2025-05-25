@@ -10,6 +10,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../lib/supabase";
 import { useState } from "react";
+import { updateCaloriesConsumed } from "./ProfileScreen";
 
 export default function ScannerScreen({ navigation }) {
   const { session } = useAuth();
@@ -49,7 +50,7 @@ export default function ScannerScreen({ navigation }) {
       setCalories("");
     }
 
-    await supabase.from("activity_log").insert(newEntry);
+    await updateCaloriesConsumed(session.user.id); //for the total calories
     triggerRefresh();
   };
   return (

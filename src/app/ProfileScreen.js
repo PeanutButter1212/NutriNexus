@@ -20,6 +20,41 @@ import * as d3 from "d3";
 import BarPath from "../components/BarPath";
 import XAxisText from "../components/XAxisText";
 import DropdownComponent from "../components/Dropper";
+import { supabase } from "../lib/supabase";
+
+{
+  /*Method to update total calories*/
+}
+export const updateCaloriesConsumed = async (userId) => {
+  console.log("updateCaloriesConsumed CALLED with:", userId);
+  try {
+    const { data, error } = await supabase
+      .from("activity_log")
+      .select("calories")
+      .eq("user_id", userId);
+
+    if (error) {
+      console.log("Error fetching entries:", error);
+      return;
+    }
+
+    let totalCalories = data.reduce((sum, entry) => sum + entry.calories, 0);
+
+    const { error: updateError } = await supabase
+      .from("profile_page")
+      .update({ calories_consumed: totalCalories })
+      .eq("id", userId);
+
+    if (updateError) {
+      console.log("Error updating calories:", updateError);
+      return;
+    }
+
+    console.log("Updated calories_consumed in profiles:", totalCalories);
+  } catch (err) {
+    console.log("Unexpected error:", err);
+  }
+};
 
 export default function Profile({ route, navigation }) {
   const { session, profile, authMethod } = route.params;
