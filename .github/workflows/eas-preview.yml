@@ -1,38 +1,32 @@
 name: Create previews on pull requests
 
-on:
-  pull_request:
-    types: [opened, synchronize]
+on: pull_request
 
 jobs:
   preview:
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       pull-requests: write # Allow comments on PRs
     steps:
-      - name: 🏗 Setup repo
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.head_ref }}
-
-      - name: 🏗 Setup Node
+      - name: Setup repo
+        uses: actions/checkout@v4
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
           cache: npm
 
-      - name: 🏗 Setup EAS
+      - name: Setup EAS
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: npm install
 
-      - name: 🚀 Create preview
+      - name: Create preview
         uses: expo/expo-github-action/preview@v8
         with:
-          # `github.event.pull_request.head.ref` is only available on `pull_request` triggers.
-          # Use your own, or keep the automatically infered branch name from `--auto`, when using different triggers.
           command: eas update --auto --branch ${{ github.event.pull_request.head.ref }}
