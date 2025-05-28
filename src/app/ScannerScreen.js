@@ -9,8 +9,9 @@ import {
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../lib/supabase";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { updateCaloriesConsumed } from "./ProfileScreen";
+import { fetchTotalCalories } from "./ProfileScreen";
 
 export default function ScannerScreen({ navigation }) {
   const { session } = useAuth();
@@ -51,6 +52,7 @@ export default function ScannerScreen({ navigation }) {
     }
 
     await updateCaloriesConsumed(session.user.id); //for the total calories
+    await fetchTotalCalories();
     triggerRefresh();
   };
   return (

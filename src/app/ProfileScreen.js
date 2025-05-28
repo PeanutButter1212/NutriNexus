@@ -23,7 +23,8 @@ import DropdownComponent from "../components/Dropper";
 import { supabase } from "../lib/supabase";
 
 {
-  /*Method to update total calories*/
+  /*Method to update total calories which is updated when submit is pressd 
+  in scanner*/
 }
 export const updateCaloriesConsumed = async (userId) => {
   console.log("updateCaloriesConsumed CALLED with:", userId);
@@ -57,6 +58,32 @@ export const updateCaloriesConsumed = async (userId) => {
 };
 
 export default function Profile({ route, navigation }) {
+  /* Calculating the calories consumed based on goal to update circular bar*/
+  const [totalCalories, setTotalCalories] = useState(0);
+  const [calorieGoal, setCaloriesGoal] = useState(100);
+
+  useEffect(() => {
+    const fetchTotalCalories = async () => {
+      const { data, error } = await supabase
+        .from("profile_page")
+        .select("calories_consumed, calorie_goal") // or whatever your goal column is called
+        .eq("id", session.user.id)
+        .single();
+
+      if (error) {
+        console.log("Error fetching profile:", error);
+        return;
+      }
+
+      setTotalCalories(data.calories_consumed || 0);
+      setCaloriesGoal(data.calorie_goal || 100);
+    };
+
+    fetchTotalCalories();
+  }, []);
+
+  const progressPercentage =
+    calorieGoal > 0 ? Math.min((totalCalories / calorieGoal) * 100, 100) : 0;
   const { session, profile, authMethod } = route.params;
 
   //const { logout } = useAuth();
@@ -140,7 +167,7 @@ export default function Profile({ route, navigation }) {
           <View style={{ flex: 0.9, paddingRight: 10 }} className="flex-1">
             <View className="mb-6">
               <CircularProgress
-                value={35}
+                value={Math.floor(progressPercentage)}
                 valueSuffix={"%"}
                 radius={50}
                 progressValueColor={"blue"}
