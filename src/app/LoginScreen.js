@@ -27,7 +27,9 @@ export default function LoginScreen({ navigation }) {
     try {
       const error = await signInWithUsername(username, password, navigation); 
       if (error) {
-        setErrorMessage("Invalid Login Credentials");  
+       
+        setErrorMessage(error)
+        //setErrorMessage("Invalid Login Credentials");  
       }
 
     } catch (err) {

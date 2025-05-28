@@ -18,13 +18,14 @@ export const AuthProvider = ({ children }) => {
   const triggerRefresh = () => {
     setRefreshFlag((prev) => !prev); // flip the flag
   };
+
   const [session, setSession] = useState(null); //added
   useEffect(() => {
     console.log("Configuring Google Sign-In");
     GoogleSignin.configure({
       scopes: ["https://www.googleapis.com/auth/userinfo.email"],
       webClientId:
-        "960982903167-8s5ucem4rqhqlbe68f1mml1ngf4b725h.apps.googleusercontent.com",
+        "960982903167-8s5ucem4rqhƒqlbe68f1mml1ngf4b725h.apps.googleusercontent.com",
       iosClientId:
         "960982903167-krh2o19m7vtkcrsao5kspkor8qlfu9af.apps.googleusercontent.com",
       offlineAccess: true,
@@ -86,7 +87,8 @@ export const AuthProvider = ({ children }) => {
         .select("email")
         .eq("username", username)
         .single();
-
+        
+      console.log(userRecords)
       if (userError) {
         console.error("Error fetching user data", userError.message);
       }
@@ -101,10 +103,12 @@ export const AuthProvider = ({ children }) => {
         if (error.message.includes("Email not confirmed")) {
           throw new Error("Please verify your email before logging in.");
         }
+        console.log(error);
         throw error;
       }
 
       const userId = data.user?.id;
+      console.log(userId)
 
       const { data: profileData, error: profileError } = await supabase
         .from("profiles")
@@ -113,6 +117,7 @@ export const AuthProvider = ({ children }) => {
         .limit(1);
 
       if (profileError) {
+        console.log(profileError)
         throw profileError;
       }
 
@@ -146,17 +151,22 @@ export const AuthProvider = ({ children }) => {
       });
 
       if (error) {
+        console.log(error);
         throw new Error("OTP verification failed. Please try again.");
       }
 
       const session = data;
       const userId = data.user?.id;
 
+      console.log(userId)
+
       const { data: profileData, error: profileError } = await supabase
         .from("profiles")
         .select("*")
         .eq("id", userId)
         .single();
+
+      console.log(profileData); 
 
       if (profileError) {
         throw profileError;
