@@ -14,8 +14,9 @@ jobs:
       - name: 🏗 Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 18.x
-          cache: yarn
+          cache-dependency-path: package-lock.json
+          node-version: 22
+          cache: "npm"
 
       - name: 🏗 Setup EAS
         uses: expo/expo-github-action@v8
@@ -24,7 +25,7 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: 📦 Install dependencies
-        run: yarn install
+        run: npm install
 
       - name: 🚀 Create update
         run: eas update --auto --non-interactive
