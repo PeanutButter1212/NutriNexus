@@ -10,25 +10,25 @@ jobs:
     permissions:
       pull-requests: write
     steps:
-      - name: 🏗 Setup repo
+      - name: Setup repo
         uses: actions/checkout@v3
 
-      - name: 🏗 Setup Node
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
           cache: npm
 
-      - name: 🏗 Setup EAS
+      - name: Setup EAS
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: npm install
 
-      - name: 🚀 Create preview
+      - name: Create preview
         uses: expo/expo-github-action/preview@v8
         with:
           command: eas update --auto --branch ${{ github.event.pull_request.head.ref }}
