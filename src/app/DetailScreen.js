@@ -16,8 +16,8 @@ import { useRoute } from "@react-navigation/native";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
 
-export default function DetailScreen({ route, navigation }) {
-  const { session, profile } = route.params;
+export default function DetailScreen({ navigation }) {
+  const { session, profile } = useAuth();
   const [weight, setWeight] = useState(80);
   const [height, setHeight] = useState(150);
   const [age, setAge] = useState(70);

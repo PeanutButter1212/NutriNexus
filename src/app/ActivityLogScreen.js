@@ -105,7 +105,7 @@ export default function ActivityLogScreen({ navigation }) {
 
       {/*Back Button*/}
       <TouchableOpacity
-        onPress={() => navigation.navigate("Profile")}
+        onPress={() => navigation.navigate("MainTabs")}
         className="flex-row items-center justify-center w-full bg-green-600 rounded-xl mt-6 py-3"
       >
         <Text className="text-white text-base font-medium font-bold">Back</Text>

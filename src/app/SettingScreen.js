@@ -30,7 +30,7 @@ export default function SettingScreen({ route, navigation }) {
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate("Profile")}
+        onPress={() => navigation.navigate("MainTabs")}
         className="items-center justify-center bg-red-500 w-3/4 rounded-xl mt-6
         py-3 mt-3"
       >

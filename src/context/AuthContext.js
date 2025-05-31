@@ -13,13 +13,15 @@ export const AuthProvider = ({ children }) => {
   {
     /*RefreshFlag for updating of actviitylog*/
   }
+  const [session, setSession] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const [authMethod, setAuthMethod] = useState(null);
   const [refreshFlag, setRefreshFlag] = useState(false);
 
   const triggerRefresh = () => {
     setRefreshFlag((prev) => !prev); // flip the flag
   };
 
-  const [session, setSession] = useState(null); //added
   useEffect(() => {
     console.log("Configuring Google Sign-In");
     GoogleSignin.configure({
@@ -176,9 +178,15 @@ export const AuthProvider = ({ children }) => {
       const authMethod = "email";
 
       if (profile.is_first_time) {
+        setSession(session);
+        setProfile(profile);
+        setAuthMethod(authMethod);
         navigation.navigate("Detail", { session, profile, authMethod });
       } else {
-        navigation.navigate("Profile", { session, profile, authMethod });
+        setSession(session);
+        setProfile(profile);
+        setAuthMethod(authMethod);
+        navigation.navigate("MainTabs");
       }
     } catch (err) {
       throw err;
@@ -236,12 +244,18 @@ export const AuthProvider = ({ children }) => {
 
         const profile = profileData2;
 
-        const authMethod = "google";
+
 
         if (profile.is_first_time) {
-          navigation.navigate("Detail", { session, profile, authMethod });
+          setSession(session);
+          setProfile(profile);
+          setAuthMethod(authMethod);
+          navigation.navigate("Detail");
         } else {
-          navigation.navigate("Profile", { session, profile, authMethod });
+          setSession(session);
+          setProfile(profile);
+          setAuthMethod("email");
+          navigation.navigate("MainTabs");
         }
         return data.user;
       } else {
@@ -269,7 +283,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const value = {
-    session, //added
+    session, 
+    profile,
+    authMethod,
     signUp,
     signInWithUsername,
     verifyOtp,

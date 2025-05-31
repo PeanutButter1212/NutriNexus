@@ -11,7 +11,7 @@ import {
   useWindowDimensions,
   Settings,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useAuth } from "../context/AuthContext";
 import { LinearGradient } from "expo-linear-gradient";
 import CircularProgress from "react-native-circular-progress-indicator";
@@ -21,7 +21,6 @@ import BarPath from "../components/BarPath";
 import XAxisText from "../components/XAxisText";
 import DropdownComponent from "../components/Dropper";
 import { supabase } from "../lib/supabase";
-
 {
   /*Method to update total calories which is updated when submit is pressd 
   in scanner*/
@@ -57,7 +56,7 @@ export const updateCaloriesConsumed = async (userId) => {
   }
 };
 
-export default function Profile({ route, navigation }) {
+export default function Profile({navigation }) {
   /* Calculating the calories consumed based on goal to update circular bar*/
   const [totalCalories, setTotalCalories] = useState(0);
   const [calorieGoal, setCaloriesGoal] = useState(100);
@@ -84,9 +83,8 @@ export default function Profile({ route, navigation }) {
 
   const progressPercentage =
     calorieGoal > 0 ? Math.min((totalCalories / calorieGoal) * 100, 100) : 0;
-  const { session, profile, authMethod } = route.params;
+  const { session, profile, authMethod } = useAuth()
 
-  //const { logout } = useAuth();
 
   const { width } = useWindowDimensions();
 
@@ -158,14 +156,14 @@ export default function Profile({ route, navigation }) {
         }}
       >
         <Text
-          className="text-3xl font-bold text-white mt-6 mb-8"
+          className="text-3xl font-bold text-white mt-6 mb-5"
           style={{ textAlign: "center" }}
         >
           Welcome Back, {profile ? profile.username : "User"}!
         </Text>
-        <View className="flex-row items-center">
-          <View style={{ flex: 0.9, paddingRight: 10 }} className="flex-1">
-            <View className="mb-6">
+        <View className="flex-row items-start" >
+          <View style={{ flex: 0.9, paddingRight: 10}} className="flex-1">
+            <View className="mb-3">
               <CircularProgress
                 value={Math.floor(progressPercentage)}
                 valueSuffix={"%"}
@@ -182,7 +180,7 @@ export default function Profile({ route, navigation }) {
             {/* settings button */}
             <TouchableOpacity
               onPress={() => navigation.navigate("Setting", { authMethod })}
-              className="bg-blue-700 mb-5 rounded-md"
+              className="bg-blue-700 mb-5 rounded-md mb-3"
             >
               <Text className="text-center text-white py-3 w-auto font-bold">
                 Settings
@@ -267,8 +265,8 @@ export default function Profile({ route, navigation }) {
           ))}
         </Canvas>
       </View>
-
-      {/*Bottom Bar */}
+ 
+      {/*Bottom Bar 
 
       <View style={{ flexDirection: "row", marginTop: 24 }}>
         <TouchableOpacity
@@ -296,6 +294,8 @@ export default function Profile({ route, navigation }) {
           <Text className={"text-base font-medium text-black"}>Socials</Text>
         </TouchableOpacity>
       </View>
+      */}
+
     </ScrollView>
   );
   /*
