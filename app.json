@@ -13,19 +13,28 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "plugins": [
-      [
-        "@react-native-google-signin/google-signin",
-        {
-          "iosUrlScheme": "com.googleusercontent.apps.960982903167-krh2o19m7vtkcrsao5kspkor8qlfu9af"
-        }
-      ]
+   "plugins": [
+    [
+      "@react-native-google-signin/google-signin",
+      {
+        "iosUrlScheme": "com.googleusercontent.apps.960982903167-krh2019m7vtkcrsao5kspkqr8qlfu9af"
+      }
     ],
+    [
+      "expo-camera",
+      {
+        "cameraPermission": "Allow ${PRODUCT_NAME} to access your camera",
+        "microphonePermission": "Allow ${PRODUCT_NAME} to access your microphone",
+        "recordAudioAndroid": true
+      }
+    ]
+  ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "nutrinuxus.club",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSCameraUsageDescription": "This app uses the camera to scan QR codes and take pictures."
       }
     },
     "android": {
