@@ -12,16 +12,18 @@ import { supabase } from "../lib/supabase";
 import { useState, useRef } from "react";
 import { updateCaloriesConsumed } from "./ProfileScreen";
 import { fetchTotalCalories } from "./ProfileScreen";
-import { CameraView, useCameraPermissions } from 'expo-camera';
-import { AntDesign } from '@expo/vector-icons';
+import { CameraView, useCameraPermissions } from "expo-camera";
+import { AntDesign } from "@expo/vector-icons";
+import { ActivityIndicator } from "react-native";
 
 export default function ScannerScreen({ navigation }) {
-  const [facing, setFacing] = useState('back');
+  const [facing, setFacing] = useState("back");
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef(null);
   const { session } = useAuth();
   const [food, setFood] = useState("");
   const [calories, setCalories] = useState("0");
+  const [loading, setLoading] = useState(false);
 
   if (!permission) {
     return <View />;
@@ -37,37 +39,74 @@ export default function ScannerScreen({ navigation }) {
       </View>
     );
   }
-
   function toggleCameraFacing() {
-    setFacing(current => (current === 'back' ? 'front' : 'back'));
+    setFacing((current) => (current === "back" ? "front" : "back"));
   }
 
   const handleTakePhoto = async () => {
-    // Process photo with ML model (simulated for now)
+    // Process photo with ML model
+    setLoading(true);
     if (cameraRef.current) {
       const options = {
         quality: 1,
         base64: true,
-        exif: false, 
+        exif: false,
       };
       const takenPhoto = await cameraRef.current.takePictureAsync(options);
       console.log("Photo taken for ML processing:", takenPhoto.uri);
-      //fpr marcus: simulated, can remove once u successfully integrated - eerson) 
-      setFood("Fish Noodle");
-      setCalories("450");
-      
-      Alert.alert("Success", "Photo processed! Food identified.");
+
+      //handling of the image type being uploaded
+      let filename = takenPhoto.uri.split("/").pop();
+      let match = /\.(\w+)$/.exec(filename);
+      let type = match ? `image/${match[1]}` : `image`;
+
+      let formData = new FormData();
+      formData.append("file", {
+        uri: takenPhoto.uri,
+        name: filename,
+        type: type,
+      });
+
+      try {
+        let response = await fetch(
+          //render backend we used
+          "https://nutrinexus-image-backend.onrender.com/predict",
+          {
+            method: "POST",
+            body: formData,
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        let json = await response.json();
+        console.log("Prediction:", json);
+
+        if (json.detections && json.detections.length > 0) {
+          setFood(json.detections[0]);
+          setCalories("450");
+          Alert.alert("Success", `Detected: ${json.detections.join(", ")}`);
+        } else {
+          Alert.alert("No detections found!");
+        }
+      } catch (error) {
+        console.error(error);
+        Alert.alert("Error", "Failed to process image");
+      } finally {
+        setLoading(false); // Stop loading
+      }
     }
   };
 
   const handleSubmit = async () => {
     console.log("Submit pressed", { food, calories });
-    
+
     if (!food || !calories || calories === "0") {
       Alert.alert("Please take a photo first to identify the food");
       return;
     }
-    
+
     if (!session || !session.user) {
       console.error("Not authenticated");
       Alert.alert("Error", "You must be logged in.");
@@ -79,7 +118,7 @@ export default function ScannerScreen({ navigation }) {
       calories: parseInt(calories),
       user_id: session.user.id,
     });
-    
+
     const { error } = await supabase.from("activity_log").insert([
       {
         food,
@@ -104,24 +143,42 @@ export default function ScannerScreen({ navigation }) {
   return (
     <View className="flex-1 bg-gray-50">
       {/* Camera Section - Square with margins */}
-      <View className="flex-1 justify-center items-center px-8 pt-20">
-        <View className="w-full aspect-square bg-black rounded-2xl overflow-hidden">
-          <CameraView className="flex-1" facing={facing} ref={cameraRef}>
-            {/* CHANGED: Only flip camera button inside camera view - moved to top-right */}
-            <View className="absolute top-4 right-4">
-              <TouchableOpacity 
-                className="bg-black/60 p-3 rounded-full"
-                onPress={toggleCameraFacing}
-              >
-                <AntDesign name='retweet' size={20} color='white' />
-              </TouchableOpacity>
-            </View>
-          </CameraView>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          paddingHorizontal: 8,
+          paddingTop: 20,
+        }}
+      >
+        <View
+          style={{
+            width: "100%",
+            aspectRatio: 1,
+            backgroundColor: "black",
+            borderRadius: 16,
+            overflow: "hidden",
+            position: "relative",
+          }}
+        >
+          {/* Camera */}
+          <CameraView style={{ flex: 1 }} type={facing} ref={cameraRef} />
+
+          {/* Overlay button */}
+          <View className="absolute top-4 right-4 z-10">
+            <TouchableOpacity
+              className="bg-black/60 p-3 rounded-full"
+              onPress={toggleCameraFacing}
+            >
+              <AntDesign name="retweet" size={20} color="white" />
+            </TouchableOpacity>
+          </View>
         </View>
-        
-        {/* NEW: Upload Button - Outside camera, between camera and Scanner title */}
+
+        {/* Upload Button  */}
         <View className="items-center mt-6 mb-4">
-          <TouchableOpacity 
+          <TouchableOpacity
             className="w-32 bg-blue-600 rounded-xl py-4 items-center"
             onPress={handleTakePhoto}
           >
@@ -129,7 +186,6 @@ export default function ScannerScreen({ navigation }) {
           </TouchableOpacity>
         </View>
       </View>
-
 
       <View className="flex-1 bg-white">
         <View className="px-5 flex-1">
@@ -143,7 +199,9 @@ export default function ScannerScreen({ navigation }) {
           </View>
 
           <View className="mb-6">
-            <Text className="text-base font-bold text-black mb-2">Calories</Text>
+            <Text className="text-base font-bold text-black mb-2">
+              Calories
+            </Text>
             <View className="border border-gray-300 rounded-xl px-4 py-3 bg-gray-100">
               <Text className="text-base text-gray-700">{calories} kcal</Text>
             </View>
@@ -151,7 +209,7 @@ export default function ScannerScreen({ navigation }) {
 
           {/* Submit Button */}
           <View className="items-center">
-            <TouchableOpacity 
+            <TouchableOpacity
               className="w-32 bg-green-600 rounded-xl py-4 items-center"
               onPress={handleSubmit}
             >
@@ -160,6 +218,19 @@ export default function ScannerScreen({ navigation }) {
           </View>
         </View>
       </View>
+      {/* loading circle for upload*/}
+      {loading && (
+        <View
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: [{ translateX: -25 }, { translateY: -25 }],
+          }}
+        >
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      )}
     </View>
   );
 }
