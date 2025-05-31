@@ -55,7 +55,7 @@ export default function App() {
   return (
     <AuthProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={"Scanner"}>
+        <Stack.Navigator initialRouteName={"Login"}>
           <Stack.Screen
             name="Login"
             component={LoginScreen}

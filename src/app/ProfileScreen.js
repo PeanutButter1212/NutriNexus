@@ -147,7 +147,7 @@ export default function Profile({ route, navigation }) {
   */
 
   return (
-    <View className="flex-1 bg-white">
+    <ScrollView className="flex-1 bg-white">
       <LinearGradient
         colors={["#2E8B57", "#90EE90", "#006400"]}
         style={{
@@ -296,7 +296,7 @@ export default function Profile({ route, navigation }) {
           <Text className={"text-base font-medium text-black"}>Socials</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
   /*
      (   

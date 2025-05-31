@@ -84,8 +84,21 @@ export default function ScannerScreen({ navigation }) {
         console.log("Prediction:", json);
 
         if (json.detections && json.detections.length > 0) {
-          setFood(json.detections[0]);
-          setCalories("450");
+          const detectedFood = json.detections[0];
+          setFood(detectedFood);
+          let { data, error } = await supabase
+            .from("food")
+            .select("calories")
+            .eq("name", detectedFood)
+            .single();
+
+          if (error || !data) {
+            console.error("Error fetching calories:", error);
+            setCalories("Unknown");
+          } else {
+            setCalories(data.calories.toString());
+          }
+
           Alert.alert("Success", `Detected: ${json.detections.join(", ")}`);
         } else {
           Alert.alert("No detections found!");
@@ -94,7 +107,7 @@ export default function ScannerScreen({ navigation }) {
         console.error(error);
         Alert.alert("Error", "Failed to process image");
       } finally {
-        setLoading(false); // Stop loading
+        setLoading(false);
       }
     }
   };
@@ -149,7 +162,7 @@ export default function ScannerScreen({ navigation }) {
           justifyContent: "center",
           alignItems: "center",
           paddingHorizontal: 8,
-          paddingTop: 20,
+          paddingTop: 70,
         }}
       >
         <View
@@ -187,7 +200,7 @@ export default function ScannerScreen({ navigation }) {
         </View>
       </View>
 
-      <View className="flex-1 bg-white">
+      <View className="flex-1 bg-white mt-20">
         <View className="px-5 flex-1">
           <View className="mb-4">
             <Text className="text-base font-bold text-black mb-2">Food</Text>
