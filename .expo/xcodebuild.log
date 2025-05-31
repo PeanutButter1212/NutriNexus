@@ -3267,33 +3267,33 @@ PhaseScriptExecution [CP-User]\ [RN]Check\ FBReactNativeSpec /Users/emersonchua/
     /bin/sh -c /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/React-RCTFBReactNativeSpec.build/Script-46EB2E0002F3B0.sh
 Checking whether Codegen has run...
 
-ProcessInfoPlistFile /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/expo-dev-launcher/EXDevLauncher.bundle/Info.plist /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/expo-dev-launcher/ResourceBundle-EXDevLauncher-expo-dev-launcher-Info.plist (in target 'expo-dev-launcher-EXDevLauncher' from project 'Pods')
-    cd /Users/emersonchua/Documents/NutriNuxus/ios/Pods
-    builtin-infoPlistUtility /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/expo-dev-launcher/ResourceBundle-EXDevLauncher-expo-dev-launcher-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphonesimulator -additionalcontentfile /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/expo-dev-launcher-EXDevLauncher.build/EXDevLauncherErrorView-SBPartialInfo.plist -o /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/expo-dev-launcher/EXDevLauncher.bundle/Info.plist
-
 ProcessInfoPlistFile /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/expo-dev-menu/EXDevMenu.bundle/Info.plist /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/expo-dev-menu/ResourceBundle-EXDevMenu-expo-dev-menu-Info.plist (in target 'expo-dev-menu-EXDevMenu' from project 'Pods')
     cd /Users/emersonchua/Documents/NutriNuxus/ios/Pods
     builtin-infoPlistUtility /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/expo-dev-menu/ResourceBundle-EXDevMenu-expo-dev-menu-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphonesimulator -o /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/expo-dev-menu/EXDevMenu.bundle/Info.plist
 
-ProcessInfoPlistFile /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/RNCAsyncStorage/RNCAsyncStorage_resources.bundle/Info.plist /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/RNCAsyncStorage/ResourceBundle-RNCAsyncStorage_resources-RNCAsyncStorage-Info.plist (in target 'RNCAsyncStorage-RNCAsyncStorage_resources' from project 'Pods')
+ProcessInfoPlistFile /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/expo-dev-launcher/EXDevLauncher.bundle/Info.plist /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/expo-dev-launcher/ResourceBundle-EXDevLauncher-expo-dev-launcher-Info.plist (in target 'expo-dev-launcher-EXDevLauncher' from project 'Pods')
     cd /Users/emersonchua/Documents/NutriNuxus/ios/Pods
-    builtin-infoPlistUtility /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/RNCAsyncStorage/ResourceBundle-RNCAsyncStorage_resources-RNCAsyncStorage-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphonesimulator -o /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/RNCAsyncStorage/RNCAsyncStorage_resources.bundle/Info.plist
-
-ProcessInfoPlistFile /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/GTMSessionFetcher/GTMSessionFetcher_Core_Privacy.bundle/Info.plist /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/GTMSessionFetcher/ResourceBundle-GTMSessionFetcher_Core_Privacy-GTMSessionFetcher-Info.plist (in target 'GTMSessionFetcher-GTMSessionFetcher_Core_Privacy' from project 'Pods')
-    cd /Users/emersonchua/Documents/NutriNuxus/ios/Pods
-    builtin-infoPlistUtility /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/GTMSessionFetcher/ResourceBundle-GTMSessionFetcher_Core_Privacy-GTMSessionFetcher-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphonesimulator -o /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/GTMSessionFetcher/GTMSessionFetcher_Core_Privacy.bundle/Info.plist
-
-ProcessInfoPlistFile /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/RNSVG/RNSVGFilters.bundle/Info.plist /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/RNSVG/ResourceBundle-RNSVGFilters-RNSVG-Info.plist (in target 'RNSVG-RNSVGFilters' from project 'Pods')
-    cd /Users/emersonchua/Documents/NutriNuxus/ios/Pods
-    builtin-infoPlistUtility /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/RNSVG/ResourceBundle-RNSVGFilters-RNSVG-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphonesimulator -o /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/RNSVG/RNSVGFilters.bundle/Info.plist
+    builtin-infoPlistUtility /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/expo-dev-launcher/ResourceBundle-EXDevLauncher-expo-dev-launcher-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphonesimulator -additionalcontentfile /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/expo-dev-launcher-EXDevLauncher.build/EXDevLauncherErrorView-SBPartialInfo.plist -o /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/expo-dev-launcher/EXDevLauncher.bundle/Info.plist
 
 ProcessInfoPlistFile /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/ExpoFileSystem/ExpoFileSystem_privacy.bundle/Info.plist /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/ExpoFileSystem/ResourceBundle-ExpoFileSystem_privacy-ExpoFileSystem-Info.plist (in target 'ExpoFileSystem-ExpoFileSystem_privacy' from project 'Pods')
     cd /Users/emersonchua/Documents/NutriNuxus/ios/Pods
     builtin-infoPlistUtility /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/ExpoFileSystem/ResourceBundle-ExpoFileSystem_privacy-ExpoFileSystem-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphonesimulator -o /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/ExpoFileSystem/ExpoFileSystem_privacy.bundle/Info.plist
 
+ProcessInfoPlistFile /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/RNSVG/RNSVGFilters.bundle/Info.plist /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/RNSVG/ResourceBundle-RNSVGFilters-RNSVG-Info.plist (in target 'RNSVG-RNSVGFilters' from project 'Pods')
+    cd /Users/emersonchua/Documents/NutriNuxus/ios/Pods
+    builtin-infoPlistUtility /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/RNSVG/ResourceBundle-RNSVGFilters-RNSVG-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphonesimulator -o /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/RNSVG/RNSVGFilters.bundle/Info.plist
+
+ProcessInfoPlistFile /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/RNCAsyncStorage/RNCAsyncStorage_resources.bundle/Info.plist /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/RNCAsyncStorage/ResourceBundle-RNCAsyncStorage_resources-RNCAsyncStorage-Info.plist (in target 'RNCAsyncStorage-RNCAsyncStorage_resources' from project 'Pods')
+    cd /Users/emersonchua/Documents/NutriNuxus/ios/Pods
+    builtin-infoPlistUtility /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/RNCAsyncStorage/ResourceBundle-RNCAsyncStorage_resources-RNCAsyncStorage-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphonesimulator -o /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/RNCAsyncStorage/RNCAsyncStorage_resources.bundle/Info.plist
+
 ProcessInfoPlistFile /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/AppAuth/AppAuthCore_Privacy.bundle/Info.plist /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/AppAuth/ResourceBundle-AppAuthCore_Privacy-AppAuth-Info.plist (in target 'AppAuth-AppAuthCore_Privacy' from project 'Pods')
     cd /Users/emersonchua/Documents/NutriNuxus/ios/Pods
     builtin-infoPlistUtility /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/AppAuth/ResourceBundle-AppAuthCore_Privacy-AppAuth-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphonesimulator -o /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/AppAuth/AppAuthCore_Privacy.bundle/Info.plist
+
+ProcessInfoPlistFile /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/GTMSessionFetcher/GTMSessionFetcher_Core_Privacy.bundle/Info.plist /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/GTMSessionFetcher/ResourceBundle-GTMSessionFetcher_Core_Privacy-GTMSessionFetcher-Info.plist (in target 'GTMSessionFetcher-GTMSessionFetcher_Core_Privacy' from project 'Pods')
+    cd /Users/emersonchua/Documents/NutriNuxus/ios/Pods
+    builtin-infoPlistUtility /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/GTMSessionFetcher/ResourceBundle-GTMSessionFetcher_Core_Privacy-GTMSessionFetcher-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphonesimulator -o /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/GTMSessionFetcher/GTMSessionFetcher_Core_Privacy.bundle/Info.plist
 
 ProcessInfoPlistFile /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/EXConstants/EXConstants.bundle/Info.plist /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/EXConstants/ResourceBundle-EXConstants-EXConstants-Info.plist (in target 'EXConstants-EXConstants' from project 'Pods')
     cd /Users/emersonchua/Documents/NutriNuxus/ios/Pods
@@ -4435,15 +4435,14 @@ PrecompileSwiftBridgingHeader normal arm64 (in target 'NutriNexus' from project 
 
 SwiftDriverJobDiscovery normal arm64 Compiling bridging header (in target 'NutriNexus' from project 'NutriNexus')
 
-SwiftEmitModule normal arm64 Emitting\ module\ for\ NutriNexus (in target 'NutriNexus' from project 'NutriNexus')
-
-EmitSwiftModule normal arm64 (in target 'NutriNexus' from project 'NutriNexus')
-    cd /Users/emersonchua/Documents/NutriNuxus/ios
-    
-
 SwiftCompile normal arm64 Compiling\ ExpoModulesProvider.swift /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/Pods-NutriNexus/ExpoModulesProvider.swift (in target 'NutriNexus' from project 'NutriNexus')
 
 SwiftCompile normal arm64 /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Target\ Support\ Files/Pods-NutriNexus/ExpoModulesProvider.swift (in target 'NutriNexus' from project 'NutriNexus')
+    cd /Users/emersonchua/Documents/NutriNuxus/ios
+    
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ NutriNexus (in target 'NutriNexus' from project 'NutriNexus')
+EmitSwiftModule normal arm64 (in target 'NutriNexus' from project 'NutriNexus')
     cd /Users/emersonchua/Documents/NutriNuxus/ios
     
 
@@ -5077,7 +5076,7 @@ PhaseScriptExecution [CP]\ Copy\ Pods\ Resources /Users/emersonchua/Library/Deve
 Transfer starting: 447 files
 EXConstants.bundle/app.config
 
-sent 44466 bytes  received 42 bytes  2013936 bytes/sec
+sent 44466 bytes  received 42 bytes  1846804 bytes/sec
 total size is 6523257  speedup is 146.56
 
 CopySwiftLibs /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/NutriNexus.app (in target 'NutriNexus' from project 'NutriNexus')
@@ -5087,8 +5086,8 @@ CopySwiftLibs /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-
 ExtractAppIntentsMetadata (in target 'NutriNexus' from project 'NutriNexus')
     cd /Users/emersonchua/Documents/NutriNuxus/ios
     /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name NutriNexus --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator18.4.sdk --xcode-version 16E140 --platform-family iOS --deployment-target 15.1 --bundle-identifier nutrinuxus.club --output /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/NutriNexus.app --target-triple arm64-apple-ios15.1-simulator --binary-file /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/NutriNexus.app/NutriNexus --dependency-file /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Intermediates.noindex/NutriNexus.build/Debug-iphonesimulator/NutriNexus.build/Objects-normal/arm64/NutriNexus_dependency_info.dat --stringsdata-file /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Intermediates.noindex/NutriNexus.build/Debug-iphonesimulator/NutriNexus.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Intermediates.noindex/NutriNexus.build/Debug-iphonesimulator/NutriNexus.build/Objects-normal/arm64/NutriNexus.SwiftFileList --metadata-file-list /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Intermediates.noindex/NutriNexus.build/Debug-iphonesimulator/NutriNexus.build/NutriNexus.DependencyMetadataFileList --static-metadata-file-list /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Intermediates.noindex/NutriNexus.build/Debug-iphonesimulator/NutriNexus.build/NutriNexus.DependencyStaticMetadataFileList --swift-const-vals-list /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Intermediates.noindex/NutriNexus.build/Debug-iphonesimulator/NutriNexus.build/Objects-normal/arm64/NutriNexus.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
-2025-05-31 16:49:09.002 appintentsmetadataprocessor[20482:255974] Starting appintentsmetadataprocessor export
-2025-05-31 16:49:09.013 appintentsmetadataprocessor[20482:255974] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+2025-05-31 17:39:26.857 appintentsmetadataprocessor[30220:350360] Starting appintentsmetadataprocessor export
+2025-05-31 17:39:26.881 appintentsmetadataprocessor[30220:350360] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
 
 CodeSign /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/NutriNexus.app/NutriNexus.debug.dylib (in target 'NutriNexus' from project 'NutriNexus')
     cd /Users/emersonchua/Documents/NutriNuxus/ios
@@ -5118,8 +5117,8 @@ Validate /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehp
     cd /Users/emersonchua/Documents/NutriNuxus/ios
     builtin-validationUtility /Users/emersonchua/Library/Developer/Xcode/DerivedData/NutriNexus-gqehphvdwjamxxaiibrmbhfnqkql/Build/Products/Debug-iphonesimulator/NutriNexus.app -infoplist-subpath Info.plist
 
-/Users/emersonchua/Documents/NutriNuxus/ios/Pods/Pods.xcodeproj: warning: The iOS Simulator deployment target 'IPHONEOS_DEPLOYMENT_TARGET' is set to 10.0, but the range of supported deployment target versions is 12.0 to 18.4.99. (in target 'GTMSessionFetcher-GTMSessionFetcher_Core_Privacy' from project 'Pods')
 /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Pods.xcodeproj: warning: The iOS Simulator deployment target 'IPHONEOS_DEPLOYMENT_TARGET' is set to 9.0, but the range of supported deployment target versions is 12.0 to 18.4.99. (in target 'AppAuth-AppAuthCore_Privacy' from project 'Pods')
+/Users/emersonchua/Documents/NutriNuxus/ios/Pods/Pods.xcodeproj: warning: The iOS Simulator deployment target 'IPHONEOS_DEPLOYMENT_TARGET' is set to 10.0, but the range of supported deployment target versions is 12.0 to 18.4.99. (in target 'GTMSessionFetcher-GTMSessionFetcher_Core_Privacy' from project 'Pods')
 /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Pods.xcodeproj: warning: The iOS Simulator deployment target 'IPHONEOS_DEPLOYMENT_TARGET' is set to 10.0, but the range of supported deployment target versions is 12.0 to 18.4.99. (in target 'GTMAppAuth-GTMAppAuth_Privacy' from project 'Pods')
 /Users/emersonchua/Documents/NutriNuxus/ios/Pods/Pods.xcodeproj: warning: The iOS Simulator deployment target 'IPHONEOS_DEPLOYMENT_TARGET' is set to 10.0, but the range of supported deployment target versions is 12.0 to 18.4.99. (in target 'GoogleSignIn-GoogleSignIn' from project 'Pods')
 ** BUILD SUCCEEDED **
