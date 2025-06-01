@@ -121,7 +121,7 @@ Satay, Carrot Cake
 
 ### 4. Once Simualtor is opened, in the top menu click File -> Open Simulator and select any IOS Phone
 
-### 5. Drag the NutriNexus.app into your IOS Phone Simulator (do not try to double click it, you will get an error claiming there are no sources that can open the .app file\
+### 5. Drag the NutriNexus.app into your IOS Phone Simulator (do not try to double click it, you will get an error claiming there are no sources that can open the .app file)
 
 ### 6. You should see this screen below on the simulator
 ![photo_6188278396241429893_y](https://github.com/user-attachments/assets/bad832d1-6fab-4d02-92d4-746d53529006)
