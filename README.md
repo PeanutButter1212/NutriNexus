@@ -45,8 +45,8 @@ Nutrinexus is a mobile application that enables people form all walks of live to
 ---
 
 ## Proof of Concept
-
----
+[
+](https://drive.google.com/file/d/1NxtbCZIQxFHr3OOFMGIKqQv9NWYqkovW/view)---
 
 ## Moltivation
 We read in a CNA article that Singaporean workers opt for snacks over proper meals due to high stress work environments. This would mean consumption of food like confectionery like chocolates, sweets and savoury snacks like nuts and popcorn,  sacrificing on intake of crucial nutrients like proteins and carbohydrates. Diving deep into statistics, we also learnt from a 2022 Health promotion board survey that nine in ten people in Singapore are consuming salt above the recommended level, as well as the rate of hypertension doubling since 2010. 
@@ -100,39 +100,24 @@ Satay, Carrot Cake
 
 ---
 
-## How to run the App (Dev Build) 
+## How to run the App  
 
 ### Prerequisites
 - Node.js (v18 or later)
 - npm
 - Expo CLI
 
-Install Expo globally if you haven’t already:
-``` zsh 
-npm install -g expo-cli
-```
+## IOS Simulator (For Mac Users with Xcode Simulator installed) 
 
-### 1. Clone the Repository 
-``` zsh
-git clone http://github.com/PeanutButter1212/NutriNexus.git
-```
-``` zsh
-cd NutriNexus
-```
+### 1. CLick on the drive below to download the tar.gz file 
+[](https://drive.google.com/drive/folders/1Et3oGfQwABeEHUMElwlFazrBXNcf0vgV)
+### 2. Double-click the .tar.gz file to extract NutriNexus.app 
+<img width="138" alt="Screenshot 2025-06-01 at 11 50 34 PM" src="https://github.com/user-attachments/assets/c273fc8e-531d-4a4d-a456-5ff9a22ca213" />
+### 3. Drage the NutriNexus.app into your Xcode IOS Simulator 
 
-### 2. Install Dependencies 
-``` zsh
-npm install
-```
+## Android Dev Build (For Android Devices only) 
 
-### 3. Start the Development Server
-#### (Mac only) open IOS simulator, refer below for instructions on how to run on android 
-```zsh
-npm run ios
-```
 
-## Alternative Way 
-Alternatively, you can download the Android Development Build on your local Android Device or the IOS development build on your computer by scanning the QR codes on our poster 
 
 # How to use NutriNexus
 
