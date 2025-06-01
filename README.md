@@ -2,7 +2,7 @@
 
 
 
-##How to run the App (Dev Build) 
+## How to run the App (Dev Build) 
 
 ### Prerequisites
 - Node.js (v18 or later)
