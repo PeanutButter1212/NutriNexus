@@ -1,3 +1,10 @@
 --- xcodebuild: WARNING: Using the first of multiple matching destinations:
-{ platform:iOS Simulator, arch:arm64, id:2321295E-B5D3-4E9C-850A-82BEAB5201EC, OS:18.4, name:iPhone 16 Plus }
-{ platform:iOS Simulator, arch:x86_64, id:2321295E-B5D3-4E9C-850A-82BEAB5201EC, OS:18.4, name:iPhone 16 Plus }
+{ platform:iOS Simulator, arch:arm64, id:3B8EF123-0288-426B-B022-58F135441486, OS:18.4, name:iPhone 16 Pro }
+{ platform:iOS Simulator, arch:x86_64, id:3B8EF123-0288-426B-B022-58F135441486, OS:18.4, name:iPhone 16 Pro }
+** BUILD FAILED **
+
+
+The following build commands failed:
+	PhaseScriptExecution [CP]\ Check\ Pods\ Manifest.lock /Users/marcusng/Library/Developer/Xcode/DerivedData/NutriNexus-fwpzudgxfatjbsfrhgkwvewknkxj/Build/Intermediates.noindex/NutriNexus.build/Debug-iphonesimulator/NutriNexus.build/Script-08A4A3CD28434E44B6B9DE2E.sh (in target 'NutriNexus' from project 'NutriNexus')
+	Building workspace NutriNexus with scheme NutriNexus and configuration Debug
+(2 failures)

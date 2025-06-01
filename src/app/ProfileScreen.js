@@ -56,8 +56,8 @@ export const updateCaloriesConsumed = async (userId) => {
   }
 };
 
-export default function Profile({navigation }) {
-  /* Calculating the calories consumed based on goal to update circular bar*/
+export default function Profile({ navigation }) {
+  /* Calculating the calories consumed based on goal to update circular bar thing*/
   const [totalCalories, setTotalCalories] = useState(0);
   const [calorieGoal, setCaloriesGoal] = useState(100);
 
@@ -65,7 +65,7 @@ export default function Profile({navigation }) {
     const fetchTotalCalories = async () => {
       const { data, error } = await supabase
         .from("profile_page")
-        .select("calories_consumed, calorie_goal") // or whatever your goal column is called
+        .select("calories_consumed, calorie_goal")
         .eq("id", session.user.id)
         .single();
 
@@ -78,13 +78,97 @@ export default function Profile({navigation }) {
       setCaloriesGoal(data.calorie_goal || 100);
     };
 
+    {
+      /* to calculate weekly data for bar graph insights*/
+    }
+
+    const fetchWeeklyCalories = async () => {
+      const { data, error } = await supabase
+        .from("activity_log")
+        .select("calories, date")
+        .eq("user_id", session.user.id);
+
+      if (error) {
+        console.error("Error cannot fetch log", error);
+        return;
+      }
+
+      const dailyTotal = {
+        MON: 0,
+        TUES: 0,
+        WED: 0,
+        THURS: 0,
+        FRI: 0,
+        SAT: 0,
+        SUN: 0,
+      };
+
+      data.forEach((entry) => {
+        const date = new Date(entry.date);
+        const dayOfTheWeek = date
+          .toLocaleDateString("en-US", { weekday: "short" })
+          .toUpperCase();
+
+        let key;
+        switch (dayOfWeek) {
+          case "MON":
+            key = "MON";
+            break;
+          case "TUE":
+            key = "TUES";
+            break;
+          case "WED":
+            key = "WED";
+            break;
+          case "THU":
+            key = "THURS";
+            break;
+          case "FRI":
+            key = "FRI";
+            break;
+          case "SAT":
+            key = "SAT";
+            break;
+          case "SUN":
+            key = "SUN";
+            break;
+          default:
+            break;
+        }
+        if (key) {
+          dailyTotals[key] += entry.calories;
+        }
+      });
+      const weeklyCaloriesData = [
+        { day: "MON", value: dailyTotals.MON },
+        { day: "TUES", value: dailyTotals.TUES },
+        { day: "WED", value: dailyTotals.WED },
+        { day: "THURS", value: dailyTotals.THURS },
+        { day: "FRI", value: dailyTotals.FRI },
+        { day: "SAT", value: dailyTotals.SAT },
+        { day: "SUN", value: dailyTotals.SUN },
+      ];
+
+      setReferenceData(weeklyCaloriesData);
+    };
+
+    fetchWeeklyCalories();
     fetchTotalCalories();
   }, []);
 
   const progressPercentage =
     calorieGoal > 0 ? Math.min((totalCalories / calorieGoal) * 100, 100) : 0;
-  const { session, profile, authMethod } = useAuth()
+  const { session, profile, authMethod } = useAuth();
 
+  const weeklyCaloriesData = [
+    { day: "MON", value: dailyTotals.MON },
+    { day: "TUES", value: dailyTotals.TUES },
+    { day: "WED", value: dailyTotals.WED },
+    { day: "THURS", value: dailyTotals.THURS },
+    { day: "FRI", value: dailyTotals.FRI },
+    { day: "SAT", value: dailyTotals.SAT },
+    { day: "SUN", value: dailyTotals.SUN },
+  ];
 
   const { width } = useWindowDimensions();
 
@@ -99,23 +183,12 @@ export default function Profile({navigation }) {
     { day: "SAT", value: 4000 },
     { day: "SUN", value: 3500 },
   ];
-  const weeklyCaloriesData = [
-    { day: "MON", value: 10000 },
-    { day: "TUES", value: 3500 },
-    { day: "WED", value: 1300 },
-    { day: "THURS", value: 8000 },
-    { day: "FRI", value: 4030 },
-    { day: "SAT", value: 3700 },
-    { day: "SUN", value: 8640 },
-  ];
 
   const [referenceData, setReferenceData] = useState(weeklyStepsData);
 
   useEffect(() => {
     if (selectedDataType === "Steps") {
       setReferenceData(weeklyStepsData);
-    } else {
-      setReferenceData(weeklyCaloriesData);
     }
   }, [selectedDataType]);
 
@@ -161,8 +234,8 @@ export default function Profile({navigation }) {
         >
           Welcome Back, {profile ? profile.username : "User"}!
         </Text>
-        <View className="flex-row items-start" >
-          <View style={{ flex: 0.9, paddingRight: 10}} className="flex-1">
+        <View className="flex-row items-start">
+          <View style={{ flex: 0.9, paddingRight: 10 }} className="flex-1">
             <View className="mb-3">
               <CircularProgress
                 value={Math.floor(progressPercentage)}
@@ -265,7 +338,7 @@ export default function Profile({navigation }) {
           ))}
         </Canvas>
       </View>
- 
+
       {/*Bottom Bar 
 
       <View style={{ flexDirection: "row", marginTop: 24 }}>
@@ -295,7 +368,6 @@ export default function Profile({navigation }) {
         </TouchableOpacity>
       </View>
       */}
-
     </ScrollView>
   );
   /*
