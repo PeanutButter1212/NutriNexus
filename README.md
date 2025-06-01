@@ -140,6 +140,8 @@ npm i
 
 ```zsh
 npx e
+```
+
 
 ## Android Dev Build (For Android Devices only) 
 ### 1. Scan the QR Code below
