@@ -10,9 +10,24 @@
 - Expo CLI
 
 Install Expo globally if you haven’t already:
-``` zsh
-npm install -g expo-cli
-```
+``` zsh ``` (if on bash)  
+``` npm install -g expo-cli ```
+
+### 1. Clone the Repository 
+``` git clone http://github.com/PeanutButter1212/NutriNexus.git ```
+``` cd NutriNexus   ```
+
+### 2. Install Dependencies 
+``` npm install  ```
+
+### 3. Start the Development Server
+# (Mac only) open IOS simulator, refer below for instructions on how to run on android 
+``` npm run ios ```
+
+##Alternative Way 
+#Alternatively, you can download the Android Development Build on your local Android Device or the IOS development build on your computer by scanning the QR codes on our poster 
+
+
 
 ### 1. Sign Up (If you already an account, you can skip this step) 
 - Click on the sign up button
