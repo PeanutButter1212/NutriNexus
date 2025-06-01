@@ -4,8 +4,8 @@
 Artemis
 
 ## Members
-Chua Kai Jie, Emerson 
-Marcus Ng Zheng Han
+- Chua Kai Jie, Emerson 
+- Marcus Ng Zheng Han
 
 ## 📚 Table of Contents
 
@@ -40,11 +40,13 @@ Marcus Ng Zheng Han
 - [Timeline and Development Plan](#timeline-and-development-plan)
 
 ## App Summary
-Nutrinexus is a mobile application that enables people form all walks of live to seamlessly track their daily caloric intake and physical activity in a single integrated platform. We aim to incorporate gamification lelements like a personalised virtual garden, avatar customisation and map exploration to keep the lifestyle application to keep users engaged and moltivated 
+NutriNexus is a mobile application that enables people form all walks of live to seamlessly track their daily caloric intake and physical activity in a single integrated platform. We aim to incorporate gamification lelements like a personalised virtual garden, avatar customisation and map exploration to keep the lifestyle application to keep users engaged and moltivated 
 
 ---
 
 ## Proof of Concept
+
+[Click here to view Proof of Concept](https://drive.google.com/file/d/1NxtbCZIQxFHr3OOFMGIKqQv9NWYqkovW/view)
 
 ---
 
@@ -100,39 +102,54 @@ Satay, Carrot Cake
 
 ---
 
-## How to run the App (Dev Build) 
+## How to run the App  
 
 ### Prerequisites
 - Node.js (v18 or later)
 - npm
 - Expo CLI
+- Xcode 
 
-Install Expo globally if you haven’t already:
-``` zsh 
-npm install -g expo-cli
-```
+## IOS Simulator (For Mac Users with Xcode Simulator installed) 
 
-### 1. Clone the Repository 
-``` zsh
-git clone http://github.com/PeanutButter1212/NutriNexus.git
-```
-``` zsh
-cd NutriNexus
-```
+### 1. Click on the drive below to download the tar.gz file 
+[Press here for Google drive link containing the tar.gz file](https://drive.google.com/drive/folders/1Et3oGfQwABeEHUMElwlFazrBXNcf0vgV)
+### 2. Double-click the .tar.gz file to extract NutriNexus.app 
+<img width="138" alt="Screenshot 2025-06-01 at 11 50 34 PM" src="https://github.com/user-attachments/assets/c273fc8e-531d-4a4d-a456-5ff9a22ca213" />
 
-### 2. Install Dependencies 
-``` zsh
-npm install
-```
+### 3. Drag the NutriNexus.app into your Xcode IOS Simulator (do not try to double click it, you will get an error claiming there are no sources that can open the .app file
 
-### 3. Start the Development Server
-#### (Mac only) open IOS simulator, refer below for instructions on how to run on android 
+## Android Dev Build (For Android Devices only) 
+### 1. Scan the QR Code below
+
+<img width="138" src="https://github.com/user-attachments/assets/f4ffd175-25a4-4d41-9b48-73dd30b87c97" /> 
+
+### 2. Click install on the site that the QR code has redirected you to (ensure you allow download from unknown sources) 
+![photo_6188278396241429890_y](https://github.com/user-attachments/assets/05e45b61-5bc9-42bc-8189-0fa86a3df8c8)
+
+### 3. You should see this screen below
+![photo_6188278396241429893_y](https://github.com/user-attachments/assets/bad832d1-6fab-4d02-92d4-746d53529006)
+
+### 4. Open VS Code and run the following command in your terminal 
 ```zsh
-npm run ios
+git clone https://github.com/PeanutButter1212/NutriNexus.git
 ```
 
-## Alternative Way 
-Alternatively, you can download the Android Development Build on your local Android Device or the IOS development build on your computer by scanning the QR codes on our poster 
+### 5. Search for the NutriNexus folder in your downloads folder (or whichever location you set your default download location as) and open it in VS code (or whichever IDE you use) 
+
+### 6. Run the following lines in your terminal below (ensure your phone and laptop connects to same wifi or your app will fail to start
+```zsh
+npm i
+```
+
+```zsh
+npx expo start
+```
+
+### 7. You should see a QR code in your terminal. Scan it and check the application on your phone again, you should see the login page now 
+
+![Screenshot 2025-06-02 at 12 45 42 AM](https://github.com/user-attachments/assets/f7959ef4-0e2b-421a-90b3-cd027dd4d071)
+
 
 # How to use NutriNexus
 
