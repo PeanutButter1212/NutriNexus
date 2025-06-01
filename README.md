@@ -92,7 +92,7 @@ Starbucks Drink, Sunglasses
 
 ---
 
-### 🔍 **Scanner**  
+### **Scanner**  
 The scanner will also be able to detect 7 different types of local cuisines
 
 **Food:** Chicken Rice, Roti Prata, Nasi Lemak, Hokkien Mee, Chicken Wing,  
