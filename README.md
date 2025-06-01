@@ -1,6 +1,96 @@
-# NutriNuxus
+# NutriNexus
+
+## Level of Achievement
+Artemis
+
+## Members
+Chua Kai Jie, Emerson 
+Marcus Ng Zheng Han
+
+## 📚 Table of Contents
+
+- [App Summary](#app-summary)
+- [Proof of Concept](#proof-of-concept)
+- [Motivation](#motivation)
+- [User Stories](#user-stories)
+- [Project Scope](#project-scope)
+  - [Map](#map)
+  - [Assets](#assets)
+    - [Decor](#decor)
+    - [Accessories](#accessories)
+  - [Scanner](#scanner)
+- [How to Run the App (Dev Build)](#how-to-run-the-app-dev-build)
+  - [Prerequisites](#prerequisites)
+  - [Clone the Repository](#1-clone-the-repository)
+  - [Install Dependencies](#2-install-dependencies)
+  - [Start the Development Server](#3-start-the-development-server)
+  - [Alternative Way (QR Code)](#alternative-way)
+- [How to Use NutriNexus](#how-to-use-nutrinexus)
+  - [Sign Up](#1-sign-up-if-you-already-an-account-you-can-skip-this-step)
+  - [Verification of Email](#2-verification-of-email-if-you-already-have-an-account-you-can-skip-this-step)
+  - [Log In](#3-log-in)
+  - [OTP Verification](#4-otp-verification)
+  - [Key in Details](#5-key-in-details-not-applicable-if-you-are-not-a-first-time-user-will-be-redirected-back-to-profile-page)
+- [Guide to Using Our Application](#guide-to-using-our-application)
+  - [Profile Page](#profile-page)
+  - [Scanner Page](#scanner-page)
+  - [Garden Page](#garden-page)
+  - [Map Page](#map-page)
+  - [Social Page](#social-page)
+- [Timeline and Development Plan](#timeline-and-development-plan)
+
+## App Summary
+Nutrinexus is a mobile application that enables people form all walks of live to seamlessly track their daily caloric intake and physical activity in a single integrated platform. We aim to incorporate gamification lelements like a personalised virtual garden, avatar customisation and map exploration to keep the lifestyle application to keep users engaged and moltivated 
+
+## Proof of Concept
+
+## Moltivation
+We read in a CNA article that Singaporean workers opt for snacks over proper meals due to high stress work environments. This would mean consumption of food like confectionery like chocolates, sweets and savoury snacks like nuts and popcorn,  sacrificing on intake of crucial nutrients like proteins and carbohydrates. Diving deep into statistics, we also learnt from a 2022 Health promotion board survey that nine in ten people in Singapore are consuming salt above the recommended level, as well as the rate of hypertension doubling since 2010. 
+
+We feel that health should never take a backseat, especially in high-pressure, demanding environments. This belief of ours inspired us to create an application that empowers individuals with the tools and the motivation they need to take control of their well-being while juggling their studying and working responsibilities and aspirations. 
+
+The productivity application Forest took the world by storm ever since it was released. Despite its initial launch more than ten years ago, it remains a sensation in the App store, still retaining the #1 spot in the productivity section. Through the application, users are each given a garden, the number of trees that grow in their garden is in proportion to the time they stay focused in their work-related endeavours. The more dedicated they are, the more their garden flourishes, allowing users to be rewarded for consistent effort and discipline. 
+
+Inspired by the success of forest in reinforcing self-improvement habits in its user base, we hope to introduce a similar system for our users, where users get to cultivate their own garden through consistently achieving their health and exercise goals. Through achieving milestones, users will be able to earn in-app accessories and rewards which can be used to decorate their avatar and garden respectively. By gamifying the notion of productivity, we hope to encourage users to stay motivated, build healthy habits and visualize their progress in a meaningful way. We want to keep the journey interesting and refreshing for users, one they will never feel the urge to give up on. 
+
+Pokemon Go, as a success story, also inspired us to go further with our ideas. Pokemon Go brought in novel geological concepts into gaming, where users explore their real life surroundings to collect exotic Pokemons and diversify their collection, imbuing an additional layer of adventure. It is evident that Singaporeans are captivated by the unique experience that Pokemon Go provides, as seen in the massive turnout in Pokemon Go official events, with the most recent iteration amassing over 18000 people at the venue. As such we hope to incorporate geological-based functions to our application as well, where users will get to explore their real-world surroundings and get points and accessories for doing so. Users will be rewarded the more steps they take and for exploring new food options in their area. We hope to emulate the unique Pokemon Go experience into the mechanics of our application. 
+
+Through gamification, real-world exploration, and personalized rewards, we hope to encourage individuals to take charge of their health while keeping the journey engaging and rewarding. In a competitive, ever-changing and fast-paced world where well-being is often sidelined, our application serves to remind everyone that self-care can go hand in hand with one’s responsibilities and that health and one’s well being is a key to living a balanced and fulfilling life. 
 
 
+## User Stories 
+- As a fitness enthusiast, I want to track my daily calorie intake and step count in a single application and have my progress displayed in clear, easy-to-understand infographics to help me stay on track with my fitness goals.
+- As a teenager/young adult, I want to connect with like-minded individuals through interactive games and friendly competitions, making fitness a fun and social experience.
+- As a foodie, I want to explore healthy food options in my neighborhood and across Singapore, helping me make better dietary choices while discovering new dining spots.
+- As a busy professional, I want quick insights into my health metrics and maintain my fitness goals despite my hectic schedule.
+- As a parent, I want my kids to be encouraged to stay physically active through engaging games and challenges, helping them develop healthy habits in a fun and interactive way.
+
+## Project Scope
+### Map 
+We will limit the location for the maps to Bukit Batok and number of map icons (food places) to 5 
+### Assets
+
+Similarly for the assets such as accessories and decor, we will limit to 8 each which will be closely linked to our Singaporean Culture
+Decor: 
+### **Decor:**
+**1) Plants:** Spider Lily, Orchid, Durian, Bougenvilla  
+**2) Furniture:** Watering Can, Table, Bench, Pond
+
+---
+
+### **Accessories:**  
+Chou Chou, Oversized Uniqlo Shirt, Admin Shirt, Scrunchie, Mahjong Tile, Airpods,  
+Starbucks Drink, Sunglasses
+
+---
+
+### 🔍 **Scanner**  
+The scanner will also be able to detect 7 different types of local cuisines
+
+**Food:** Chicken Rice, Roti Prata, Nasi Lemak, Hokkien Mee, Chicken Wing,  
+Satay, Carrot Cake
+
+---
 
 ## How to run the App (Dev Build) 
 
@@ -34,7 +124,7 @@ npm run ios
 ```
 
 ## Alternative Way 
-### Alternatively, you can download the Android Development Build on your local Android Device or the IOS development build on your computer by scanning the QR codes on our poster 
+Alternatively, you can download the Android Development Build on your local Android Device or the IOS development build on your computer by scanning the QR codes on our poster 
 
 # How to use NutriNexus
 
@@ -90,5 +180,26 @@ On here you will see the personal dashboard, where you can:
 - To be implemented
 
 
+## Timeline and Development Plan
+## Timeline and Development Plan
 
-
+| Milestone | Tasks                  | Description                                                                                 | Period      |
+|-----------|------------------------|---------------------------------------------------------------------------------------------|-------------|
+| 1         | Functional Login Page  | **Frontend:** Login, Signup, Auth, Details page<br>**Backend:** Supabase account creation   | 11 May      |
+| 2         | Profile Page           | **Frontend:** Weekly insights, charts, stats, avatar, food log<br>**Backend:** Link goals   | 18 May      |
+|           | YOLO Model Training    | Train YOLO to identify selected food                                                        | 25 May      |
+|           | Scanner Page           | **Frontend:** Access camera, display calories<br>**Backend:** Store/update food log         | 1 June      |
+|           | **Evaluation MS 1**    | Login, Profile, Scanner (Basic features)                                                    | 2 June      |
+| 3         | Shop Page              | **Frontend:** Show items, confirm purchase<br>**Backend:** Store, update points/inventory   | 8 June      |
+|           | Garden Page            | **Frontend:** Tile system, design, inventory<br>**Backend:** Store layout                   | 15 June     |
+|           | Maps Page              | Show current location icon                                                                  | 23 June     |
+|           | **Evaluation MS 2**    | Garden, Shop, Maps Page (First working prototype)                                           | 30 June     |
+| 4         | Maps Enhancements      | Add icons, pop-ups, list of food/stores<br>Backend updates                                  | 5 July      |
+|           | Social Page            | **Frontend:** Friends List<br>**Backend:** Store user IDs                                   | 12 July     |
+|           | Avatar Customisation   | **Frontend:** Avatar model, inventory<br>**Backend:** Store avatar                          | 19 July     |
+|           | Testing                | Unit + Integration Testing                                                                  | 27 July     |
+|           | **Evaluation MS 3**    | Maps, Social, Avatar, Testing (Core + Extensions)                                           | 28 July     |
+| 5         | Challenges Page        | **Frontend:** Challenge list<br>**Backend:** Store + update points                          | 8 August    |
+|           | Additional Assets      | Create remaining visual assets                                                              | 15 August   |
+|           | Refinement             | Testing, debugging, feedback                                                                | 22 August   |
+|           | **Final Launch**       | Splashdown                                                                                  | 26 August   |
