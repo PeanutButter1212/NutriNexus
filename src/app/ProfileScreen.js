@@ -21,6 +21,8 @@ import BarPath from "../components/BarPath";
 import XAxisText from "../components/XAxisText";
 import DropdownComponent from "../components/Dropper";
 import { supabase } from "../lib/supabase";
+import { useFocusEffect } from "@react-navigation/native";
+
 {
   /*Method to update total calories which is updated when submit is pressd 
   in scanner*/
@@ -56,39 +58,16 @@ export const updateCaloriesConsumed = async (userId) => {
   }
 };
 
-export default function Profile({navigation }) {
-  /* Calculating the calories consumed based on goal to update circular bar*/
+export default function Profile({ navigation }) {
+  const { session, profile, authMethod } = useAuth();
+  const [caloriesData, setCaloriesData] = useState([]);
+
   const [totalCalories, setTotalCalories] = useState(0);
   const [calorieGoal, setCaloriesGoal] = useState(100);
-
-  useEffect(() => {
-    const fetchTotalCalories = async () => {
-      const { data, error } = await supabase
-        .from("profile_page")
-        .select("calories_consumed, calorie_goal") // or whatever your goal column is called
-        .eq("id", session.user.id)
-        .single();
-
-      if (error) {
-        console.log("Error fetching profile:", error);
-        return;
-      }
-
-      setTotalCalories(data.calories_consumed || 0);
-      setCaloriesGoal(data.calorie_goal || 100);
-    };
-
-    fetchTotalCalories();
-  }, []);
-
-  const progressPercentage =
-    calorieGoal > 0 ? Math.min((totalCalories / calorieGoal) * 100, 100) : 0;
-  const { session, profile, authMethod } = useAuth()
-
+  const [referenceData, setReferenceData] = useState([]);
+  const [selectedDataType, setSelectedDataType] = useState("Steps");
 
   const { width } = useWindowDimensions();
-
-  const [selectedDataType, setSelectedDataType] = useState("Steps");
 
   const weeklyStepsData = [
     { day: "MON", value: 3000 },
@@ -99,25 +78,124 @@ export default function Profile({navigation }) {
     { day: "SAT", value: 4000 },
     { day: "SUN", value: 3500 },
   ];
-  const weeklyCaloriesData = [
-    { day: "MON", value: 10000 },
-    { day: "TUES", value: 3500 },
-    { day: "WED", value: 1300 },
-    { day: "THURS", value: 8000 },
-    { day: "FRI", value: 4030 },
-    { day: "SAT", value: 3700 },
-    { day: "SUN", value: 8640 },
-  ];
 
-  const [referenceData, setReferenceData] = useState(weeklyStepsData);
+  useFocusEffect(
+    React.useCallback(() => {
+      if (!session || !session.user) {
+        console.log("No session yet, skipping fetches");
+        return;
+      }
+
+      const fetchTotalCalories = async () => {
+        const { data, error } = await supabase
+          .from("profile_page")
+          .select("calories_consumed, calorie_goal")
+          .eq("id", session.user.id)
+          .single();
+
+        if (error) {
+          console.log("Error fetching profile:", error);
+          return;
+        }
+
+        setTotalCalories(data.calories_consumed || 0);
+        setCaloriesGoal(data.calorie_goal || 100);
+      };
+
+      const fetchWeeklyCalories = async () => {
+        const { data, error } = await supabase
+          .from("activity_log")
+          .select("calories, date")
+          .eq("user_id", session.user.id);
+
+        if (data.length === 0) {
+          setCaloriesData([]);
+          setReferenceData([]);
+          return;
+        }
+
+        if (error) {
+          console.error("Error cannot fetch log", error);
+          return;
+        }
+
+        const dailyTotals = {
+          MON: 0,
+          TUES: 0,
+          WED: 0,
+          THURS: 0,
+          FRI: 0,
+          SAT: 0,
+          SUN: 0,
+        };
+
+        data.forEach((entry) => {
+          const date = new Date(entry.date);
+          const dayOfTheWeek = date
+            .toLocaleDateString("en-US", { weekday: "short" })
+            .toUpperCase();
+
+          let key;
+          switch (dayOfTheWeek) {
+            case "MON":
+              key = "MON";
+              break;
+            case "TUE":
+              key = "TUES";
+              break;
+            case "WED":
+              key = "WED";
+              break;
+            case "THU":
+              key = "THURS";
+              break;
+            case "FRI":
+              key = "FRI";
+              break;
+            case "SAT":
+              key = "SAT";
+              break;
+            case "SUN":
+              key = "SUN";
+              break;
+            default:
+              break;
+          }
+          if (key) {
+            dailyTotals[key] += entry.calories;
+          }
+        });
+
+        const weeklyCaloriesData = [
+          { day: "MON", value: dailyTotals.MON },
+          { day: "TUES", value: dailyTotals.TUES },
+          { day: "WED", value: dailyTotals.WED },
+          { day: "THURS", value: dailyTotals.THURS },
+          { day: "FRI", value: dailyTotals.FRI },
+          { day: "SAT", value: dailyTotals.SAT },
+          { day: "SUN", value: dailyTotals.SUN },
+        ];
+
+        setCaloriesData(weeklyCaloriesData);
+        setReferenceData(weeklyCaloriesData);
+      };
+
+      fetchTotalCalories();
+
+      fetchWeeklyCalories();
+    }, [session])
+  );
 
   useEffect(() => {
     if (selectedDataType === "Steps") {
       setReferenceData(weeklyStepsData);
-    } else {
-      setReferenceData(weeklyCaloriesData);
+    } else if (selectedDataType === "Calories") {
+      setReferenceData(caloriesData);
     }
-  }, [selectedDataType]);
+  }, [selectedDataType, caloriesData]);
+
+  const progressPercentage =
+    calorieGoal > 0 ? Math.min((totalCalories / calorieGoal) * 100, 100) : 0;
 
   const canvasWidth = width;
   const canvasHeight = 350;
@@ -161,8 +239,8 @@ export default function Profile({navigation }) {
         >
           Welcome Back, {profile ? profile.username : "User"}!
         </Text>
-        <View className="flex-row items-start" >
-          <View style={{ flex: 0.9, paddingRight: 10}} className="flex-1">
+        <View className="flex-row items-start">
+          <View style={{ flex: 0.9, paddingRight: 10 }} className="flex-1">
             <View className="mb-3">
               <CircularProgress
                 value={Math.floor(progressPercentage)}
@@ -209,12 +287,12 @@ export default function Profile({navigation }) {
           >
             <View className="bg-violet-700 rounded-md py-2 mb-7">
               <Text className="text-white text-center text-sm">Points</Text>
-              <Text className="text-white text-center text-xl">1111</Text>
+              <Text className="text-white text-center text-xl">0</Text>
             </View>
 
             <View className="bg-violet-700 rounded-md py-2 mb-7">
               <Text className="text-white text-center text-sm">Steps </Text>
-              <Text className="text-white text-center text-xl">8973</Text>
+              <Text className="text-white text-center text-xl">0</Text>
             </View>
 
             <TouchableOpacity
@@ -224,7 +302,7 @@ export default function Profile({navigation }) {
               <Text className="text-white text-center text-sm">
                 Calories Burnt
               </Text>
-              <Text className="text-white text-center text-xl">111</Text>
+              <Text className="text-white text-center text-xl">0</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -265,7 +343,7 @@ export default function Profile({navigation }) {
           ))}
         </Canvas>
       </View>
- 
+
       {/*Bottom Bar 
 
       <View style={{ flexDirection: "row", marginTop: 24 }}>
@@ -295,7 +373,6 @@ export default function Profile({navigation }) {
         </TouchableOpacity>
       </View>
       */}
-
     </ScrollView>
   );
   /*

@@ -151,6 +151,7 @@ export default function ScannerScreen({ navigation }) {
 
     await updateCaloriesConsumed(session.user.id);
     await fetchTotalCalories();
+    await fetchWeeklyCalories();
   };
 
   return (
