@@ -86,7 +86,7 @@ Similarly for the assets such as accessories and decor, we will limit to 8 each 
 **2) Furniture:** Watering Can, Table, Bench, Pond
 
 
-#### #**Accessories:**  
+#### **Accessories:**  
 Chou Chou, Oversized Uniqlo Shirt, Admin Shirt, Scrunchie, Mahjong Tile, Airpods,  
 Starbucks Drink, Sunglasses
 
