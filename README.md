@@ -45,8 +45,11 @@ Nutrinexus is a mobile application that enables people form all walks of live to
 ---
 
 ## Proof of Concept
+
 [
-](https://drive.google.com/file/d/1NxtbCZIQxFHr3OOFMGIKqQv9NWYqkovW/view)---
+](https://drive.google.com/file/d/1NxtbCZIQxFHr3OOFMGIKqQv9NWYqkovW/view)
+
+---
 
 ## Moltivation
 We read in a CNA article that Singaporean workers opt for snacks over proper meals due to high stress work environments. This would mean consumption of food like confectionery like chocolates, sweets and savoury snacks like nuts and popcorn,  sacrificing on intake of crucial nutrients like proteins and carbohydrates. Diving deep into statistics, we also learnt from a 2022 Health promotion board survey that nine in ten people in Singapore are consuming salt above the recommended level, as well as the rate of hypertension doubling since 2010. 
@@ -113,7 +116,8 @@ Satay, Carrot Cake
 [](https://drive.google.com/drive/folders/1Et3oGfQwABeEHUMElwlFazrBXNcf0vgV)
 ### 2. Double-click the .tar.gz file to extract NutriNexus.app 
 <img width="138" alt="Screenshot 2025-06-01 at 11 50 34 PM" src="https://github.com/user-attachments/assets/c273fc8e-531d-4a4d-a456-5ff9a22ca213" />
-### 3. Drage the NutriNexus.app into your Xcode IOS Simulator 
+
+### 3. Drag the NutriNexus.app into your Xcode IOS Simulator 
 
 ## Android Dev Build (For Android Devices only) 
 
