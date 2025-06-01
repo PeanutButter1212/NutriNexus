@@ -21,6 +21,42 @@ import BarPath from "../components/BarPath";
 import XAxisText from "../components/XAxisText";
 import DropdownComponent from "../components/Dropper";
 import { supabase } from "../lib/supabase";
+import { useFocusEffect } from "@react-navigation/native";
+
+{
+  /*Method to update total calories which is updated when submit is pressd 
+  in scanner*/
+}
+export const updateCaloriesConsumed = async (userId) => {
+  console.log("updateCaloriesConsumed CALLED with:", userId);
+  try {
+    const { data, error } = await supabase
+      .from("activity_log")
+      .select("calories")
+      .eq("user_id", userId);
+
+    if (error) {
+      console.log("Error fetching entries:", error);
+      return;
+    }
+
+    let totalCalories = data.reduce((sum, entry) => sum + entry.calories, 0);
+
+    const { error: updateError } = await supabase
+      .from("profile_page")
+      .update({ calories_consumed: totalCalories })
+      .eq("id", userId);
+
+    if (updateError) {
+      console.log("Error updating calories:", updateError);
+      return;
+    }
+
+    console.log("Updated calories_consumed in profiles:", totalCalories);
+  } catch (err) {
+    console.log("Unexpected error:", err);
+  }
+};
 
 export default function Profile({ navigation }) {
   const { session, profile, authMethod } = useAuth();
@@ -43,103 +79,112 @@ export default function Profile({ navigation }) {
     { day: "SUN", value: 3500 },
   ];
 
-  useEffect(() => {
-    if (!session || !session.user) {
-      console.log("No session yet, skipping fetches");
-      return;
-    }
-
-    const fetchTotalCalories = async () => {
-      const { data, error } = await supabase
-        .from("profile_page")
-        .select("calories_consumed, calorie_goal")
-        .eq("id", session.user.id)
-        .single();
-
-      if (error) {
-        console.log("Error fetching profile:", error);
+  useFocusEffect(
+    React.useCallback(() => {
+      if (!session || !session.user) {
+        console.log("No session yet, skipping fetches");
         return;
       }
 
-      setTotalCalories(data.calories_consumed || 0);
-      setCaloriesGoal(data.calorie_goal || 100);
-    };
+      const fetchTotalCalories = async () => {
+        const { data, error } = await supabase
+          .from("profile_page")
+          .select("calories_consumed, calorie_goal")
+          .eq("id", session.user.id)
+          .single();
 
-    const fetchWeeklyCalories = async () => {
-      const { data, error } = await supabase
-        .from("activity_log")
-        .select("calories, date")
-        .eq("user_id", session.user.id);
+        if (error) {
+          console.log("Error fetching profile:", error);
+          return;
+        }
 
-      if (error) {
-        console.error("Error cannot fetch log", error);
-        return;
-      }
-
-      const dailyTotals = {
-        MON: 0,
-        TUES: 0,
-        WED: 0,
-        THURS: 0,
-        FRI: 0,
-        SAT: 0,
-        SUN: 0,
+        setTotalCalories(data.calories_consumed || 0);
+        setCaloriesGoal(data.calorie_goal || 100);
       };
 
-      data.forEach((entry) => {
-        const date = new Date(entry.date);
-        const dayOfTheWeek = date
-          .toLocaleDateString("en-US", { weekday: "short" })
-          .toUpperCase();
+      const fetchWeeklyCalories = async () => {
+        const { data, error } = await supabase
+          .from("activity_log")
+          .select("calories, date")
+          .eq("user_id", session.user.id);
 
-        let key;
-        switch (dayOfTheWeek) {
-          case "MON":
-            key = "MON";
-            break;
-          case "TUE":
-            key = "TUES";
-            break;
-          case "WED":
-            key = "WED";
-            break;
-          case "THU":
-            key = "THURS";
-            break;
-          case "FRI":
-            key = "FRI";
-            break;
-          case "SAT":
-            key = "SAT";
-            break;
-          case "SUN":
-            key = "SUN";
-            break;
-          default:
-            break;
+        if (data.length === 0) {
+          setCaloriesData([]);
+          setReferenceData([]);
+          return;
         }
-        if (key) {
-          dailyTotals[key] += entry.calories;
+
+        if (error) {
+          console.error("Error cannot fetch log", error);
+          return;
         }
-      });
 
-      const weeklyCaloriesData = [
-        { day: "MON", value: dailyTotals.MON },
-        { day: "TUES", value: dailyTotals.TUES },
-        { day: "WED", value: dailyTotals.WED },
-        { day: "THURS", value: dailyTotals.THURS },
-        { day: "FRI", value: dailyTotals.FRI },
-        { day: "SAT", value: dailyTotals.SAT },
-        { day: "SUN", value: dailyTotals.SUN },
-      ];
+        const dailyTotals = {
+          MON: 0,
+          TUES: 0,
+          WED: 0,
+          THURS: 0,
+          FRI: 0,
+          SAT: 0,
+          SUN: 0,
+        };
 
-      setCaloriesData(weeklyCaloriesData);
-      setReferenceData(weeklyCaloriesData);
-    };
+        data.forEach((entry) => {
+          const date = new Date(entry.date);
+          const dayOfTheWeek = date
+            .toLocaleDateString("en-US", { weekday: "short" })
+            .toUpperCase();
 
-    fetchTotalCalories();
-    fetchWeeklyCalories();
-  }, [session]);
+          let key;
+          switch (dayOfTheWeek) {
+            case "MON":
+              key = "MON";
+              break;
+            case "TUE":
+              key = "TUES";
+              break;
+            case "WED":
+              key = "WED";
+              break;
+            case "THU":
+              key = "THURS";
+              break;
+            case "FRI":
+              key = "FRI";
+              break;
+            case "SAT":
+              key = "SAT";
+              break;
+            case "SUN":
+              key = "SUN";
+              break;
+            default:
+              break;
+          }
+          if (key) {
+            dailyTotals[key] += entry.calories;
+          }
+        });
+
+        const weeklyCaloriesData = [
+          { day: "MON", value: dailyTotals.MON },
+          { day: "TUES", value: dailyTotals.TUES },
+          { day: "WED", value: dailyTotals.WED },
+          { day: "THURS", value: dailyTotals.THURS },
+          { day: "FRI", value: dailyTotals.FRI },
+          { day: "SAT", value: dailyTotals.SAT },
+          { day: "SUN", value: dailyTotals.SUN },
+        ];
+
+        setCaloriesData(weeklyCaloriesData);
+        setReferenceData(weeklyCaloriesData);
+      };
+
+      fetchTotalCalories();
+
+      fetchWeeklyCalories();
+    }, [session])
+  );
 
   useEffect(() => {
     if (selectedDataType === "Steps") {
