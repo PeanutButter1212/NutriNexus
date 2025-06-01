@@ -4,8 +4,8 @@
 Artemis
 
 ## Members
-Chua Kai Jie, Emerson 
-Marcus Ng Zheng Han
+- Chua Kai Jie, Emerson 
+- Marcus Ng Zheng Han
 
 ## 📚 Table of Contents
 
