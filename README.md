@@ -46,8 +46,7 @@ Nutrinexus is a mobile application that enables people form all walks of live to
 
 ## Proof of Concept
 
-[
-](https://drive.google.com/file/d/1NxtbCZIQxFHr3OOFMGIKqQv9NWYqkovW/view)
+[Click here to view Proof of Concept](https://drive.google.com/file/d/1NxtbCZIQxFHr3OOFMGIKqQv9NWYqkovW/view)
 
 ---
 
@@ -112,8 +111,8 @@ Satay, Carrot Cake
 
 ## IOS Simulator (For Mac Users with Xcode Simulator installed) 
 
-### 1. CLick on the drive below to download the tar.gz file 
-[](https://drive.google.com/drive/folders/1Et3oGfQwABeEHUMElwlFazrBXNcf0vgV)
+### 1. Click on the drive below to download the tar.gz file 
+[Press here for Google drive link containing the tar.gz file](https://drive.google.com/drive/folders/1Et3oGfQwABeEHUMElwlFazrBXNcf0vgV)
 ### 2. Double-click the .tar.gz file to extract NutriNexus.app 
 <img width="138" alt="Screenshot 2025-06-01 at 11 50 34 PM" src="https://github.com/user-attachments/assets/c273fc8e-531d-4a4d-a456-5ff9a22ca213" />
 
