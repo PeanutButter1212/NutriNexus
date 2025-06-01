@@ -117,7 +117,31 @@ Satay, Carrot Cake
 ### 2. Double-click the .tar.gz file to extract NutriNexus.app 
 <img width="138" alt="Screenshot 2025-06-01 at 11 50 34 PM" src="https://github.com/user-attachments/assets/c273fc8e-531d-4a4d-a456-5ff9a22ca213" />
 
-### 3. Drag the NutriNexus.app into your Xcode IOS Simulator (do not try to double click it, you will get an error claiming there are no sources that can open the .app file
+### 3. After downloading Xcode, in the top meu click Xcode -> Open Developer Tool -> Simulator
+
+### 4. Once Simualtor is opened, in the top menu click File -> Open Simulator and select any IOS Phone
+
+### 5. Drag the NutriNexus.app into your IOS Phone Simulator (do not try to double click it, you will get an error claiming there are no sources that can open the .app file)
+
+### 6. You should see this screen below on the simulator
+![photo_6188278396241429893_y](https://github.com/user-attachments/assets/bad832d1-6fab-4d02-92d4-746d53529006)
+
+### 7. Open VS Code and run the following command in your terminal 
+```zsh
+git clone https://github.com/PeanutButter1212/NutriNexus.git
+```
+
+### 8. Search for the NutriNexus folder in your downloads folder (or whichever location you set your default download location as) and open it in VS code (or whichever IDE you use) 
+
+### 9. Run the following lines in your terminal below
+```zsh
+npm i
+```
+
+```zsh
+npx e
+```
+
 
 ## Android Dev Build (For Android Devices only) 
 ### 1. Scan the QR Code below

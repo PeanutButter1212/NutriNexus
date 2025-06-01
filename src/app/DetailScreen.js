@@ -82,7 +82,7 @@ export default function DetailScreen({ navigation }) {
         throw error;
       }
 
-      navigation.navigate("Profile", { session, profile: currentProfile });
+      navigation.navigate("MainTabs")
     } catch (err) {
       console.log(err.message);
     }
