@@ -21,47 +21,34 @@ import BarPath from "../components/BarPath";
 import XAxisText from "../components/XAxisText";
 import DropdownComponent from "../components/Dropper";
 import { supabase } from "../lib/supabase";
-{
-  /*Method to update total calories which is updated when submit is pressd 
-  in scanner*/
-}
-export const updateCaloriesConsumed = async (userId) => {
-  console.log("updateCaloriesConsumed CALLED with:", userId);
-  try {
-    const { data, error } = await supabase
-      .from("activity_log")
-      .select("calories")
-      .eq("user_id", userId);
-
-    if (error) {
-      console.log("Error fetching entries:", error);
-      return;
-    }
-
-    let totalCalories = data.reduce((sum, entry) => sum + entry.calories, 0);
-
-    const { error: updateError } = await supabase
-      .from("profile_page")
-      .update({ calories_consumed: totalCalories })
-      .eq("id", userId);
-
-    if (updateError) {
-      console.log("Error updating calories:", updateError);
-      return;
-    }
-
-    console.log("Updated calories_consumed in profiles:", totalCalories);
-  } catch (err) {
-    console.log("Unexpected error:", err);
-  }
-};
 
 export default function Profile({ navigation }) {
-  /* Calculating the calories consumed based on goal to update circular bar thing*/
+  const { session, profile, authMethod } = useAuth();
+  const [caloriesData, setCaloriesData] = useState([]);
+
   const [totalCalories, setTotalCalories] = useState(0);
   const [calorieGoal, setCaloriesGoal] = useState(100);
+  const [referenceData, setReferenceData] = useState([]);
+  const [selectedDataType, setSelectedDataType] = useState("Steps");
+
+  const { width } = useWindowDimensions();
+
+  const weeklyStepsData = [
+    { day: "MON", value: 3000 },
+    { day: "TUES", value: 5500 },
+    { day: "WED", value: 10000 },
+    { day: "THURS", value: 8000 },
+    { day: "FRI", value: 9000 },
+    { day: "SAT", value: 4000 },
+    { day: "SUN", value: 3500 },
+  ];
 
   useEffect(() => {
+    if (!session || !session.user) {
+      console.log("No session yet, skipping fetches");
+      return;
+    }
+
     const fetchTotalCalories = async () => {
       const { data, error } = await supabase
         .from("profile_page")
@@ -78,10 +65,6 @@ export default function Profile({ navigation }) {
       setCaloriesGoal(data.calorie_goal || 100);
     };
 
-    {
-      /* to calculate weekly data for bar graph insights*/
-    }
-
     const fetchWeeklyCalories = async () => {
       const { data, error } = await supabase
         .from("activity_log")
@@ -93,7 +76,7 @@ export default function Profile({ navigation }) {
         return;
       }
 
-      const dailyTotal = {
+      const dailyTotals = {
         MON: 0,
         TUES: 0,
         WED: 0,
@@ -110,7 +93,7 @@ export default function Profile({ navigation }) {
           .toUpperCase();
 
         let key;
-        switch (dayOfWeek) {
+        switch (dayOfTheWeek) {
           case "MON":
             key = "MON";
             break;
@@ -139,6 +122,7 @@ export default function Profile({ navigation }) {
           dailyTotals[key] += entry.calories;
         }
       });
+
       const weeklyCaloriesData = [
         { day: "MON", value: dailyTotals.MON },
         { day: "TUES", value: dailyTotals.TUES },
@@ -149,48 +133,24 @@ export default function Profile({ navigation }) {
         { day: "SUN", value: dailyTotals.SUN },
       ];
 
+      setCaloriesData(weeklyCaloriesData);
       setReferenceData(weeklyCaloriesData);
     };
 
-    fetchWeeklyCalories();
     fetchTotalCalories();
-  }, []);
-
-  const progressPercentage =
-    calorieGoal > 0 ? Math.min((totalCalories / calorieGoal) * 100, 100) : 0;
-  const { session, profile, authMethod } = useAuth();
-
-  const weeklyCaloriesData = [
-    { day: "MON", value: dailyTotals.MON },
-    { day: "TUES", value: dailyTotals.TUES },
-    { day: "WED", value: dailyTotals.WED },
-    { day: "THURS", value: dailyTotals.THURS },
-    { day: "FRI", value: dailyTotals.FRI },
-    { day: "SAT", value: dailyTotals.SAT },
-    { day: "SUN", value: dailyTotals.SUN },
-  ];
-
-  const { width } = useWindowDimensions();
-
-  const [selectedDataType, setSelectedDataType] = useState("Steps");
-
-  const weeklyStepsData = [
-    { day: "MON", value: 3000 },
-    { day: "TUES", value: 5500 },
-    { day: "WED", value: 10000 },
-    { day: "THURS", value: 8000 },
-    { day: "FRI", value: 9000 },
-    { day: "SAT", value: 4000 },
-    { day: "SUN", value: 3500 },
-  ];
-
-  const [referenceData, setReferenceData] = useState(weeklyStepsData);
+    fetchWeeklyCalories();
+  }, [session]);
 
   useEffect(() => {
     if (selectedDataType === "Steps") {
       setReferenceData(weeklyStepsData);
+    } else if (selectedDataType === "Calories") {
+      setReferenceData(caloriesData);
     }
-  }, [selectedDataType]);
+  }, [selectedDataType, caloriesData]);
+
+  const progressPercentage =
+    calorieGoal > 0 ? Math.min((totalCalories / calorieGoal) * 100, 100) : 0;
 
   const canvasWidth = width;
   const canvasHeight = 350;
@@ -282,12 +242,12 @@ export default function Profile({ navigation }) {
           >
             <View className="bg-violet-700 rounded-md py-2 mb-7">
               <Text className="text-white text-center text-sm">Points</Text>
-              <Text className="text-white text-center text-xl">1111</Text>
+              <Text className="text-white text-center text-xl">0</Text>
             </View>
 
             <View className="bg-violet-700 rounded-md py-2 mb-7">
               <Text className="text-white text-center text-sm">Steps </Text>
-              <Text className="text-white text-center text-xl">8973</Text>
+              <Text className="text-white text-center text-xl">0</Text>
             </View>
 
             <TouchableOpacity
@@ -297,7 +257,7 @@ export default function Profile({ navigation }) {
               <Text className="text-white text-center text-sm">
                 Calories Burnt
               </Text>
-              <Text className="text-white text-center text-xl">111</Text>
+              <Text className="text-white text-center text-xl">0</Text>
             </TouchableOpacity>
           </View>
         </View>
