@@ -15,8 +15,12 @@ npm install -g expo-cli
 ```
 
 ### 1. Clone the Repository 
-``` git clone http://github.com/PeanutButter1212/NutriNexus.git ```
-``` cd NutriNexus ```
+``` zsh
+git clone http://github.com/PeanutButter1212/NutriNexus.git
+```
+``` zsh
+cd NutriNexus
+```
 
 ### 2. Install Dependencies 
 ``` npm install  ```
