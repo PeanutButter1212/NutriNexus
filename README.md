@@ -42,7 +42,11 @@ Marcus Ng Zheng Han
 ## App Summary
 Nutrinexus is a mobile application that enables people form all walks of live to seamlessly track their daily caloric intake and physical activity in a single integrated platform. We aim to incorporate gamification lelements like a personalised virtual garden, avatar customisation and map exploration to keep the lifestyle application to keep users engaged and moltivated 
 
+---
+
 ## Proof of Concept
+
+---
 
 ## Moltivation
 We read in a CNA article that Singaporean workers opt for snacks over proper meals due to high stress work environments. This would mean consumption of food like confectionery like chocolates, sweets and savoury snacks like nuts and popcorn,  sacrificing on intake of crucial nutrients like proteins and carbohydrates. Diving deep into statistics, we also learnt from a 2022 Health promotion board survey that nine in ten people in Singapore are consuming salt above the recommended level, as well as the rate of hypertension doubling since 2010. 
@@ -57,6 +61,7 @@ Pokemon Go, as a success story, also inspired us to go further with our ideas. P
 
 Through gamification, real-world exploration, and personalized rewards, we hope to encourage individuals to take charge of their health while keeping the journey engaging and rewarding. In a competitive, ever-changing and fast-paced world where well-being is often sidelined, our application serves to remind everyone that self-care can go hand in hand with one’s responsibilities and that health and one’s well being is a key to living a balanced and fulfilling life. 
 
+---
 
 ## User Stories 
 - As a fitness enthusiast, I want to track my daily calorie intake and step count in a single application and have my progress displayed in clear, easy-to-understand infographics to help me stay on track with my fitness goals.
@@ -65,20 +70,23 @@ Through gamification, real-world exploration, and personalized rewards, we hope 
 - As a busy professional, I want quick insights into my health metrics and maintain my fitness goals despite my hectic schedule.
 - As a parent, I want my kids to be encouraged to stay physically active through engaging games and challenges, helping them develop healthy habits in a fun and interactive way.
 
+---
+
 ## Project Scope
 ### Map 
 We will limit the location for the maps to Bukit Batok and number of map icons (food places) to 5 
-### Assets
-
-Similarly for the assets such as accessories and decor, we will limit to 8 each which will be closely linked to our Singaporean Culture
-Decor: 
-### **Decor:**
-**1) Plants:** Spider Lily, Orchid, Durian, Bougenvilla  
-**2) Furniture:** Watering Can, Table, Bench, Pond
 
 ---
 
-### **Accessories:**  
+### Assets
+Similarly for the assets such as accessories and decor, we will limit to 8 each which will be closely linked to our Singaporean Culture
+
+#### **Decor:**
+**1) Plants:** Spider Lily, Orchid, Durian, Bougenvilla  
+**2) Furniture:** Watering Can, Table, Bench, Pond
+
+
+#### #**Accessories:**  
 Chou Chou, Oversized Uniqlo Shirt, Admin Shirt, Scrunchie, Mahjong Tile, Airpods,  
 Starbucks Drink, Sunglasses
 
@@ -179,8 +187,7 @@ On here you will see the personal dashboard, where you can:
 ### Social Page
 - To be implemented
 
-
-## Timeline and Development Plan
+--- 
 ## Timeline and Development Plan
 
 | Milestone | Tasks                  | Description                                                                                 | Period      |
