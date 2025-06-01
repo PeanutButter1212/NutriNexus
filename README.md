@@ -123,6 +123,7 @@ Satay, Carrot Cake
 ### 1. Scan the QR Code below
 
 <img width="138" src="https://github.com/user-attachments/assets/f4ffd175-25a4-4d41-9b48-73dd30b87c97" /> 
+
 ### 2. Click install on the site that the QR code has redirected you to (ensure you allow download from unknown sources) 
 ![photo_6188278396241429890_y](https://github.com/user-attachments/assets/05e45b61-5bc9-42bc-8189-0fa86a3df8c8)
 
