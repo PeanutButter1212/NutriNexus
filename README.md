@@ -11,11 +11,11 @@
 
 Install Expo globally if you haven’t already:
 ``` zsh ``` (if on bash)  
-``` npm install -g expo-cli ```
+``` zsh npm install -g expo-cli ```
 
 ### 1. Clone the Repository 
 ``` git clone http://github.com/PeanutButter1212/NutriNexus.git ```
-``` cd NutriNexus   ```
+``` cd NutriNexus ```
 
 ### 2. Install Dependencies 
 ``` npm install  ```
