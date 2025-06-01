@@ -117,7 +117,11 @@ Satay, Carrot Cake
 ### 2. Double-click the .tar.gz file to extract NutriNexus.app 
 <img width="138" alt="Screenshot 2025-06-01 at 11 50 34 PM" src="https://github.com/user-attachments/assets/c273fc8e-531d-4a4d-a456-5ff9a22ca213" />
 
-### 3. Drag the NutriNexus.app into your Xcode IOS Simulator (do not try to double click it, you will get an error claiming there are no sources that can open the .app file
+### 3. After downloading Xcode, in the top meu click Xcode -> Open Developer Tool -> Simulator
+
+### 4. Once Simualtor is opened, in the top menu click File -> Open Simulator and select any IOS Phone
+
+### 5. Drag the NutriNexus.app into your IOS Phone Simulator (do not try to double click it, you will get an error claiming there are no sources that can open the .app file
 
 ## Android Dev Build (For Android Devices only) 
 ### 1. Scan the QR Code below
