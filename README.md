@@ -174,6 +174,7 @@ npx expo start
 
 ![Screenshot 2025-06-02 at 12 45 42 AM](https://github.com/user-attachments/assets/f7959ef4-0e2b-421a-90b3-cd027dd4d071)
 
+## Note that when our application runs on some Android devices, the placeholders in the login page may be white (a bug that was caught by one of our testers, please take note the first field is for username and second field is for password. Thank you :)
 
 # How to use NutriNexus
 
