@@ -7,25 +7,25 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
-    steps:
-      - name: 🏗 Setup repo
+    step:
+      - name: Setup repo
         uses: actions/checkout@v3
 
-      - name: 🏗 Setup Node
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
           cache-dependency-path: package-lock.json
           node-version: 22
           cache: "npm"
 
-      - name: 🏗 Setup EAS
+      - name: Setup EAS
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: npm install
 
-      - name: 🚀 Create update
+      - name: Create update
         run: eas update --auto --non-interactive
