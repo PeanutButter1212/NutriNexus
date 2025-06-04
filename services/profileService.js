@@ -152,13 +152,13 @@ export async function updateCaloriesConsumed(userId) {
     const { data, error } = await supabase
     .from("activity_log")
     .select("*")
-    .eq("user_id", session.user.id)
+    .eq("user_id", userId)
     .order("date", { ascending: false });
 
     if (error) {
         throw error;
     }
-    return data
+    return data;
 
 
 }

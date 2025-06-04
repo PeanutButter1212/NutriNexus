@@ -15,7 +15,7 @@ export default function RootStack() {
 
     return (
     <Stack.Navigator screenOptions={{ headerShown: false }}> 
-        { false //!isAuthenticated || !isOtpVerified 
+        { !isAuthenticated || !isOtpVerified 
         ? (
            <Stack.Screen name="AuthStack" component={AuthStack} />
         ) : (

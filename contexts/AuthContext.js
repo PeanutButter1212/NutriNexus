@@ -161,8 +161,8 @@ export const AuthProvider = ({ children }) => {
         throw new Error("OTP verification failed. Please try again.");
       }
 
-      const session = data;
-      const userId = data.user?.id;
+      const session = data.session;
+      const userId = data?.user?.id;
 
       console.log(userId)
 

@@ -16,21 +16,25 @@ import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
 import { useEffect } from "react";
 import { fetchActivityLog } from "../services/profileService";
-import useActivityLog from "../hooks/useActivityLog"
 
 export default function ActivityLogScreen({ navigation }) {
-  const entries = useActivityLog();
+  const [entries, setEntries] = useState([]);
   const { session, refreshFlag } = useAuth();
 
 
   useEffect(() => {
     const loadEntries = async () => {
+      const userId = session?.user?.id
+
+      if (!userId) {
+        console.log("User ID not ready yet. Skipping fetch.");
+        return;
+      }
       try {
-        const userId = session?.user?.id
-        userLog = await fetchActivityLog(userId)
-        setEntries(logs || [])
+        const userLog = await fetchActivityLog(userId)
+        setEntries(userLog || [])
       } catch (err) {
-        console.error(err)
+        console.error("error from fetchActivityLog: " + err.message)
       }
     };
     loadEntries(); 
