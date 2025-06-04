@@ -7,7 +7,7 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
-    step:
+    steps:
       - name: Setup repo
         uses: actions/checkout@v3
 
