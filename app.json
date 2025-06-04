@@ -13,22 +13,29 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-   "plugins": [
-    [
-      "@react-native-google-signin/google-signin",
-      {
-        "iosUrlScheme": "com.googleusercontent.apps.960982903167-krh2019m7vtkcrsao5kspkqr8qlfu9af"
-      }
+    "plugins": [
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.960982903167-krh2019m7vtkcrsao5kspkqr8qlfu9af"
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow ${PRODUCT_NAME} to access your camera",
+          "microphonePermission": "Allow ${PRODUCT_NAME} to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+      "expo-maps",
+        {
+          "requestLocationPermission": true,
+          "locationPermission": "Allow NutriNexus to use your location"
+        }
+      ]
     ],
-    [
-      "expo-camera",
-      {
-        "cameraPermission": "Allow ${PRODUCT_NAME} to access your camera",
-        "microphonePermission": "Allow ${PRODUCT_NAME} to access your microphone",
-        "recordAudioAndroid": true
-      }
-    ]
-  ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "nutrinuxus.club",
@@ -43,7 +50,13 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "nutrinuxus.club"
+      "package": "nutrinuxus.club",
+      "config" : {
+        "googleMaps" : {
+          "apiKey": "AIzaSyCSm07EZwl0k_6Sd1yM9RZLAjqtnbPoTkg"
+        }
+
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
