@@ -37,12 +37,24 @@
       ]
     ],
     "ios": {
+      "config" : {
+        "googleMaps" : {
+          "apiKey": "AIzaSyCSm07EZwl0k_6Sd1yM9RZLAjqtnbPoTkg"
+        }
+      },
       "supportsTablet": true,
       "bundleIdentifier": "nutrinuxus.club",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
-        "NSCameraUsageDescription": "This app uses the camera to scan QR codes and take pictures."
+        "NSCameraUsageDescription": "This app uses the camera to scan QR codes and take pictures.",
+        "NSLocationWhenInUseUsageDescription": "We use your location to show nearby foodspots on the map.",
+       "NSLocationAlwaysAndWhenInUseUsageDescription": "We use your location to update your current position on the map."
       }
+  
+  
+    
+    
+
     },
     "android": {
       "adaptiveIcon": {

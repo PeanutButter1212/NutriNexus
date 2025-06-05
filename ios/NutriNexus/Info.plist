@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
   <dict>
-    <key>NSCameraUsageDescription</key>
-    <string>This app uses the camera to scan QR codes and take pictures.</string>
     <key>CADisableMinimumFrameDurationOnPhone</key>
     <true/>
     <key>CFBundleDevelopmentRegion</key>
@@ -42,7 +40,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>com.googleusercontent.apps.960982903167-krh2o19m7vtkcrsao5kspkor8qlfu9af</string>
+          <string>com.googleusercontent.apps.960982903167-krh2019m7vtkcrsao5kspkqr8qlfu9af</string>
         </array>
       </dict>
     </array>
@@ -61,6 +59,16 @@
       <key>NSAllowsLocalNetworking</key>
       <true/>
     </dict>
+    <key>NSCameraUsageDescription</key>
+    <string>Allow ${PRODUCT_NAME} to access your camera</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>We use your location to update your current position on the map.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Allow $(PRODUCT_NAME) to access your location</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Allow NutriNexus to use your location</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Allow ${PRODUCT_NAME} to access your microphone</string>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>
