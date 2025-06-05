@@ -24,10 +24,6 @@ import { supabase } from "../lib/supabase";
 import { useFocusEffect } from "@react-navigation/native";
 import useProfileData from "../hooks/useProfileData";
 
-import {
-  fetchProfileCalories,
-  fetchWeeklyCalories
-} from "../services/profileService";
 
 export default function Profile({ navigation }) {
   const { session, profile, authMethod } = useAuth();
@@ -55,6 +51,8 @@ export default function Profile({ navigation }) {
     { day: "SAT", value: 4000 },
     { day: "SUN", value: 3500 },
   ];
+
+  console.log("Calories Data: " +  caloriesData)
 
   useEffect(() => {
     if (selectedDataType === "Steps") {

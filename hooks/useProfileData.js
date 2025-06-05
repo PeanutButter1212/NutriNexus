@@ -12,6 +12,7 @@ export default function useProfileData() {
         const fetchProfileData = async () => {
             const profileInfo = await fetchProfileCalories(userId)
             const weeklyCalories = await fetchWeeklyCalories(userId)
+            console.log("output fron fetchweeklycalories: " + weeklyCalories)
             setTotalCalories(profileInfo.calories_consumed)
             setCalorieGoal(profileInfo.calorie_goal)
             setCaloriesData(weeklyCalories)

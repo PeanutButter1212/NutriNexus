@@ -109,9 +109,18 @@ export async function fetchWeeklyCalories(userId) {
     if (key) {
         dailyTotals[key] += entry.calories;
     }
-    return dailyTotals; 
 
+    
   })
+
+  const output = Object.entries(dailyTotals).map(([day, value]) => ({
+    day,
+    value,
+  }))
+  
+
+  return output; 
+
 
 }
 
