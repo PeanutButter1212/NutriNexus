@@ -1,51 +1,93 @@
-import { View, Text, Platform } from "react-native";
-import React from "react";
-import { AppleMaps, GoogleMaps } from "expo-maps";
+import React, { useState, useEffect, useRef } from "react";
+import { View, Text } from "react-native";
+import MapView, { Marker, Circle } from "react-native-maps";
 import * as Location from "expo-location";
-import { useState, useEffect, useRef } from "react";
 
 export default function MapScreen() {
   const [location, setLocation] = useState(null);
   const mapRef = useRef(null);
 
-  //Requesting permissiom for users location
   useEffect(() => {
+    let subscriber;
+
     (async () => {
-      try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status != "granted") {
-          console.error("Permission not granted");
-          return;
-        }
-        const loc = await Location.getCurrentPositionAsync({});
-        console.log("User location:", loc.coords);
-        setLocation(loc.coords);
-      } catch (err) {
-        console.error("Error getting location", err);
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.error("Permission not granted");
+        return;
       }
+
+      subscriber = await Location.watchPositionAsync(
+        //rn its updating the position either every 1 sec or when move 1m
+        {
+          accuracy: Location.Accuracy.High,
+          timeInterval: 1000,
+          distanceInterval: 1,
+        },
+        (loc) => {
+          const coords = loc.coords;
+          setLocation(coords);
+
+          if (mapRef.current) {
+            mapRef.current.animateToRegion(
+              {
+                latitude: coords.latitude,
+                longitude: coords.longitude,
+                latitudeDelta: 0.005, //smaller value more zoomed in lmk if need change
+                longitudeDelta: 0.005,
+              },
+              500 //how long it takes to change animation when moving rn its 0.5sec
+            );
+          }
+        }
+      );
     })();
+
+    return () => {
+      if (subscriber) subscriber.remove();
+    };
   }, []);
 
   if (!location) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>Loading location...</Text>
+      <View className="flex-1 justify-center items-center">
+        <Text>Getting location please wait...</Text>
       </View>
     );
   }
 
   return (
-    <GoogleMaps.View
-      initialCamera={{
-        center: {
-          latitude: 1.3521,
-          longitude: 103.8198,
-          //latitude: location.latitude,
-          //longitude: location.longitude,
-        },
-        zoom: 16,
+    <MapView
+      ref={mapRef}
+      style={{ flex: 1 }} //bruh need use default styling
+      showsUserLocation={true}
+      showsMyLocationButton={true}
+      provider="google"
+      initialRegion={{
+        latitude: location.latitude,
+        longitude: location.longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
       }}
-      style={{ flex: 1 }}
-    />
+    >
+      <Circle
+        center={{
+          latitude: location.latitude,
+          longitude: location.longitude,
+        }}
+        radius={50}
+        strokeColor="rgba(0,0,255,0.5)"
+        fillColor="rgba(0,0,255,0.2)"
+      />
+    </MapView>
   );
 }
+
+/*<Marker
+        coordinate={{
+          latitude: location.latitude,
+          longitude: location.longitude,
+        }}
+        title="You are here"
+      />
+      */
