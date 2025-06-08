@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { View, Text } from "react-native";
 import MapView, { Marker, Circle } from "react-native-maps";
 import * as Location from "expo-location";
+import { Pedometer } from "expo-sensors";
 
 export default function MapScreen() {
   const [location, setLocation] = useState(null);
@@ -57,29 +58,34 @@ export default function MapScreen() {
   }
 
   return (
-    <MapView
-      ref={mapRef}
-      style={{ flex: 1 }} //bruh need use default styling
-      showsUserLocation={true}
-      showsMyLocationButton={true}
-      provider="google"
-      initialRegion={{
-        latitude: location.latitude,
-        longitude: location.longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      }}
-    >
-      <Circle
-        center={{
+    <View className="flex-1">
+      <View className="z-10 top-10 left-5 bg-white items-center">
+        <Text className="text-base font-bold text-black">Steps:</Text>
+      </View>
+      <MapView
+        ref={mapRef}
+        style={{ flex: 1 }} //bruh need use default styling
+        showsUserLocation={true}
+        showsMyLocationButton={true}
+        provider="google"
+        initialRegion={{
           latitude: location.latitude,
           longitude: location.longitude,
+          latitudeDelta: 0.0055,
+          longitudeDelta: 0.005,
         }}
-        radius={50}
-        strokeColor="rgba(0,0,255,0.5)"
-        fillColor="rgba(0,0,255,0.2)"
-      />
-    </MapView>
+      >
+        <Circle
+          center={{
+            latitude: location.latitude,
+            longitude: location.longitude,
+          }}
+          radius={50}
+          strokeColor="rgba(0,0,255,0.5)"
+          fillColor="rgba(0,0,255,0.2)"
+        />
+      </MapView>
+    </View>
   );
 }
 

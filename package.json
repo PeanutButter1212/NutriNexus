@@ -37,7 +37,8 @@
     "tailwindcss": "^3.4.17",
     "expo-maps": "~0.10.0",
     "expo-location": "~18.1.5",
-    "react-native-maps": "1.20.1"
+    "react-native-maps": "1.20.1",
+    "expo-sensors": "~14.1.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
