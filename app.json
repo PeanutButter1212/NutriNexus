@@ -60,7 +60,9 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+        
       },
+      "permissions": ["ACTIVITY_RECOGNITION"],
       "edgeToEdgeEnabled": true,
       "package": "nutrinuxus.club",
       "config" : {

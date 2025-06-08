@@ -2,12 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 import { View, Text } from "react-native";
 import MapView, { Marker, Circle } from "react-native-maps";
 import * as Location from "expo-location";
-import { Pedometer } from "expo-sensors";
+import { StepProvider, useStep } from "../contexts/StepTrackingContext";
 
 export default function MapScreen() {
   const [location, setLocation] = useState(null);
   const mapRef = useRef(null);
+  const { steps } = useStep();
 
+  //location tracking
   useEffect(() => {
     let subscriber;
 
@@ -60,7 +62,7 @@ export default function MapScreen() {
   return (
     <View className="flex-1">
       <View className="z-10 top-10 left-5 bg-white items-center">
-        <Text className="text-base font-bold text-black">Steps:</Text>
+        <Text className="text-base font-bold text-black">Steps: {steps} </Text>
       </View>
       <MapView
         ref={mapRef}

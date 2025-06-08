@@ -23,20 +23,17 @@ import DropdownComponent from "../components/Dropper";
 import { supabase } from "../lib/supabase";
 import { useFocusEffect } from "@react-navigation/native";
 import useProfileData from "../hooks/useProfileData";
-
+import { useStep } from "../contexts/StepTrackingContext";
 
 export default function Profile({ navigation }) {
   const { session, profile, authMethod } = useAuth();
+  const { steps } = useStep();
   //const [caloriesData, setCaloriesData] = useState([]);
 
   //const [totalCalories, setTotalCalories] = useState(0);
   //const [calorieGoal, setCaloriesGoal] = useState(100);
 
-  const {
-    totalCalories,
-    calorieGoal,
-    caloriesData
-  } = useProfileData();
+  const { totalCalories, calorieGoal, caloriesData } = useProfileData();
   const [referenceData, setReferenceData] = useState([]);
   const [selectedDataType, setSelectedDataType] = useState("Steps");
 
@@ -52,7 +49,7 @@ export default function Profile({ navigation }) {
     { day: "SUN", value: 3500 },
   ];
 
-  console.log("Calories Data: " +  caloriesData)
+  console.log("Calories Data: " + caloriesData);
 
   useEffect(() => {
     if (selectedDataType === "Steps") {
@@ -84,7 +81,6 @@ export default function Profile({ navigation }) {
   const y = d3.scaleLinear().domain(yDomain).range(yRange);
 
   const barWidth = 35;
-
 
   return (
     <ScrollView className="flex-1 bg-white">
@@ -156,7 +152,7 @@ export default function Profile({ navigation }) {
 
             <View className="bg-violet-700 rounded-md py-2 mb-7">
               <Text className="text-white text-center text-sm">Steps </Text>
-              <Text className="text-white text-center text-xl">0</Text>
+              <Text className="text-white text-center text-xl">{steps} </Text>
             </View>
 
             <TouchableOpacity
