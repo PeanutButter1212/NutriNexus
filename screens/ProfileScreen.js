@@ -23,11 +23,10 @@ import DropdownComponent from "../components/Dropper";
 import { supabase } from "../lib/supabase";
 import { useFocusEffect } from "@react-navigation/native";
 import useProfileData from "../hooks/useProfileData";
-import { useStep } from "../contexts/StepTrackingContext";
 
 export default function Profile({ navigation }) {
   const { session, profile, authMethod } = useAuth();
-  const { steps } = useStep();
+
   //const [caloriesData, setCaloriesData] = useState([]);
 
   //const [totalCalories, setTotalCalories] = useState(0);
@@ -152,7 +151,7 @@ export default function Profile({ navigation }) {
 
             <View className="bg-violet-700 rounded-md py-2 mb-7">
               <Text className="text-white text-center text-sm">Steps </Text>
-              <Text className="text-white text-center text-xl">{steps} </Text>
+              <Text className="text-white text-center text-xl"> 0 </Text>
             </View>
 
             <TouchableOpacity
