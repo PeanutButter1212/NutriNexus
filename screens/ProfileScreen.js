@@ -23,9 +23,11 @@ import DropdownComponent from "../components/Dropper";
 import { supabase } from "../lib/supabase";
 import { useFocusEffect } from "@react-navigation/native";
 import useProfileData from "../hooks/useProfileData";
+import { useDistance } from "../contexts/DistanceTrackingContext";
 
 export default function Profile({ navigation }) {
   const { session, profile, authMethod } = useAuth();
+  const { distance } = useDistance();
 
   //const [caloriesData, setCaloriesData] = useState([]);
 
@@ -48,7 +50,7 @@ export default function Profile({ navigation }) {
     { day: "SUN", value: 3500 },
   ];
 
-  console.log("Calories Data: " + caloriesData);
+  //console.log("Calories Data: " + caloriesData);
 
   useEffect(() => {
     if (selectedDataType === "Steps") {
@@ -151,7 +153,9 @@ export default function Profile({ navigation }) {
 
             <View className="bg-violet-700 rounded-md py-2 mb-7">
               <Text className="text-white text-center text-sm">Steps </Text>
-              <Text className="text-white text-center text-xl"> 0 </Text>
+              <Text className="text-white text-center text-xl">
+                {(distance / 0.75).toFixed(0)}{" "}
+              </Text>
             </View>
 
             <TouchableOpacity
@@ -161,7 +165,9 @@ export default function Profile({ navigation }) {
               <Text className="text-white text-center text-sm">
                 Calories Burnt
               </Text>
-              <Text className="text-white text-center text-xl">0</Text>
+              <Text className="text-white text-center text-xl">
+                Math.round({(distance / 0.75).toFixed(0)}/27)
+              </Text>
             </TouchableOpacity>
           </View>
         </View>

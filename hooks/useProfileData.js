@@ -1,28 +1,27 @@
 import { useEffect, useState } from "react";
-import { fetchProfileCalories, fetchWeeklyCalories } from "../services/profileService";
+import {
+  fetchProfileCalories,
+  fetchWeeklyCalories,
+} from "../services/profileService";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function useProfileData() {
-    const { session } = useAuth() 
-    const [totalCalories, setTotalCalories] = useState(0);
-    const [calorieGoal, setCalorieGoal] = useState(100);
-    const [caloriesData, setCaloriesData] = useState([]);
-    const userId = session?.user?.id;
-    useEffect(() => {
-        const fetchProfileData = async () => {
-            const profileInfo = await fetchProfileCalories(userId)
-            const weeklyCalories = await fetchWeeklyCalories(userId)
-            console.log("output fron fetchweeklycalories: " + weeklyCalories)
-            setTotalCalories(profileInfo.calories_consumed)
-            setCalorieGoal(profileInfo.calorie_goal)
-            setCaloriesData(weeklyCalories)
+  const { session } = useAuth();
+  const [totalCalories, setTotalCalories] = useState(0);
+  const [calorieGoal, setCalorieGoal] = useState(100);
+  const [caloriesData, setCaloriesData] = useState([]);
+  const userId = session?.user?.id;
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      const profileInfo = await fetchProfileCalories(userId);
+      const weeklyCalories = await fetchWeeklyCalories(userId);
+      //console.log("output fron fetchweeklycalories: " + weeklyCalories)
+      setTotalCalories(profileInfo.calories_consumed);
+      setCalorieGoal(profileInfo.calorie_goal);
+      setCaloriesData(weeklyCalories);
+    };
+    fetchProfileData();
+  }, [session]);
 
-        };
-        fetchProfileData(); 
-    },
-
-    [session]);
-
-    return { totalCalories, calorieGoal, caloriesData };
+  return { totalCalories, calorieGoal, caloriesData };
 }
-
