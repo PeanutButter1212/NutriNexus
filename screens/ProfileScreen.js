@@ -27,10 +27,6 @@ import useProfileData from "../hooks/useProfileData";
 
 export default function Profile({ navigation }) {
   const { session, profile, authMethod } = useAuth();
-  //const [caloriesData, setCaloriesData] = useState([]);
-
-  //const [totalCalories, setTotalCalories] = useState(0);
-  //const [calorieGoal, setCaloriesGoal] = useState(100);
 
   const {
     totalCalories,

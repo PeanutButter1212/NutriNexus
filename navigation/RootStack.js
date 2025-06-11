@@ -11,30 +11,42 @@ const Stack = createNativeStackNavigator();
 
 export default function RootStack() {
     const { session, isOtpVerified } = useAuth();
-    const isAuthenticated = !!session; 
+    const hasSession = !!session; 
+   // const needsOtpVerification = false;
+    //hasSession;
+    //!isOtpVerified;
+   // const isFullyAuthenticated = hasSession;
+    //&& isOtpVerified;
+    /*
+    {!hasSession && (
+      <Stack.Screen name="AuthStack" component={AuthStack} />
+  )}
+  
+  {needsOtpVerification && (
+      <Stack.Screen name="OTP" component={OTPScreen} />
+  )}
+      */
 
     return (
     <Stack.Navigator screenOptions={{ headerShown: false }}> 
-        { !isAuthenticated || !isOtpVerified 
-        ? (
-           <Stack.Screen name="AuthStack" component={AuthStack} />
-        ) : (
-            <>
-            <Stack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }}/>
-            <Stack.Screen name="Detail" component={DetailScreen} options={{ headerShown: false }}/>
-            <Stack.Screen name="Activity Log" component={ActivityLogScreen} options={{ headerShown: false }}/>
-            <Stack.Screen
-            name="Setting"
-            component={SettingScreen}
-            options={{ 
-              headerShown: true,
-              title: "Settings",
-              headerBackTitle: "Back"
-            }}
-          />
-          </>
-            )}
+        
+  
+                <>
+                <Stack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }}/>
+                <Stack.Screen name="Detail" component={DetailScreen} options={{ headerShown: false }}/>
+                <Stack.Screen name="Activity Log" component={ActivityLogScreen} options={{ headerShown: false }}/>
+                <Stack.Screen
+                name="Setting"
+                component={SettingScreen}
+                options={{ 
+                  headerShown: true,
+                  title: "Settings",
+                  headerBackTitle: "Back"
+                }}
+              />
+              </>
+                
     </Stack.Navigator>
-    )
+    );
 
 }
