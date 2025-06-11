@@ -1,10 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { View, Text, Alert } from "react-native";
 import MapView, { Marker, Circle } from "react-native-maps";
 import * as Location from "expo-location";
 import { useDistance } from "../contexts/DistanceTrackingContext";
 import haversineDistance from "haversine-distance";
 import { useNavigation } from "@react-navigation/native";
+import BottomSheet from "@gorhom/bottom-sheet";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+
+//to expand more markers i can create an array for markers and usestate to see which is selected then display that instead of creating multiple
 
 export default function MapScreen() {
   const { location, distance } = useDistance();
@@ -14,6 +18,15 @@ export default function MapScreen() {
   const navigation = useNavigation();
 
   const [loc1InRadius, setLoc1InRadius] = useState(false);
+
+  const BottomSheetRef = useRef(null);
+
+  const snapPoints = ["50%"];
+
+  const openSheet = () => {
+    console.log("Opening bottom sheet");
+    BottomSheetRef.current?.expand();
+  };
 
   //camera tracking
 
@@ -87,13 +100,34 @@ export default function MapScreen() {
           pinColor={loc1InRadius ? "green" : "red"}
           onPress={() => {
             if (loc1InRadius) {
-              navigation.navigate("HawkerScreen1");
+              openSheet();
             } else {
               Alert.alert("Too far please move closer to interact");
             }
           }}
         />
       </MapView>
+      {/*lcoation 1 content in bottom sheet*/}
+
+      <BottomSheet ref={BottomSheetRef} index={0} snapPoints={snapPoints}>
+        <View style={{ padding: 20 }}>
+          <Text
+            style={{
+              paddingTop: 20,
+              paddingHorizontal: 24,
+              paddingBottom: 1000,
+              backgroundColor: "white",
+            }}
+          >
+            HELLO
+          </Text>
+          <View style={{ height: 300, backgroundColor: "red" }}>
+            <Text style={{ fontSize: 20, color: "white" }}>
+              Bottom Sheet Content
+            </Text>
+          </View>
+        </View>
+      </BottomSheet>
     </View>
   );
 }
