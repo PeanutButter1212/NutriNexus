@@ -27,12 +27,8 @@ import { useDistance } from "../contexts/DistanceTrackingContext";
 
 export default function Profile({ navigation }) {
   const { session, profile, authMethod } = useAuth();
+
   const { distance } = useDistance();
-
-  //const [caloriesData, setCaloriesData] = useState([]);
-
-  //const [totalCalories, setTotalCalories] = useState(0);
-  //const [calorieGoal, setCaloriesGoal] = useState(100);
 
   const { totalCalories, calorieGoal, caloriesData } = useProfileData();
   const [referenceData, setReferenceData] = useState([]);
@@ -166,7 +162,7 @@ export default function Profile({ navigation }) {
                 Calories Burnt
               </Text>
               <Text className="text-white text-center text-xl">
-                Math.round({(distance / 0.75).toFixed(0)}/27)
+                {Math.round(distance * 0.05)} kcal
               </Text>
             </TouchableOpacity>
           </View>

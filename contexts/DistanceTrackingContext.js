@@ -1,29 +1,45 @@
+//created a context to allow distance tracking across all screens
+
 import { createContext, useContext, useEffect, useState, useRef } from "react";
 import * as Location from "expo-location";
 import haversine from "haversine-distance";
 import { Accelerometer } from "expo-sensors";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "./AuthContext";
-import { dist } from "@shopify/react-native-skia";
+import useStepsData from "../hooks/useActivityData";
 
 const DistanceTrackingContext = createContext();
 
 export const DistanceProvider = ({ children }) => {
+  const { session } = useAuth();
+  const { steps, distance: initialDistance, loading } = useStepsData(session);
   const [distance, setDistance] = useState(0);
   const [previousLocation, setPreviousLocation] = useState(null);
   const [location, setLocation] = useState(null);
   const [isMoving, setIsMoving] = useState(false);
+  const hasInitialized = useRef(false); //make sure tabel not updated with 0
+  const distanceRef = useRef(0);
 
-  const { session } = useAuth();
+  useEffect(() => {
+    distanceRef.current = distance;
+  }, [distance]);
+
   const user = session?.user;
-  //const distanceRef = useRef(0); // Using ref to avoid stale closures
+
+  //obtain from supabase svaed values so when user logs in will see past values
+  useEffect(() => {
+    if (!hasInitialized.current && !loading) {
+      setDistance(initialDistance);
+      hasInitialized.current = true;
+    }
+  }, [initialDistance, loading]);
 
   //to imporve accuracy i try use this to detect movement
   //now it wont increase when i not moving
   useEffect(() => {
     const accelSubscription = Accelerometer.addListener(({ x, y, z }) => {
       const total = Math.sqrt(x * x + y * y + z * z);
-      setIsMoving(total > 1);
+      setIsMoving(total > 1); //this the sensitivity to determine if phone is shaking
     });
 
     Accelerometer.setUpdateInterval(1000);
@@ -46,7 +62,7 @@ export const DistanceProvider = ({ children }) => {
       subscription = await Location.watchPositionAsync(
         {
           accuracy: Location.Accuracy.High, //balance(use wifi for indoors) or high(use GPS only) or BestForNaviagtion
-          timeInterval: 1000, //updates location+distanceevery 5sec or 2m moved
+          timeInterval: 1000, //updates location+distanceevery sec or 2m moved
           distanceInterval: 2,
         },
         (loc) => {
@@ -76,7 +92,7 @@ export const DistanceProvider = ({ children }) => {
           const MIN_WALKING_SPEED = 0.01;
           const MAX_WALKING_SPEED = 5;
 
-          //this helps to filter out jitters in gps
+          //this helps to filter out jitters/teleporting thingy in gps
           const isValidMovement =
             distanceTravelled > 1 &&
             distanceTravelled < 15 &&
@@ -103,24 +119,41 @@ export const DistanceProvider = ({ children }) => {
   //update supabase table with steps for users each time they enter app(best way possible)
   useEffect(() => {
     const interval = setInterval(async () => {
-      const steps = Math.round(distance / 0.75);
+      if (!hasInitialized.current) return;
+
+      const currentDistance = distanceRef.current;
+      console.log("📏 distanceRef.current is", currentDistance);
+      if (currentDistance === 0) return;
+
+      const steps = Math.round(currentDistance / 0.75);
       const today = new Date().toISOString().split("T")[0];
 
-      const { data: user } = await supabase.auth.getUser();
-      if (!user) return;
+      const { data, error } = await supabase.auth.getUser();
+      const user = data?.user;
+
+      if (!user) {
+        console.warn("No user found", error);
+        return;
+      }
+
+      console.log("Uploading to Supabase", {
+        currentDistance,
+        steps: Math.round(currentDistance / 0.75),
+      });
 
       await supabase.from("step_log").upsert(
         {
-          user_id: user.id,
+          id: user.id,
           steps: steps,
           date: today,
+          distance: currentDistance,
         },
-        { onConflict: ["user_id", "date"] }
+        { onConflict: ["id", "date"] }
       );
-    }, 3000);
+    }, 10000); //update supabase every 10 sec
 
     return () => clearInterval(interval);
-  }, [distance]);
+  }, []);
 
   //this is to wrap it around children so we can track disatnce across all screens like we want
   return (
