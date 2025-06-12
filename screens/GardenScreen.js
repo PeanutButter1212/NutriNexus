@@ -10,6 +10,7 @@ import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 import InventoryColumn from '../components/InventoryColumn'
 import DraggableItem from '../components/DraggableItem'
 import { fetchPlants } from '../services/gardenService';
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height; 
 
@@ -21,20 +22,38 @@ const SPACING = 41;
 const xStartOfGarden = SCREEN_WIDTH / 2 
 const yStartOfGarden = 0.25 * SCREEN_HEIGHT; 
 
-const mockInventory = [
+const mockItemBank = [
   {
     id: 'durian',
-    name: 'Durian',
-    image_url: 'https://your-supa-url.com/durian.png',
-    count: 5,
+    name: 'durian',
+    image_url: 'https://rkrdnsnujizdskzbdwlp.supabase.co/storage/v1/object/public/item-images//durian.png',
+    type: "decor",
   },
   {
     id: 'bougainvilla',
-    name: 'Bougainvilla',
-    image_url: 'https://your-supa-url.com/bougainvilla.png',
-    count: 3,
+    name: 'bougainvilla',
+    image_url: 'https://rkrdnsnujizdskzbdwlp.supabase.co/storage/v1/object/public/item-images//bougainvilla.png',
+    type: "decor"
   },
 ]
+
+const mockInventory = [
+  {
+    id: 'durian',
+    name: 'durian',
+    count: 7
+
+  },{
+    id: 'bougainvilla',
+    name: 'bougainvilla',
+    count: 2 
+  }
+
+]
+
+
+
+
 
 const getIsometricPosition = (col, row) => {
   const alignmentX = (col - row) * (SPACING * 0.866); 
@@ -75,6 +94,16 @@ const diamondView = (centerX, centerY, size) => {
 
 export default function GardenScreen() {
 
+  const fonts = getCustomFonts();
+  
+  const durianSkiaImage = useImage(mockItemBank[0].image_url);
+  const bougainvillaSkiaImage = useImage(mockItemBank[1].image_url);
+
+  const mappedSkiaImages = {
+    durian: durianSkiaImage,
+    bougainvilla: bougainvillaSkiaImage,
+  };
+
   const durian = useImage(durianImage); 
   const [isDragging, setIsDragging] = useState(false);
   const [draggedItemData, setDraggedItemData] = useState(null);
@@ -84,9 +113,77 @@ export default function GardenScreen() {
   const [hoverTile, setHoverTile] = useState(null);
   const [plantList, setPlantList] = useState([]);
 
+  const renderInventoryColumns = () => {
+    const columns = [];
+
+    if (mockInventory.length == 0) {
+      return [];
+    } 
+
+    for (let i = 0; i < mockInventory.length; i += 2) {
+      const topInv = mockInventory[i];
+      const bottomInv = mockInventory[i + 1];
+  
+      const topInfo = mockItemBank.find(item => item.id === topInv.id);
+      const bottomInfo = bottomInv ? mockItemBank.find(item => item.id === bottomInv.id) : null;
+
+      console.log(topInfo)
+      console.log(bottomInfo)
+
+      const topRef = useRef();
+      const bottomRef = useRef();
+  
+      columns.push(
+        <InventoryColumn
+          key={`column-${i}`}
+          topItem={{
+            count: topInv.count,
+            children: (
+              <Pressable
+                ref={topRef}
+                onPressIn={() => 
+                  handlePressIn(topRef, topInv.id, topInfo.image_url, 7, 7) 
+                }
+              >
+                <Image
+                  source={{ uri: topInfo?.image_url }}
+                  className="w-20 h-20"
+                />
+              </Pressable>
+            ),
+            slotRef: topRef,
+          }}
+          bottomItem={
+            bottomInv && bottomInfo
+              ? {
+                  count: bottomInv.count,
+                  children: (
+                    <Pressable
+                      ref={bottomRef}
+                      onPressIn={() => 
+                        handlePressIn(bottomRef, bottomInv.id, bottomInfo.image_url, 0, 0) }
+                    >
+                      <Image
+                        source={{ uri: bottomInfo.image_url }}
+                        className="w-20 h-20"
+                      />
+                    </Pressable>
+                  ),
+                  slotRef: bottomRef,
+                }
+              : undefined
+          }
+        />
+      );
+    }
+  
+    return columns;
+  };
+
   useEffect(() => {
     fetchPlants().then(setPlantList);
   }, []);
+
 
 
   useEffect(() => {
@@ -97,11 +194,30 @@ export default function GardenScreen() {
     }, 0);
   }, []);
 
-  const plantImageMap = useMemo(() => {
-    return Object.fromEntries(
-      plantList.map(plant => [plant.id, useImage({ uri: plant.image_url})])
-    )
-  })
+  const handlePressIn = (ref, plantId, imageUrl, offsetX, offsetY) => {
+    setIsDragging(false);
+    setDraggedItemData(null);
+  
+    setTimeout(() => {
+      ref.current.measure((fx, fy, width, height, px, py) => {
+        setDraggedItemData({
+          startX: px + offsetX,
+          startY: py + offsetY,
+          plantId,
+          image: { uri: imageUrl },
+        });
+        setIsDragging(true);
+      });
+    }, 0);
+
+  }
+
+  
+
+  const handleDebug = () => {
+    setPlacedPlants([]);
+  }
+
 
   const tileArray = () => {
     const views = []; 
@@ -129,16 +245,6 @@ export default function GardenScreen() {
   const durianSlotRef = useRef();
 
 
-  const handlePressIn = () => {
-      durianSlotRef.current?.measure((fx, fy, width, height, px, py) => {
-        setDraggedItemData({
-          startX: px + 7,
-          startY: py + 6, 
-          image: durianImage,
-        });
-        setIsDragging(true);
-      });
-    };
 
 
 
@@ -174,20 +280,24 @@ export default function GardenScreen() {
 
   const handleDragEnd = ({ dropX, dropY }) => {
     setIsDragging(false);
-    setDraggedItemData(null);
     setHoverTile(null);
 
     const tile = getClosestTile(dropX, dropY)
-    if (tile) {
-      placedPlants.push({
-        image: durian,
-        x: tile.x,
-        y: tile.y
-
-      });
+    if (tile && draggedItemData?.plantId) {
+    
+      const skiaImage = mappedSkiaImages[draggedItemData.plantId];
+      if (skiaImage) {
+        setPlacedPlants(prev => [
+          ...prev,
+          {
+            image: skiaImage,
+            x: tile.x,
+            y: tile.y,
+          },
+        ]);
+      }
     }
 
-    setPlacedPlants([...placedPlants]);
    
 
   };
@@ -294,22 +404,7 @@ export default function GardenScreen() {
         <SafeAreaProvider> 
           <SafeAreaView>
           <ScrollView className="flex-row flex-wrap m-4" horizontal scrollEnabled={!isDragging}>
-              <InventoryColumn
-                topItem={{
-                  count: 5,
-                  children: (
-                    <Pressable onPressIn={handlePressIn} ref={durianSlotRef}>
-                      <Image source={durianImage} className="w-20 h-20" />
-                    </Pressable>
-                  ),
-                  slotRef: durianSlotRef,
-                }}
-                bottomItem={{
-                  count: 3,
-                  children: <Image source={require("../assets/garden/plants/bougainvilla.png")} className="w-20 h-20" />,
-                }}
-              />
-              <InventoryColumn topItem={{ count: 4 }} />
+              {renderInventoryColumns()}
             </ScrollView>
               
               
@@ -335,7 +430,7 @@ export default function GardenScreen() {
           />
         )}
 
-    <Pressable onPress={() => setPlacedPlants([])}>
+    <Pressable onPress={() => handleDebug()}>
       <Text style={{ color: 'white', padding: 10, backgroundColor: 'red' }}>
         Clear Garden
       </Text>
