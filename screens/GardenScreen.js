@@ -1,11 +1,5 @@
-//try to implement logic from backend here 
-/*
-1. draggable
-2. inventory logic done
-*/
-
 import { View, Text, Image, Dimensions, ImageBackground, ScrollView, UIManager, Pressable, findNodeHandle, TouchableWithoutFeedback} from 'react-native';
-import React,  { useRef, useState, useEffect } from 'react'
+import React,  { useRef, useState, useEffect, useMemo } from 'react'
 import gardenImage from '../assets/garden/garden.png'
 import durianImage from '../assets/garden/plants/durian.png'
 import bougainvillaImage from '../assets/garden/plants/bougainvilla.png'
@@ -15,7 +9,7 @@ import { getCustomFonts } from '../utils/loadFonts'
 import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 import InventoryColumn from '../components/InventoryColumn'
 import DraggableItem from '../components/DraggableItem'
-
+import { fetchPlants } from '../services/gardenService';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height; 
 
@@ -27,6 +21,20 @@ const SPACING = 41;
 const xStartOfGarden = SCREEN_WIDTH / 2 
 const yStartOfGarden = 0.25 * SCREEN_HEIGHT; 
 
+const mockInventory = [
+  {
+    id: 'durian',
+    name: 'Durian',
+    image_url: 'https://your-supa-url.com/durian.png',
+    count: 5,
+  },
+  {
+    id: 'bougainvilla',
+    name: 'Bougainvilla',
+    image_url: 'https://your-supa-url.com/bougainvilla.png',
+    count: 3,
+  },
+]
 
 const getIsometricPosition = (col, row) => {
   const alignmentX = (col - row) * (SPACING * 0.866); 
@@ -67,10 +75,33 @@ const diamondView = (centerX, centerY, size) => {
 
 export default function GardenScreen() {
 
-  const durian = useImage(bougainvillaImage); 
+  const durian = useImage(durianImage); 
   const [isDragging, setIsDragging] = useState(false);
   const [draggedItemData, setDraggedItemData] = useState(null);
+  const [placedPlants, setPlacedPlants] = useState([]);
+  const gardenAreaRef = useRef(null);
+  const [gardenOffset, setGardenOffset] = useState({ x: 0, y: 0 });
+  const [hoverTile, setHoverTile] = useState(null);
+  const [plantList, setPlantList] = useState([]);
 
+  useEffect(() => {
+    fetchPlants().then(setPlantList);
+  }, []);
+
+
+  useEffect(() => {
+    setTimeout(() => {
+      gardenAreaRef.current?.measure((fx, fy, width, height, px, py) => {
+        setGardenOffset({ x: px, y: py });
+      });
+    }, 0);
+  }, []);
+
+  const plantImageMap = useMemo(() => {
+    return Object.fromEntries(
+      plantList.map(plant => [plant.id, useImage({ uri: plant.image_url})])
+    )
+  })
 
   const tileArray = () => {
     const views = []; 
@@ -101,35 +132,72 @@ export default function GardenScreen() {
   const handlePressIn = () => {
       durianSlotRef.current?.measure((fx, fy, width, height, px, py) => {
         setDraggedItemData({
-          startX: px,
-          startY: py,
+          startX: px + 7,
+          startY: py + 6, 
           image: durianImage,
         });
         setIsDragging(true);
       });
     };
-    
-  const handleDragStart = () => {
-    if (!durianSlotRef.current) return;
+
+
+
+    const getClosestTile = ( screenX, screenY ) => {
+      const relativeX = screenX - gardenOffset.x
+      const relativeY = screenY - gardenOffset.y 
   
-    durianSlotRef.current.measureInWindow((x, y, width, height) => {
-      setDraggedItemData({
-        image: durianImage,
-        x: x + width / 2,
-        y: y + height / 2,
-      });
-      setIsDragging(true);
-    });
+  
+  
+      let min_dist = Infinity;
+      let tile = null;
+  
+      for (let i = 0; i < gridView.length; i++) {
+        const xDisplacement = gridView[i].x - relativeX;
+        const yDisplacement = gridView[i].y - relativeY; 
+        const dist = Math.sqrt(xDisplacement * xDisplacement + yDisplacement * yDisplacement)
+  
+        if (dist <= DIAMOND_SIZE && dist < min_dist) {
+          tile = gridView[i]
+          min_dist = dist
+  
+        }
+      }
+  
+      return tile; 
+    }
+  
+
+  const handleDragMove = ({ x, y }) => {
+    setHoverTile(getClosestTile(x, y));
   };
   
 
-  const handleDragEnd = () => {
+  const handleDragEnd = ({ dropX, dropY }) => {
     setIsDragging(false);
     setDraggedItemData(null);
+    setHoverTile(null);
+
+    const tile = getClosestTile(dropX, dropY)
+    if (tile) {
+      placedPlants.push({
+        image: durian,
+        x: tile.x,
+        y: tile.y
+
+      });
+    }
+
+    setPlacedPlants([...placedPlants]);
+   
+
   };
   
 
   return (
+    <View
+    ref={gardenAreaRef}
+    style={{ flex: 1, position: 'relative' }}
+    >
     <View className="flex-1 relative flex-col">
       <View style={{ height: '65%', width: '100%' }}>
         <Image 
@@ -145,26 +213,15 @@ export default function GardenScreen() {
        <Canvas
        style={{
         position: 'absolute',
+        top: 0,
+        left: 0,
         width: SCREEN_WIDTH,
         height: SCREEN_HEIGHT,
        }}
        > 
         {gridView.map(({ path, col, row, x, y }, index) => (
     
-           /*{
-           {durian && col === 2 && row === 2 && (
            
-             <SkiaImage
-               key={`image-${col}-${row}`}
-               image={durian}
-               x={x - IMAGE_WIDTH / 2}
-               y={y - IMAGE_HEIGHT*0.75}
-               width={IMAGE_WIDTH}
-               height={IMAGE_HEIGHT}
-               fit="contain"
-             />
-            }
-           ) }*/
           <Path
             key={`tile-${col}-${row}`}
             path={path}
@@ -176,8 +233,44 @@ export default function GardenScreen() {
         ))}
 
 
+          {gridView.map(({ path, col, row, x, y }) => (
+            <Path
+              key={`tile-${col}-${row}`}
+              path={path}
+              style="fill"
+              color="rgba(255, 100, 100, 0.4)"
+              strokeWidth={1.5}
+              strokeColor="#ff6666"
+            />
+          ))}
+
+        {placedPlants.map((plant, idx) => (
+          <SkiaImage
+            key={`plant-${idx}`}
+            image={plant.image}
+            x={plant.x - IMAGE_WIDTH / 2}
+            y={plant.y - IMAGE_HEIGHT * 0.75}
+            width={IMAGE_WIDTH}
+            height={IMAGE_HEIGHT}
+            fit="contain"
+          />
+        ))}
+
+      {hoverTile && (
+        <Path
+          path={diamondView(hoverTile.x, hoverTile.y, DIAMOND_SIZE)}
+          style="fill"
+          color="rgba(255, 255, 255, 0.3)" // semi-transparent
+          strokeWidth={2}
+          strokeColor="#ffffff"
+        />
+      )}
+
+
+
 
        </Canvas>
+
 
        
 
@@ -206,7 +299,7 @@ export default function GardenScreen() {
                   count: 5,
                   children: (
                     <Pressable onPressIn={handlePressIn} ref={durianSlotRef}>
-                      <Image source={durianImage} style={{ width: 80, height: 80 }} />
+                      <Image source={durianImage} className="w-20 h-20" />
                     </Pressable>
                   ),
                   slotRef: durianSlotRef,
@@ -227,24 +320,32 @@ export default function GardenScreen() {
         </SafeAreaProvider>
         
 
-         
-
+  
 
         </ImageBackground>
 
-        {isDragging && draggedItemData && (
-        <DraggableItem
-          image={draggedItemData.image}
-          startX={draggedItemData.startX}
-          startY={draggedItemData.startY}
-          onDragEnd={handleDragEnd}
-        />
-            )}
-
-
       
+        {isDragging && draggedItemData && (
+          <DraggableItem
+            image={draggedItemData.image}
+            startX={draggedItemData.startX}
+            startY={draggedItemData.startY}
+            onDragEnd={handleDragEnd}
+            onDragMove={handleDragMove}
+          />
+        )}
+
+    <Pressable onPress={() => setPlacedPlants([])}>
+      <Text style={{ color: 'white', padding: 10, backgroundColor: 'red' }}>
+        Clear Garden
+      </Text>
+    </Pressable>
 
 
+
+
+    </View>
+   
     </View>
 
   )

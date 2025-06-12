@@ -5,17 +5,15 @@ const DraggableItem = ({
     image,
     startX = 0,
     startY = 0, 
-    onDragEnd
+    onDragEnd,
+    onDragMove
   }) => {
     const initialPosition = useRef({ x: startX, y: startY });
 
     const pan = useRef(new Animated.ValueXY(initialPosition.current)).current;
 
-
-
     const panResponder = useRef(
         PanResponder.create({
-            //these 4 just set to true according to documentation 
             onStartShouldSetPanResponder: (evt, gestureState) => true,
             onStartShouldSetPanResponderCapture: (evt, gestureState) =>
                 true,
@@ -27,13 +25,21 @@ const DraggableItem = ({
                 pan.setValue({ x: 0, y: 0 });           
               },
         
-            onPanResponderMove: Animated.event(
-                [null, { dx: pan.x, dy: pan.y }],
-                { useNativeDriver: false }
-              ),
+            onPanResponderMove: (evt, gestureState) => {
+              const xDisplacement = gestureState.moveX
+              const yDisplacement = gestureState.moveY 
 
-            onPanResponderRelease: () => {
-                onDragEnd?.();
+              pan.setValue({ x: gestureState.dx, y: gestureState.dy });
+              onDragMove?.({ x: xDisplacement, y: yDisplacement
+               });
+            },
+
+            onPanResponderRelease: (evt, gestureState) => {
+                const dropX = gestureState.moveX;
+                const dropY = gestureState.moveY; 
+
+
+                onDragEnd?.({dropX, dropY});
                 pan.setValue(initialPosition.current);
               },
             })
@@ -48,7 +54,7 @@ const DraggableItem = ({
                 transform: pan.getTranslateTransform(),
               }}
             >
-            <Image source={image} style={{ width: 80, height: 80 }}/>
+            <Image source={image}  className="w-20 h-20" />
         </Animated.View>
 
     )

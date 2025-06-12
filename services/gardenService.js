@@ -14,14 +14,16 @@ export async function retrieveDecorInventory(userId) {
     
 }
 
-export async function insertFoodEntry(userId) {
-    const { error } = await supabase.from("activity_log").insert([
-      {
-        food,
-        calories: parseInt(calories),
-        user_id: userId 
-      },
-    ]);
-    return {error};
-  
+
+export async function fetchPlants() {
+  const { data, error } = await supabase
+    .from('plants')
+    .select('id, name, image_url');
+
+  if (error) {
+    console.error('Failed to fetch plants:', error);
+    return [];
   }
+
+  return data;
+};
