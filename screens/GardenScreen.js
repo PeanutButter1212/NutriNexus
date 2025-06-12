@@ -9,7 +9,9 @@ import { getCustomFonts } from '../utils/loadFonts'
 import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 import InventoryColumn from '../components/InventoryColumn'
 import DraggableItem from '../components/DraggableItem'
-import { fetchPlants } from '../services/gardenService';
+import { fetchPlants, handleSuccessfulPlacement, retrieveDecorInventory } from '../services/gardenService';
+import { useAuth } from "../contexts/AuthContext";
+import useDecorInventory from '../hooks/useDecorInventory';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height; 
@@ -24,17 +26,18 @@ const yStartOfGarden = 0.25 * SCREEN_HEIGHT;
 
 const mockItemBank = [
   {
-    id: 'durian',
+    id: 'bff1403f-7c39-4d09-ac07-4cc7b51019fe',
     name: 'durian',
     image_url: 'https://rkrdnsnujizdskzbdwlp.supabase.co/storage/v1/object/public/item-images//durian.png',
     type: "decor",
   },
   {
-    id: 'bougainvilla',
+    id: '87c30106-bb4c-4796-a61a-6a1fd31be753',
     name: 'bougainvilla',
     image_url: 'https://rkrdnsnujizdskzbdwlp.supabase.co/storage/v1/object/public/item-images//bougainvilla.png',
     type: "decor"
   },
+  
 ]
 
 const mockInventory = [
@@ -43,11 +46,8 @@ const mockInventory = [
     name: 'durian',
     count: 7
 
-  },{
-    id: 'bougainvilla',
-    name: 'bougainvilla',
-    count: 2 
   }
+
 
 ]
 
@@ -93,6 +93,7 @@ const diamondView = (centerX, centerY, size) => {
 
 
 export default function GardenScreen() {
+  const { session, profile } = useAuth()
 
   const fonts = getCustomFonts();
   
@@ -100,38 +101,47 @@ export default function GardenScreen() {
   const bougainvillaSkiaImage = useImage(mockItemBank[1].image_url);
 
   const mappedSkiaImages = {
-    durian: durianSkiaImage,
-    bougainvilla: bougainvillaSkiaImage,
+    'bff1403f-7c39-4d09-ac07-4cc7b51019fe': durianSkiaImage,
+    '87c30106-bb4c-4796-a61a-6a1fd31be753': bougainvillaSkiaImage,
   };
+  
 
-  const durian = useImage(durianImage); 
+
+
+
   const [isDragging, setIsDragging] = useState(false);
   const [draggedItemData, setDraggedItemData] = useState(null);
   const [placedPlants, setPlacedPlants] = useState([]);
   const gardenAreaRef = useRef(null);
   const [gardenOffset, setGardenOffset] = useState({ x: 0, y: 0 });
   const [hoverTile, setHoverTile] = useState(null);
+  const decorInventory = useDecorInventory();
   const [plantList, setPlantList] = useState([]);
+  
+  const inventoryRefs = useMemo(() => {
+    return decorInventory.map(() => ({
+      ref: React.createRef(),
+    }));
+  }, [decorInventory]);
 
+  
   const renderInventoryColumns = () => {
     const columns = [];
 
-    if (mockInventory.length == 0) {
+    if (decorInventory.length == 0) {
       return [];
     } 
 
-    for (let i = 0; i < mockInventory.length; i += 2) {
-      const topInv = mockInventory[i];
-      const bottomInv = mockInventory[i + 1];
+    for (let i = 0; i < decorInventory.length; i += 2) {
+      const topInv = decorInventory[i];
+      const bottomInv = decorInventory[i + 1];
   
-      const topInfo = mockItemBank.find(item => item.id === topInv.id);
-      const bottomInfo = bottomInv ? mockItemBank.find(item => item.id === bottomInv.id) : null;
+      const topInfo = mockItemBank.find(item => item.id === topInv.item_id);
+      const bottomInfo = bottomInv ? mockItemBank.find(item => item.id === bottomInv.item_id) : null;
 
-      console.log(topInfo)
-      console.log(bottomInfo)
 
-      const topRef = useRef();
-      const bottomRef = useRef();
+      const topRef = inventoryRefs[i]?.ref;
+      const bottomRef = bottomInv ? inventoryRefs[i + 1]?.ref : null;
   
       columns.push(
         <InventoryColumn
@@ -142,7 +152,8 @@ export default function GardenScreen() {
               <Pressable
                 ref={topRef}
                 onPressIn={() => 
-                  handlePressIn(topRef, topInv.id, topInfo.image_url, 7, 7) 
+                  handlePressIn(topRef, topInv.item_id, topInfo.image_url, 7, 7) 
+                  
                 }
               >
                 <Image
@@ -161,7 +172,7 @@ export default function GardenScreen() {
                     <Pressable
                       ref={bottomRef}
                       onPressIn={() => 
-                        handlePressIn(bottomRef, bottomInv.id, bottomInfo.image_url, 0, 0) }
+                        handlePressIn(bottomRef, bottomInv.item_id, bottomInfo.image_url, 0, 0) }
                     >
                       <Image
                         source={{ uri: bottomInfo.image_url }}
@@ -180,11 +191,25 @@ export default function GardenScreen() {
     return columns;
   };
 
+  
   useEffect(() => {
-    fetchPlants().then(setPlantList);
+    const loadInventory = async () => {
+      try {
+        const plantList = await retrieveDecorInventory(session.user.id);
+
+
+
+  
+        
+      } catch (err) {
+        console.error('Failed to fetch inventory:', err);
+      }
+    };
+  
+    loadInventory();
   }, []);
 
-
+  
 
   useEffect(() => {
     setTimeout(() => {
@@ -193,6 +218,21 @@ export default function GardenScreen() {
       });
     }, 0);
   }, []);
+
+  const decrementInventory = (plantId) => {
+    setInventory(prev => 
+      prev 
+      .map(
+        item =>
+          item.item_id === plantId 
+          ? {...item, count: item.count - 1}
+          : item
+      )
+      .filter(item => item.count > 0)
+
+    )
+
+  }
 
   const handlePressIn = (ref, plantId, imageUrl, offsetX, offsetY) => {
     setIsDragging(false);
@@ -242,35 +282,34 @@ export default function GardenScreen() {
   };
 
   const gridView = tileArray(); 
-  const durianSlotRef = useRef();
 
 
 
 
 
-    const getClosestTile = ( screenX, screenY ) => {
-      const relativeX = screenX - gardenOffset.x
-      const relativeY = screenY - gardenOffset.y 
-  
-  
-  
-      let min_dist = Infinity;
-      let tile = null;
-  
-      for (let i = 0; i < gridView.length; i++) {
-        const xDisplacement = gridView[i].x - relativeX;
-        const yDisplacement = gridView[i].y - relativeY; 
-        const dist = Math.sqrt(xDisplacement * xDisplacement + yDisplacement * yDisplacement)
-  
-        if (dist <= DIAMOND_SIZE && dist < min_dist) {
-          tile = gridView[i]
-          min_dist = dist
-  
-        }
+  const getClosestTile = ( screenX, screenY ) => {
+    const relativeX = screenX - gardenOffset.x
+    const relativeY = screenY - gardenOffset.y 
+
+
+
+    let min_dist = Infinity;
+    let tile = null;
+
+    for (let i = 0; i < gridView.length; i++) {
+      const xDisplacement = gridView[i].x - relativeX;
+      const yDisplacement = gridView[i].y - relativeY; 
+      const dist = Math.sqrt(xDisplacement * xDisplacement + yDisplacement * yDisplacement)
+
+      if (dist <= DIAMOND_SIZE && dist < min_dist) {
+        tile = gridView[i]
+        min_dist = dist
+
       }
-  
-      return tile; 
     }
+
+    return tile; 
+  }
   
 
   const handleDragMove = ({ x, y }) => {
@@ -278,7 +317,7 @@ export default function GardenScreen() {
   };
   
 
-  const handleDragEnd = ({ dropX, dropY }) => {
+  const handleDragEnd = async ({ dropX, dropY }) => {
     setIsDragging(false);
     setHoverTile(null);
 
@@ -295,6 +334,9 @@ export default function GardenScreen() {
             y: tile.y,
           },
         ]);
+
+        decrementInventory(draggedItemData.plantId)
+        await handleSuccessfulPlacement(session.user.id, draggedItemData.plantId)
       }
     }
 
@@ -431,7 +473,7 @@ export default function GardenScreen() {
         )}
 
     <Pressable onPress={() => handleDebug()}>
-      <Text style={{ color: 'white', padding: 10, backgroundColor: 'red' }}>
+      <Text style={{ color: 'white', padding: 3, backgroundColor: 'red' }}>
         Clear Garden
       </Text>
     </Pressable>

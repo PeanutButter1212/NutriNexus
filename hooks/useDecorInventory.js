@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { retrieveDecorInventory } from "../services/gardenService";
-
+import { useAuth } from "../contexts/AuthContext";
 export default function useDecorInventory() {
     const { session } = useAuth()
     const [decorInventory, setDecorInventory] = useState([]);
     const userId = session?.user?.id 
+
 
     if (!userId) return;
 
@@ -21,4 +22,5 @@ export default function useDecorInventory() {
     fetchDecorInventory()
 }, [session]);
 
+    return decorInventory; 
 }

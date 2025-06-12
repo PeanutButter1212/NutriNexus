@@ -11,42 +11,30 @@ const Stack = createNativeStackNavigator();
 
 export default function RootStack() {
     const { session, isOtpVerified } = useAuth();
-    const hasSession = !!session; 
-   // const needsOtpVerification = false;
-    //hasSession;
-    //!isOtpVerified;
-   // const isFullyAuthenticated = hasSession;
-    //&& isOtpVerified;
-    /*
-    {!hasSession && (
-      <Stack.Screen name="AuthStack" component={AuthStack} />
-  )}
-  
-  {needsOtpVerification && (
-      <Stack.Screen name="OTP" component={OTPScreen} />
-  )}
-      */
+    const isAuthenticated = !!session; 
 
     return (
     <Stack.Navigator screenOptions={{ headerShown: false }}> 
-        
-  
-                <>
-                <Stack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }}/>
-                <Stack.Screen name="Detail" component={DetailScreen} options={{ headerShown: false }}/>
-                <Stack.Screen name="Activity Log" component={ActivityLogScreen} options={{ headerShown: false }}/>
-                <Stack.Screen
-                name="Setting"
-                component={SettingScreen}
-                options={{ 
-                  headerShown: true,
-                  title: "Settings",
-                  headerBackTitle: "Back"
-                }}
-              />
-              </>
-                
+        { !isAuthenticated || !isOtpVerified 
+        ? (
+           <Stack.Screen name="AuthStack" component={AuthStack} />
+        ) : (
+            <>
+            <Stack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }}/>
+            <Stack.Screen name="Detail" component={DetailScreen} options={{ headerShown: false }}/>
+            <Stack.Screen name="Activity Log" component={ActivityLogScreen} options={{ headerShown: false }}/>
+            <Stack.Screen
+            name="Setting"
+            component={SettingScreen}
+            options={{ 
+              headerShown: true,
+              title: "Settings",
+              headerBackTitle: "Back"
+            }}
+          />
+          </>
+            )}
     </Stack.Navigator>
-    );
+    )
 
 }

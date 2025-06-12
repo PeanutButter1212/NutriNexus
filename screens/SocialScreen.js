@@ -28,7 +28,7 @@ export default function SocialScreen() {
       {publicURL ? (
         <Image
           source={{ uri: publicURL }}
-          style={{ width: 120, height: 120}}
+          style={{ width: 120, height: 120, backgroundColor:'grey'}}
           resizeMode="contain"
         />
       ) : (
