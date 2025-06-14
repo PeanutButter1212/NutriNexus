@@ -148,8 +148,8 @@ export default function GardenScreen() {
       const topInv = localInventory[i];
       const bottomInv = localInventory[i + 1];
   
-      const topInfo = mockItemBank.find(item => item.id === topInv.item_id);
-      const bottomInfo = bottomInv ? mockItemBank.find(item => item.id === bottomInv.item_id) : null;
+      const topInfo = itemBank.find(item => item.id === topInv.item_id);
+      const bottomInfo = bottomInv ? itemBank.find(item => item.id === bottomInv.item_id) : null;
 
 
       const topRef = inventoryRefs[i]?.ref;
