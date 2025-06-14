@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { View, Text, Alert } from "react-native";
+import { View, Text, Alert, Image } from "react-native";
 import MapView, { Marker, Circle } from "react-native-maps";
 import { useDistance } from "../contexts/DistanceTrackingContext";
 import haversineDistance from "haversine-distance";
@@ -90,13 +90,6 @@ export default function MapScreen() {
         <Marker
           key={visited1 ? "visited" : loc1InRadius ? "nearby" : "far"} //need use key to force it cause rn it only changes when refreshed
           coordinate={loc1Coords}
-          image={
-            visited1 == true
-              ? require("../assets/GreyHawkerIcon.png")
-              : loc1InRadius
-              ? require("../assets/GreenHawkerIcon.png")
-              : require("../assets/RedHawkerIcon.png")
-          }
           onPress={() => {
             if (loc1InRadius) {
               navigation.navigate("Location1");
@@ -104,7 +97,19 @@ export default function MapScreen() {
               Alert.alert("Too far please move closer to interact");
             }
           }}
-        />
+        >
+          <Image
+            source={
+              visited1 == true
+                ? require("../assets/GreyHawkerIcon.png")
+                : loc1InRadius
+                ? require("../assets/GreenHawkerIcon.png")
+                : require("../assets/RedHawkerIcon.png")
+            }
+            style={{ width: 40, height: 40 }}
+            resizeMode="contain"
+          />
+        </Marker>
       </MapView>
     </View>
   );
