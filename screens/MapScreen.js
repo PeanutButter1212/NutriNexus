@@ -5,6 +5,7 @@ import { useDistance } from "../contexts/DistanceTrackingContext";
 import haversineDistance from "haversine-distance";
 import { useNavigation } from "@react-navigation/native";
 import BottomSheet from "@gorhom/bottom-sheet";
+import useProfileData from "../hooks/useProfileData";
 
 //to expand more markers i can create an array for markers and usestate to see which is selected then display that instead of creating multiple
 
@@ -16,6 +17,8 @@ export default function MapScreen() {
   const navigation = useNavigation();
 
   const [loc1InRadius, setLoc1InRadius] = useState(false);
+
+  const { visited1 } = useProfileData();
 
   //camera tracking
 
@@ -44,7 +47,6 @@ export default function MapScreen() {
   //check for location 1
 
   const loc1Coords = { latitude: 1.350624, longitude: 103.749 };
-
   useEffect(() => {
     if (!location) return;
 
@@ -84,9 +86,17 @@ export default function MapScreen() {
           fillColor="rgba(0,0,255,0.2)"
         />
         {/*location 1*/}
+
         <Marker
+          key={visited1 ? "visited" : loc1InRadius ? "nearby" : "far"} //need use key to force it cause rn it only changes when refreshed
           coordinate={loc1Coords}
-          pinColor={loc1InRadius ? "green" : "red"}
+          image={
+            visited1 == true
+              ? require("../assets/GreyHawkerIcon.png")
+              : loc1InRadius
+              ? require("../assets/GreenHawkerIcon.png")
+              : require("../assets/RedHawkerIcon.png")
+          }
           onPress={() => {
             if (loc1InRadius) {
               navigation.navigate("Location1");
