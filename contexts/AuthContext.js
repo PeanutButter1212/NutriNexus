@@ -295,7 +295,7 @@ export const AuthProvider = ({ children }) => {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
 
-      navigation.navigate("Login");
+   
     } catch (err) {
       throw err;
     }

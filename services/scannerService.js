@@ -43,7 +43,7 @@ export async function insertFoodEntry(userId) {
 
 }
 export async function fetchCaloriesForFood(food) {
-  const {data, error } = await supabase
+  const { data, error } = await supabase
     .from("food")
     .select("calories")
     .eq("name", food)
