@@ -1,59 +1,81 @@
-//this file handles services related to profiles and profile_page table 
-import { supabase } from "../lib/supabase"
-
+//this file handles services related to profiles and profile_page table
+import { supabase } from "../lib/supabase";
 
 export async function updateProfileDetails(session, profile, details) {
-    const userId = session?.user?.id
-    try {
-        const {weight, height, age, calories, gender} = details;
-         //updateData in profiles table 
-        const updateData = {
-            is_first_time: false,
-            weight: weight,
-            height: height,
-            age: age,
-            calories: calories,
-            gender: gender,
-          };
-    
-        const { error: profileError } = await supabase
-            .from("profiles")
-            .update(updateData)
-            .eq("id", userId);
-        
-        //update Data for profile page 
-        const update_for_profile_page = {
-            weight: weight,
-            height: height,
-            age: age,
-            calories: calories,
-            gender: gender,
-          };
-    
-          const { error: profilePageError } = await supabase
-            .from("profile_page")
-            .update(update_for_profile_page)
-            .eq("id", session.user.id);
+  const userId = session?.user?.id;
+  try {
+    const { weight, height, age, calories, gender } = details;
+    //updateData in profiles table
+    const updateData = {
+      is_first_time: false,
+      weight: weight,
+      height: height,
+      age: age,
+      calories: calories,
+      gender: gender,
+    };
 
-          return true; 
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .update(updateData)
+      .eq("id", userId);
 
-        } catch (err) {
-            return false; 
-        }
-      };
-    
+    //update Data for profile page
+    const update_for_profile_page = {
+      weight: weight,
+      height: height,
+      age: age,
+      calories: calories,
+      gender: gender,
+    };
+
+    const { error: profilePageError } = await supabase
+      .from("profile_page")
+      .update(update_for_profile_page)
+      .eq("id", session.user.id);
+
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
 export async function fetchProfileCalories(userId) {
-    const { data, error } = await supabase
+  const { data, error } = await supabase
     .from("profile_page")
     .select("calories_consumed, calorie_goal")
     .eq("id", userId)
     .single();
 
-    return data; 
+  return data;
+}
+
+export async function fetchPoints(userId) {
+  console.log("userId passed to fetchPoints:", userId);
+  const { data, error } = await supabase
+    .from("profile_page")
+    .select("points")
+    .eq("id", userId)
+    .single();
+
+  console.log("Fetched points data:", data);
+
+  return data?.points;
+}
+
+export async function fetchVisited1(userId) {
+  console.log("userId passed to fetchPoints:", userId);
+  const { data, error } = await supabase
+    .from("profile_page")
+    .select("visited1")
+    .eq("id", userId)
+    .single();
+
+  return data?.visited1;
 }
 
 export async function fetchWeeklyCalories(userId) {
-    const { data, error } = await supabase
+  const { data, error } = await supabase
     .from("activity_log")
     .select("calories, date")
     .eq("user_id", userId);
@@ -105,69 +127,61 @@ export async function fetchWeeklyCalories(userId) {
         break;
       default:
         break;
-}
-    if (key) {
-        dailyTotals[key] += entry.calories;
     }
-
-    
-  })
+    if (key) {
+      dailyTotals[key] += entry.calories;
+    }
+  });
 
   const output = Object.entries(dailyTotals).map(([day, value]) => ({
     day,
     value,
-  }))
-  
+  }));
 
-  return output; 
-
-
+  return output;
 }
 
 export async function updateCaloriesConsumed(userId) {
-    try {
-      const { data, error } = await supabase
-        .from("activity_log")
-        .select("calories")
-        .eq("user_id", userId);
-  
-      if (error) {
-        console.log("Error fetching entries:", error);
-        return;
-      }
-  
-      const totalCalories = data.reduce((sum, entry) => sum + entry.calories, 0);
-  
-      const { error: updateError } = await supabase
-        .from("profile_page")
-        .update({ calories_consumed: totalCalories })
-        .eq("id", userId);
-  
-      if (updateError) {
-        console.log("Error updating calories:", updateError);
-        return;
-      }
-  
-      console.log("Updated calories_consumed in profiles:", totalCalories);
-
-      return totalCalories;
-    } catch (err) {
-      console.log("Unexpected error:", err);
-    }
-  };
-
-  
-  export async function fetchActivityLog(userId) {
+  try {
     const { data, error } = await supabase
+      .from("activity_log")
+      .select("calories")
+      .eq("user_id", userId);
+
+    if (error) {
+      console.log("Error fetching entries:", error);
+      return;
+    }
+
+    const totalCalories = data.reduce((sum, entry) => sum + entry.calories, 0);
+
+    const { error: updateError } = await supabase
+      .from("profile_page")
+      .update({ calories_consumed: totalCalories })
+      .eq("id", userId);
+
+    if (updateError) {
+      console.log("Error updating calories:", updateError);
+      return;
+    }
+
+    console.log("Updated calories_consumed in profiles:", totalCalories);
+
+    return totalCalories;
+  } catch (err) {
+    console.log("Unexpected error:", err);
+  }
+}
+
+export async function fetchActivityLog(userId) {
+  const { data, error } = await supabase
     .from("activity_log")
     .select("*")
     .eq("user_id", userId)
     .order("date", { ascending: false });
 
-    if (error) {
-        throw error;
-    }
-    return data;
-
-
+  if (error) {
+    throw error;
+  }
+  return data;
 }

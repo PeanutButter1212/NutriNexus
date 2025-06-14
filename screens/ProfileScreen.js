@@ -30,7 +30,7 @@ export default function Profile({ navigation }) {
 
   const { distance } = useDistance();
 
-  const { totalCalories, calorieGoal, caloriesData } = useProfileData();
+  const { totalCalories, calorieGoal, caloriesData, points } = useProfileData();
   const [referenceData, setReferenceData] = useState([]);
   const [selectedDataType, setSelectedDataType] = useState("Steps");
 
@@ -144,7 +144,7 @@ export default function Profile({ navigation }) {
           >
             <View className="bg-violet-700 rounded-md py-2 mb-7">
               <Text className="text-white text-center text-sm">Points</Text>
-              <Text className="text-white text-center text-xl">0</Text>
+              <Text className="text-white text-center text-xl">{points}</Text>
             </View>
 
             <View className="bg-violet-700 rounded-md py-2 mb-7">

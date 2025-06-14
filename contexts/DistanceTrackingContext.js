@@ -7,18 +7,21 @@ import { Accelerometer } from "expo-sensors";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "./AuthContext";
 import useStepsData from "../hooks/useActivityData";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DistanceTrackingContext = createContext();
 
 export const DistanceProvider = ({ children }) => {
   const { session } = useAuth();
-  const { steps, distance: initialDistance, loading } = useStepsData(session);
   const [distance, setDistance] = useState(0);
   const [previousLocation, setPreviousLocation] = useState(null);
   const [location, setLocation] = useState(null);
   const [isMoving, setIsMoving] = useState(false);
   const hasInitialized = useRef(false); //make sure tabel not updated with 0
   const distanceRef = useRef(0);
+  const [currentDate, setCurrentDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
 
   useEffect(() => {
     distanceRef.current = distance;
@@ -26,13 +29,55 @@ export const DistanceProvider = ({ children }) => {
 
   const user = session?.user;
 
+  //check for new day to reset
+  const checkNewDay = async () => {
+    const today = new Date().toISOString().split("T")[0];
+    if (today !== currentDate) {
+      setCurrentDate(today);
+      setDistance(0);
+      distanceRef.current = 0;
+      await AsyncStorage.setItem("lastTrackingDate", today);
+    }
+  };
+
   //obtain from supabase svaed values so when user logs in will see past values
   useEffect(() => {
-    if (!hasInitialized.current && !loading) {
-      setDistance(initialDistance);
-      hasInitialized.current = true;
-    }
-  }, [initialDistance, loading]);
+    const initialize = async () => {
+      if (!hasInitialized.current && session?.user) {
+        await checkNewDay();
+
+        const today = new Date().toISOString().split("T")[0];
+        const lastTrackingDate = await AsyncStorage.getItem("lastTrackingDate");
+
+        if (lastTrackingDate === today) {
+          const { data: todayEntry, error } = await supabase
+            .from("step_log")
+            .select("distance")
+            .eq("user_id", session.user.id)
+            .eq("date", today)
+            .maybeSingle();
+
+          if (error) {
+            console.error("Error checking today's step log:", error);
+          }
+
+          if (todayEntry && typeof todayEntry.distance === "number") {
+            setDistance(todayEntry.distance);
+            distanceRef.current = todayEntry.distance;
+          } else {
+            setDistance(0);
+            distanceRef.current = 0;
+          }
+
+          await AsyncStorage.setItem("lastTrackingDate", today);
+        }
+
+        hasInitialized.current = true;
+      }
+    };
+
+    initialize();
+  }, [session]);
 
   //to imporve accuracy i try use this to detect movement
   //now it wont increase when i not moving
@@ -119,10 +164,11 @@ export const DistanceProvider = ({ children }) => {
   //update supabase table with steps for users each time they enter app(best way possible)
   useEffect(() => {
     const interval = setInterval(async () => {
+      await checkNewDay();
       if (!hasInitialized.current) return;
 
       const currentDistance = distanceRef.current;
-      console.log("📏 distanceRef.current is", currentDistance);
+      //console.log("📏 distanceRef.current is", currentDistance);
       if (currentDistance === 0) return;
 
       const steps = Math.round(currentDistance / 0.75);
@@ -136,20 +182,40 @@ export const DistanceProvider = ({ children }) => {
         return;
       }
 
-      console.log("Uploading to Supabase", {
-        currentDistance,
-        steps: Math.round(currentDistance / 0.75),
-      });
+      const { data: existingEntry, error: queryError } = await supabase
+        .from("step_log")
+        .select()
+        .eq("user_id", user.id)
+        .eq("date", today)
+        .maybeSingle();
 
-      await supabase.from("step_log").upsert(
-        {
-          id: user.id,
-          steps: steps,
+      if (queryError && queryError.code !== "PGRST116") {
+        console.error("Error fetching step log:", queryError);
+        return;
+      }
+
+      //update when new day/distance goes up an creates new row each day
+      if (
+        !existingEntry ||
+        (currentDistance > 0 && currentDistance > existingEntry.distance)
+      ) {
+        console.log("Attempting to upsert:", {
+          user_id: user.id,
+          steps,
           date: today,
           distance: currentDistance,
-        },
-        { onConflict: ["id", "date"] }
-      );
+        });
+
+        await supabase.from("step_log").upsert(
+          {
+            user_id: user.id,
+            steps: steps,
+            date: today,
+            distance: currentDistance,
+          },
+          { onConflict: ["user_id", "date"] }
+        );
+      }
     }, 10000); //update supabase every 10 sec
 
     return () => clearInterval(interval);
