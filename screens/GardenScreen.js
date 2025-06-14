@@ -12,6 +12,10 @@ import DraggableItem from '../components/DraggableItem'
 import { fetchPlants, handleSuccessfulPlacement, retrieveDecorInventory } from '../services/gardenService';
 import { useAuth } from "../contexts/AuthContext";
 import useDecorInventory from '../hooks/useDecorInventory';
+import useSkiaImageMap from '../hooks/useSkiaImageMap';
+import { drag } from 'd3';
+import useItemBank from '../hooks/useItemBank';
+import SkiaImageItem from '../components/skiaImageItem';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height; 
@@ -97,44 +101,52 @@ export default function GardenScreen() {
 
   const fonts = getCustomFonts();
   
-  const durianSkiaImage = useImage(mockItemBank[0].image_url);
-  const bougainvillaSkiaImage = useImage(mockItemBank[1].image_url);
+  //const durianSkiaImage = useImage(mockItemBank[0].image_url);
+  //const bougainvillaSkiaImage = useImage(mockItemBank[1].image_url);
 
-  const mappedSkiaImages = {
+  /* const mappedSkiaImages = {
     'bff1403f-7c39-4d09-ac07-4cc7b51019fe': durianSkiaImage,
     '87c30106-bb4c-4796-a61a-6a1fd31be753': bougainvillaSkiaImage,
   };
-  
+  */
 
-
-
+  //Valid alreadym but we will render it selectively with a new component skiaimageitem 
+  const itemBank = useItemBank()
 
   const [isDragging, setIsDragging] = useState(false);
   const [draggedItemData, setDraggedItemData] = useState(null);
+
   const [placedPlants, setPlacedPlants] = useState([]);
+
+  const [localInventory, setLocalInventory] = useState([]);
+
   const gardenAreaRef = useRef(null);
   const [gardenOffset, setGardenOffset] = useState({ x: 0, y: 0 });
   const [hoverTile, setHoverTile] = useState(null);
+
   const decorInventory = useDecorInventory();
-  const [plantList, setPlantList] = useState([]);
+
+  useEffect(() => {
+    setLocalInventory(decorInventory); 
+  }, [decorInventory])
   
   const inventoryRefs = useMemo(() => {
-    return decorInventory.map(() => ({
+    return localInventory.map(() => ({
       ref: React.createRef(),
     }));
-  }, [decorInventory]);
+  }, [localInventory]);
 
   
   const renderInventoryColumns = () => {
     const columns = [];
 
-    if (decorInventory.length == 0) {
+    if (localInventory.length == 0) {
       return [];
     } 
 
-    for (let i = 0; i < decorInventory.length; i += 2) {
-      const topInv = decorInventory[i];
-      const bottomInv = decorInventory[i + 1];
+    for (let i = 0; i < localInventory.length; i += 2) {
+      const topInv = localInventory[i];
+      const bottomInv = localInventory[i + 1];
   
       const topInfo = mockItemBank.find(item => item.id === topInv.item_id);
       const bottomInfo = bottomInv ? mockItemBank.find(item => item.id === bottomInv.item_id) : null;
@@ -198,7 +210,6 @@ export default function GardenScreen() {
         const plantList = await retrieveDecorInventory(session.user.id);
 
 
-
   
         
       } catch (err) {
@@ -220,7 +231,7 @@ export default function GardenScreen() {
   }, []);
 
   const decrementInventory = (plantId) => {
-    setInventory(prev => 
+    setLocalInventory(prev => 
       prev 
       .map(
         item =>
@@ -237,6 +248,8 @@ export default function GardenScreen() {
   const handlePressIn = (ref, plantId, imageUrl, offsetX, offsetY) => {
     setIsDragging(false);
     setDraggedItemData(null);
+
+    console.log("localInventory: " + JSON.stringify(localInventory, null, 2))
   
     setTimeout(() => {
       ref.current.measure((fx, fy, width, height, px, py) => {
@@ -256,6 +269,7 @@ export default function GardenScreen() {
 
   const handleDebug = () => {
     setPlacedPlants([]);
+    console.log("Item Bank: " + JSON.stringify(placedPlants, null, 2));
   }
 
 
@@ -320,24 +334,34 @@ export default function GardenScreen() {
   const handleDragEnd = async ({ dropX, dropY }) => {
     setIsDragging(false);
     setHoverTile(null);
-
+    console.log("handleDragEnd")
     const tile = getClosestTile(dropX, dropY)
-    if (tile && draggedItemData?.plantId) {
-    
-      const skiaImage = mappedSkiaImages[draggedItemData.plantId];
-      if (skiaImage) {
-        setPlacedPlants(prev => [
-          ...prev,
-          {
-            image: skiaImage,
-            x: tile.x,
-            y: tile.y,
-          },
-        ]);
 
-        decrementInventory(draggedItemData.plantId)
-        await handleSuccessfulPlacement(session.user.id, draggedItemData.plantId)
+    console.log(draggedItemData.plantId)
+    if (tile && draggedItemData?.plantId) {
+      console.log("valid tile + id")
+
+      const item = itemBank.find(decor => decor.id === draggedItemData.plantId)
+
+      if (!item) {
+        console.log("Item not found")
       }
+      console.log("item: " + item)
+      console.log("image_url: " + item.image_url )
+
+
+      setPlacedPlants(prev => [
+        ...prev,
+        {
+          item: item,
+          x: tile.x,
+          y: tile.y,
+        },
+      ]);
+
+      decrementInventory(draggedItemData.plantId)
+      await handleSuccessfulPlacement(session.user.id, draggedItemData.plantId)
+    
     }
 
    
@@ -371,9 +395,7 @@ export default function GardenScreen() {
         height: SCREEN_HEIGHT,
        }}
        > 
-        {gridView.map(({ path, col, row, x, y }, index) => (
-    
-           
+        {isDragging && gridView.map(({ path, col, row, x, y }, index) => (         
           <Path
             key={`tile-${col}-${row}`}
             path={path}
@@ -383,28 +405,14 @@ export default function GardenScreen() {
             strokeColor="#ff6666"
           />
         ))}
-
-
-          {gridView.map(({ path, col, row, x, y }) => (
-            <Path
-              key={`tile-${col}-${row}`}
-              path={path}
-              style="fill"
-              color="rgba(255, 100, 100, 0.4)"
-              strokeWidth={1.5}
-              strokeColor="#ff6666"
-            />
-          ))}
+    
 
         {placedPlants.map((plant, idx) => (
-          <SkiaImage
+          <SkiaImageItem
             key={`plant-${idx}`}
-            image={plant.image}
+            item={plant.item}
             x={plant.x - IMAGE_WIDTH / 2}
             y={plant.y - IMAGE_HEIGHT * 0.75}
-            width={IMAGE_WIDTH}
-            height={IMAGE_HEIGHT}
-            fit="contain"
           />
         ))}
 

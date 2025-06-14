@@ -8,7 +8,7 @@ const InventoryColumn = ({topItem, bottomItem}) => {
         className="bg-amber-500 w-28 h-28 justify-center items-center"
         >
             <View
-            ref={topItem.slotRef} // ✅ attach ref if present
+            ref={topItem.slotRef} 
             className="bg-amber-900 w-24 h-24 justify-center items-center"> 
                 <View
                 >

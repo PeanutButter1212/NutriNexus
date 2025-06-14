@@ -33,6 +33,7 @@ export default function Profile({ navigation }) {
     calorieGoal,
     caloriesData
   } = useProfileData();
+  
   const [referenceData, setReferenceData] = useState([]);
   const [selectedDataType, setSelectedDataType] = useState("Steps");
 
