@@ -11,12 +11,12 @@ import Location1Screen from "../screens/Location1Screen";
 const Stack = createNativeStackNavigator();
 
 export default function RootStack() {
-  const { session, isOtpVerified } = useAuth();
+  const { session } = useAuth();
   const isAuthenticated = !!session;
 
     return (
     <Stack.Navigator screenOptions={{ headerShown: false }}> 
-        { !isAuthenticated || !isOtpVerified 
+        { !isAuthenticated  
         ? (
            <Stack.Screen name="AuthStack" component={AuthStack} />
         ) : (

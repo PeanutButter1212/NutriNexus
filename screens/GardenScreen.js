@@ -1,8 +1,6 @@
 import { View, Text, Image, Dimensions, ImageBackground, ScrollView, UIManager, Pressable, findNodeHandle, TouchableWithoutFeedback} from 'react-native';
 import React,  { useRef, useState, useEffect, useMemo } from 'react'
 import gardenImage from '../assets/garden/garden.png'
-import durianImage from '../assets/garden/plants/durian.png'
-import bougainvillaImage from '../assets/garden/plants/bougainvilla.png'
 import woodenBackground from '../assets/backgrounds/inventoryBackground.png'
 import { useImage, Canvas, Path, Skia, Image as SkiaImage } from "@shopify/react-native-skia";
 import { getCustomFonts } from '../utils/loadFonts'

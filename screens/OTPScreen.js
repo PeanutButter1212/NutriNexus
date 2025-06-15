@@ -12,21 +12,14 @@ import { useRoute } from "@react-navigation/native";
 import { useAuth } from "../contexts/AuthContext";
 import React, { useEffect, useState } from "react";
 
-export default function OTPScreen({ navigation }) {
-  const { session, verifyOtp, sendOtpEmail } = useAuth();
+export default function OTPScreen({ navigation, route }) {
+  const { session, verifyOtp } = useAuth();
 
   const [otp, setOtp] = useState("");
 
-  const email = session?.user?.email;
+  const { email } = route.params;
 
   const [errorMessage, setErrorMessage] = useState("");
-
-  useEffect(() => {
-    if (email) {
-      console.log("Sending OTP to:", email);
-      sendOtpEmail(email);
-    }
-  }, [email]);
 
   const handleOtpVerification = async () => {
     try {

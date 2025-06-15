@@ -29,11 +29,15 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useDistance } from "../contexts/DistanceTrackingContext";
 
 export default function Profile({ navigation }) {
-  const { session, profile, authMethod } = useAuth();
+  const { session, profile, authMethod, logout } = useAuth();
 
   const SCREEN_HEIGHT = Dimensions.get('window').height;
   
   const { distance } = useDistance(); 
+
+  const handleLogout = () => {
+    logout(authMethod, navigation);
+  };
 
   const {
     totalCalories,
@@ -93,6 +97,7 @@ export default function Profile({ navigation }) {
     <ScrollView 
     className="flex-1 bg-white"
     >
+      
       <LinearGradient
         colors={["#2E8B57", "#90EE90", "#006400"]}
         style={{
@@ -222,6 +227,16 @@ export default function Profile({ navigation }) {
           ))}
         </Canvas>
       </View>
+      <View
+      className="justify-center items-center"
+      > 
+      <TouchableOpacity
+        onPress={handleLogout}
+        className="items-center justify-center bg-red-500 w-3/4 rounded-xl mt-6 py-3 mt-3"
+      >
+        <Text className="text-white text-base font-medium">Log Out</Text>
+      </TouchableOpacity>
+    </View>
 
     
     </ScrollView>

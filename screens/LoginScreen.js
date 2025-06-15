@@ -14,22 +14,21 @@ import { useState } from "react"
 import { useAuth } from "../contexts/AuthContext"
 
 export default function LoginScreen({ navigation }) {
-  const { googleSignIn, signInWithUsername } = useAuth();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const { googleSignIn, signInWithOTP } = useAuth();
+  const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   
   const handleLogin = async () => {
-    if (!username.trim() || !password.trim()) {
+    if (!email.trim()) {
       setErrorMessage("Please fill in all fields!");
       return;
     }
     try {
-      const error = await signInWithUsername(username, password, navigation); 
+      setErrorMessage("")
+      console.log(email)
+      const error = await signInWithOTP(email, navigation); 
       if (error) {
-       
         setErrorMessage(error)
-        //setErrorMessage("Invalid Login Credentials");  
       }
     
 
@@ -62,19 +61,21 @@ export default function LoginScreen({ navigation }) {
 
       {/* Username Input */}
       <TextInput
-        onChangeText = {(text) => setUsername(text)}
-        placeholder="Username"
+        onChangeText = {(text) => setEmail(text)}
+        placeholder="Email"
         autoCapitalize="none"
         className="w-full border border-gray-300 rounded-xl mt-6 px-4 py-3 text-base"
       />
-      {/* Password Input */}
+      {/*
+
       <TextInput
         onChangeText = {(text) => setPassword(text)}
         placeholder="Password"
         secureTextEntry
         autoCapitalize="none"
         className="w-full border border-gray-300 rounded-xl mt-4 px-4 py-3 text-base"
-      />
+      /> 
+      */}
 
       {/* Error Message */}
          {errorMessage ? (
