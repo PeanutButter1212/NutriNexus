@@ -28,36 +28,10 @@ const SPACING = 41;
 const xStartOfGarden = SCREEN_WIDTH / 2 
 const yStartOfGarden = 0.25 * SCREEN_HEIGHT; 
 
-const mockItemBank = [
-  {
-    id: 'bff1403f-7c39-4d09-ac07-4cc7b51019fe',
-    name: 'durian',
-    image_url: 'https://rkrdnsnujizdskzbdwlp.supabase.co/storage/v1/object/public/item-images//durian.png',
-    type: "decor",
-  },
-  {
-    id: '87c30106-bb4c-4796-a61a-6a1fd31be753',
-    name: 'bougainvilla',
-    image_url: 'https://rkrdnsnujizdskzbdwlp.supabase.co/storage/v1/object/public/item-images//bougainvilla.png',
-    type: "decor"
-  },
-  
-]
-
-const mockInventory = [
-  {
-    id: 'durian',
-    name: 'durian',
-    count: 7
-
-  }
 
 
-]
-
-
-
-
+// we set a starting point with 0, 0 then the further we are from this 0, 0, we will increment by x and y by a standardised amount 
+// so that spacing between diamond views are standardised as well 
 
 const getIsometricPosition = (col, row) => {
   const alignmentX = (col - row) * (SPACING * 0.866); 
@@ -71,6 +45,7 @@ const getIsometricPosition = (col, row) => {
 
 }
 
+// render diamond view, centerx centery size control location and size of the view 
 const diamondView = (centerX, centerY, size) => {
   const diamondPen = Skia.Path.Make() 
 
@@ -101,16 +76,6 @@ export default function GardenScreen() {
 
   const fonts = getCustomFonts();
   
-  //const durianSkiaImage = useImage(mockItemBank[0].image_url);
-  //const bougainvillaSkiaImage = useImage(mockItemBank[1].image_url);
-
-  /* const mappedSkiaImages = {
-    'bff1403f-7c39-4d09-ac07-4cc7b51019fe': durianSkiaImage,
-    '87c30106-bb4c-4796-a61a-6a1fd31be753': bougainvillaSkiaImage,
-  };
-  */
-
-  //Valid alreadym but we will render it selectively with a new component skiaimageitem 
   const itemBank = useItemBank()
 
   const [isDragging, setIsDragging] = useState(false);
@@ -129,14 +94,16 @@ export default function GardenScreen() {
   useEffect(() => {
     setLocalInventory(decorInventory); 
   }, [decorInventory])
-  
+
+
+  //create a ref of inventory slots so we can determine their coordinate at any time to spawn draggable item on click of any inventory items 
   const inventoryRefs = useMemo(() => {
     return localInventory.map(() => ({
       ref: React.createRef(),
     }));
   }, [localInventory]);
 
-  
+  // for display of inventory columns 
   const renderInventoryColumns = () => {
     const columns = [];
 
@@ -203,33 +170,7 @@ export default function GardenScreen() {
     return columns;
   };
 
-  
-  useEffect(() => {
-    const loadInventory = async () => {
-      try {
-        const plantList = await retrieveDecorInventory(session.user.id);
-
-
-  
-        
-      } catch (err) {
-        console.error('Failed to fetch inventory:', err);
-      }
-    };
-  
-    loadInventory();
-  }, []);
-
-  
-
-  useEffect(() => {
-    setTimeout(() => {
-      gardenAreaRef.current?.measure((fx, fy, width, height, px, py) => {
-        setGardenOffset({ x: px, y: py });
-      });
-    }, 0);
-  }, []);
-
+//we have a local copy of inventory from what was received from our hook so that UI can render count changes quickly
   const decrementInventory = (plantId) => {
     setLocalInventory(prev => 
       prev 
@@ -244,12 +185,12 @@ export default function GardenScreen() {
     )
 
   }
-
+// when we click on inventory item, a draggable item will be spawned at the exact same location as the inventory slot
   const handlePressIn = (ref, plantId, imageUrl, offsetX, offsetY) => {
     setIsDragging(false);
     setDraggedItemData(null);
 
-    console.log("localInventory: " + JSON.stringify(localInventory, null, 2))
+    
   
     setTimeout(() => {
       ref.current.measure((fx, fy, width, height, px, py) => {
@@ -272,7 +213,7 @@ export default function GardenScreen() {
     console.log("Item Bank: " + JSON.stringify(placedPlants, null, 2));
   }
 
-
+// 5 x 5 grid so run the loop 25 times to generate 25 diamond tiles that have consistent spacing throughout the garden 
   const tileArray = () => {
     const views = []; 
 
@@ -300,12 +241,11 @@ export default function GardenScreen() {
 
 
 
-
+// run through gridview array, on any location help us determine which tile of the garden the location is closest to, if nearest tile
+// is less than DIAMOND_SIZE (which is arbitarily set to 36) then set this tile as tile and continue, otherwise tile is null 
   const getClosestTile = ( screenX, screenY ) => {
-    const relativeX = screenX - gardenOffset.x
-    const relativeY = screenY - gardenOffset.y 
-
-
+    const relativeX = screenX
+    const relativeY = screenY 
 
     let min_dist = Infinity;
     let tile = null;
@@ -325,12 +265,14 @@ export default function GardenScreen() {
     return tile; 
   }
   
-
+//during movement of the drag, we use getClosestTile to determine which tile the location is closest to, that tile will be set
+//to hovering state and displays a white translucent overlay 
   const handleDragMove = ({ x, y }) => {
     setHoverTile(getClosestTile(x, y));
   };
   
-
+//upon end of drag motion of draggable item, if the point at which the drag end is near the tile, getClosestTile will return 
+//the nearest tile and we will add this items to the placedplants array so that the item (plant) will be added to the garden 
   const handleDragEnd = async ({ dropX, dropY }) => {
     setIsDragging(false);
     setHoverTile(null);
@@ -339,15 +281,11 @@ export default function GardenScreen() {
 
     console.log(draggedItemData.plantId)
     if (tile && draggedItemData?.plantId) {
-      console.log("valid tile + id")
-
       const item = itemBank.find(decor => decor.id === draggedItemData.plantId)
 
       if (!item) {
         console.log("Item not found")
       }
-      console.log("item: " + item)
-      console.log("image_url: " + item.image_url )
 
 
       setPlacedPlants(prev => [
@@ -458,7 +396,6 @@ export default function GardenScreen() {
             </ScrollView>
               
               
-
     
           </SafeAreaView>
 
