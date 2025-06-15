@@ -22,7 +22,7 @@
     "@types/d3": "^7.4.3",
     "d3": "^7.9.0",
     "expo": "^53.0.9",
-    "expo-camera": "~16.1.6",
+    "expo-camera": "~16.1.8",
     "expo-dev-client": "~5.1.8",
     "expo-linear-gradient": "^14.1.4",
     "expo-location": "~18.1.5",
