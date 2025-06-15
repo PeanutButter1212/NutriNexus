@@ -45,7 +45,7 @@ export async function fetchCaloriesByFood(food) {
   const { data, error } = await supabase
     .from("food")
     .select("calories")
-    .ilike("name", `%${foodName}%`)
+    .ilike("name", `%${food}%`)
     .single();
 
   return data.calories.toString();
