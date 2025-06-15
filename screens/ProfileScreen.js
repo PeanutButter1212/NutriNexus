@@ -10,6 +10,7 @@ import {
   Image,
   useWindowDimensions,
   Settings,
+  Dimensions
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import { useAuth } from "../contexts/AuthContext";
@@ -23,14 +24,24 @@ import DropdownComponent from "../components/Dropper";
 import { supabase } from "../lib/supabase";
 import { useFocusEffect } from "@react-navigation/native";
 import useProfileData from "../hooks/useProfileData";
+import Ionicons from '@expo/vector-icons/Ionicons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useDistance } from "../contexts/DistanceTrackingContext";
 
 export default function Profile({ navigation }) {
   const { session, profile, authMethod } = useAuth();
 
-  const { distance } = useDistance();
+  const SCREEN_HEIGHT = Dimensions.get('window').height;
+  
+  const { distance } = useDistance(); 
 
-  const { totalCalories, calorieGoal, caloriesData, points } = useProfileData();
+  const {
+    totalCalories,
+    calorieGoal,
+    caloriesData,
+    points
+  } = useProfileData();
+  
   const [referenceData, setReferenceData] = useState([]);
   const [selectedDataType, setSelectedDataType] = useState("Steps");
 
@@ -46,8 +57,7 @@ export default function Profile({ navigation }) {
     { day: "SUN", value: 3500 },
   ];
 
-  //console.log("Calories Data: " + caloriesData);
-
+  /
   useEffect(() => {
     if (selectedDataType === "Steps") {
       setReferenceData(weeklyStepsData);
@@ -80,93 +90,101 @@ export default function Profile({ navigation }) {
   const barWidth = 35;
 
   return (
-    <ScrollView className="flex-1 bg-white">
+    <ScrollView 
+    className="flex-1 bg-white"
+    >
       <LinearGradient
         colors={["#2E8B57", "#90EE90", "#006400"]}
         style={{
           width: "100%",
-          height: "40%",
+          minHeight: SCREEN_HEIGHT * 0.8,
           flexDirection: "column",
-          padding: 30,
+          padding: 20,
         }}
-      >
-        <Text
-          className="text-3xl font-bold text-white mt-6 mb-5"
-          style={{ textAlign: "center" }}
+      >  
+      <Text
+          className="text-3xl font-bold text-white p-16 text-center"
         >
           Welcome Back, {profile ? profile.username : "User"}!
         </Text>
-        <View className="flex-row items-start">
-          <View style={{ flex: 0.9, paddingRight: 10 }} className="flex-1">
-            <View className="mb-3">
+      <View className="flex-1 justify-center items-center mb-24"> 
+    
+        <View className="relative items-center">
+     
+            <View className="absolute left-6 -top-16">
               <CircularProgress
                 value={Math.floor(progressPercentage)}
                 valueSuffix={"%"}
-                radius={50}
+                radius={60}
                 progressValueColor={"blue"}
-                titleFontSize={16}
-                titleColor={"#333"}
+                titleFontSize={10}
+                title={'Calories Limit'}
+                titleColor={"white"}
                 titleStyle={{ fontWeight: "bold" }}
                 activeStrokeColor={"#2465FD"}
                 activeStrokeSecondaryColor={"#C3305D"}
                 inActiveStrokeColor={"white"}
               />
             </View>
-            {/* settings button */}
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Setting", { authMethod })}
-              className="bg-blue-700 mb-5 rounded-md mb-3"
-            >
-              <Text className="text-center text-white py-3 w-auto font-bold">
-                Settings
-              </Text>
-            </TouchableOpacity>
-
-            {/* change character button */}
-            <TouchableOpacity className="bg-blue-700 w-auto rounded-md">
-              <Text className="text-center text-white py-3 font-bold">
-                Change Character
-              </Text>
-            </TouchableOpacity>
-          </View>
-
+          
           {/* image */}
-          <View className="flex-1 items-center justify-center px-5">
+          <View className="mt-8">
             <Image
-              source={require("../assets/Avatar.png")}
-              className="justify-center mb-4"
+              source={require("../assets/AvatarResized.png")}
+              className="w-80 h-80"
+              resizeMode="contain"
             />
           </View>
 
-          <View
-            style={{ flex: 0.9, paddingLeft: 10 }}
-            className="flex-column flex-1"
+        
+        </View>
+
+
+          
+        <View
+            className="flex-row justify-between"
           >
-            <View className="bg-violet-700 rounded-md py-2 mb-7">
-              <Text className="text-white text-center text-sm">Points</Text>
-              <Text className="text-white text-center text-xl">{points}</Text>
+            <View className="bg-white rounded-xl p-4 flex-1 shadow-md mr-2">
+              <View className="flex-row items-center">
+                <Image 
+                source={require("../assets/Points.png")} 
+                className="w-8 h-8"
+                />
+          
+                <Text className="text-stone-500 text-sm text-xl font-bold">Points</Text>   
+                </View>
+                <View>
+              <Text className="text-black text-3xl font-extrabold">{points}</Text> 
+              </View>
             </View>
 
-            <View className="bg-violet-700 rounded-md py-2 mb-7">
-              <Text className="text-white text-center text-sm">Steps </Text>
-              <Text className="text-white text-center text-xl">
-                {(distance / 0.75).toFixed(0)}{" "}
-              </Text>
+            <View className="bg-white rounded-xl p-4 flex-1 shadow-md mr-2">
+              <View className="flex-row items-center">
+              <Ionicons name="footsteps" size={20} color="black" />
+                <Text className="text-stone-500 text-sm text-xl font-bold">Steps</Text>   
+                </View>
+                <View>
+              <Text className="text-black text-3xl font-extrabold">{(distance / 0.75).toFixed(0)}{" "}</Text> 
+              </View>
             </View>
+
 
             <TouchableOpacity
               onPress={() => navigation.navigate("Activity Log")}
-              className="bg-violet-700 rounded-md py-2 mb-7"
-            >
-              <Text className="text-white text-center text-sm">
-                Calories Burnt
-              </Text>
-              <Text className="text-white text-center text-xl">
-                {Math.round(distance * 0.05)} kcal
-              </Text>
+              className="bg-white rounded-xl p-4 flex-1 shadow-md"
+            > 
+              <View className="flex-row items-center mb-1">
+              <FontAwesome5 name="fire" size={20} color="black" />
+                <Text className="text-stone-500 text-m font-bold"> Burnt </Text>
+                <Text className="text-stone-500 text-m font-bold">Kcal</Text>
+              </View>
+              
+              <Text className="text-black text-3xl font-extrabold">{Math.round(distance * 0.05)} kcal</Text>
             </TouchableOpacity>
           </View>
-        </View>
+      </View>
+      
+        
       </LinearGradient>
 
       <View>
@@ -205,54 +223,8 @@ export default function Profile({ navigation }) {
         </Canvas>
       </View>
 
-      {/*Bottom Bar 
-
-      <View style={{ flexDirection: "row", marginTop: 24 }}>
-        <TouchableOpacity
-          className="px-6 py-3 rounded-xl border"
-          onPress={() => navigation.navigate("Profile")}
-        >
-          <Text className={"text-base font-medium text-black"}>Profile</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Scanner")}
-          className="px-6 py-3 rounded-xl border"
-        >
-          <Text className={`text-base font-medium text-black`}>Scanner</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity className="px-6 py-3 rounded-xl border">
-          <Text className={"text-base font-medium text-black"}>Garden</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity className="px-6 py-3 rounded-xl border">
-          <Text className={"text-base font-medium text-black"}>Map</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity className="px-6 py-3 rounded-xl border">
-          <Text className={"text-base font-medium text-black"}>Socials</Text>
-        </TouchableOpacity>
-      </View>
-      */}
+    
     </ScrollView>
   );
-  /*
-     (   
-     <View className="items-center justify-start bg-white-500 pt-32 px-6 flex-1">      
-     <Text className="text-3xl font-bold text-green-600" 
-          style= {{textAlign: "center"}} >
-        Welcome Back, {profile ? profile.username : "User"}!
-      </Text>
-
-      
-      <TouchableOpacity 
-      onPress = {handleLogout}
-      className="flex-row items-center justify-center w-full bg-red-500 rounded-xl mt-6 py-3">
-@@ -35,4 +249,7 @@ export default function Profile({ route, navigation }) {
-      </View> 
-      
-     
-     );}
-     );
-  */
+  
 }

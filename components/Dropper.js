@@ -10,7 +10,7 @@ const data = [
 ];
 
 const DropdownComponent = ({ value, onChange }) => {
-  //console.log("Current Value: "+ value)
+
   return (
     <Dropdown
       style={styles.dropdown}
