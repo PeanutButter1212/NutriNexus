@@ -12,7 +12,7 @@ export async function activityService(session) {
   const { data, error } = await supabase
     .from("step_log")
     .select("steps, distance")
-    .eq("id", userId)
+    .eq("user_id", userId)
     .single();
 
   console.log("📥 Data from Supabase:", data);

@@ -9,11 +9,19 @@ import {
 } from "react-native";
 import { useAuth } from "../contexts/AuthContext";
 import { useState, useRef } from "react";
-import { fetchProfileCalories, fetchWeeklyCalories, updateCaloriesConsumed } from "../services/profileService";
+import {
+  fetchProfileCalories,
+  fetchWeeklyCalories,
+  updateCaloriesConsumed,
+} from "../services/profileService";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { AntDesign } from "@expo/vector-icons";
 import { ActivityIndicator } from "react-native";
-import { predictFoodFromImage, fetchCaloriesByFood, insertFoodEntry } from "../services/scannerService"
+import {
+  predictFoodFromImage,
+  fetchCaloriesByFood,
+  insertFoodEntry,
+} from "../services/scannerService";
 
 export default function ScannerScreen({ navigation }) {
   const [facing, setFacing] = useState("back");
@@ -46,25 +54,32 @@ export default function ScannerScreen({ navigation }) {
     // Process photo with ML model
     setLoading(true);
     try {
-      options = {
+      const options = {
         quality: 1,
         base64: true,
-        exif: false
+        exif: false,
       };
+
+      if (!cameraRef.current) {
+        throw new Error("Camera not ready");
+      }
 
       const takenPhoto = await cameraRef.current.takePictureAsync(options);
       const foodDetected = await predictFoodFromImage(takenPhoto);
-      setFood(foodDetected);
+      setFood(foodDetected.food);
 
       const foodCalories = await fetchCaloriesByFood(foodDetected);
-      setCalories(calories);
+      setCalories(foodCalories);
 
-      await logActivity({ userId: session.user.id, food: foodDetected, calories });
-
+      /*await logActivity({
+        userId: session.user.id,
+        food: foodDetected,
+        calories,
+      });*/
     } catch (err) {
-      console.error(err.message)
+      console.error(err.message);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -82,10 +97,9 @@ export default function ScannerScreen({ navigation }) {
       return;
     }
 
-    const userId = session.user.id 
+    const userId = session.user.id;
 
-    
-    const { error } = await insertFoodEntry({ userId, food, calories }); 
+    const { error } = await insertFoodEntry({ userId, food, calories });
 
     if (error) {
       console.error(error);

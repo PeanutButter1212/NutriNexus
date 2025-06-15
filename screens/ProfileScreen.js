@@ -10,7 +10,7 @@ import {
   Image,
   useWindowDimensions,
   Settings,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import { useAuth } from "../contexts/AuthContext";
@@ -24,24 +24,19 @@ import DropdownComponent from "../components/Dropper";
 import { supabase } from "../lib/supabase";
 import { useFocusEffect } from "@react-navigation/native";
 import useProfileData from "../hooks/useProfileData";
-import Ionicons from '@expo/vector-icons/Ionicons';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import Ionicons from "@expo/vector-icons/Ionicons";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useDistance } from "../contexts/DistanceTrackingContext";
 
 export default function Profile({ navigation }) {
   const { session, profile, authMethod } = useAuth();
 
-  const SCREEN_HEIGHT = Dimensions.get('window').height;
-  
-  const { distance } = useDistance(); 
+  const SCREEN_HEIGHT = Dimensions.get("window").height;
 
-  const {
-    totalCalories,
-    calorieGoal,
-    caloriesData,
-    points
-  } = useProfileData();
-  
+  const { distance } = useDistance();
+
+  const { totalCalories, calorieGoal, caloriesData, points } = useProfileData();
+
   const [referenceData, setReferenceData] = useState([]);
   const [selectedDataType, setSelectedDataType] = useState("Steps");
 
@@ -57,7 +52,6 @@ export default function Profile({ navigation }) {
     { day: "SUN", value: 3500 },
   ];
 
-  /
   useEffect(() => {
     if (selectedDataType === "Steps") {
       setReferenceData(weeklyStepsData);
@@ -90,9 +84,7 @@ export default function Profile({ navigation }) {
   const barWidth = 35;
 
   return (
-    <ScrollView 
-    className="flex-1 bg-white"
-    >
+    <ScrollView className="flex-1 bg-white">
       <LinearGradient
         colors={["#2E8B57", "#90EE90", "#006400"]}
         style={{
@@ -101,16 +93,12 @@ export default function Profile({ navigation }) {
           flexDirection: "column",
           padding: 20,
         }}
-      >  
-      <Text
-          className="text-3xl font-bold text-white p-16 text-center"
-        >
+      >
+        <Text className="text-3xl font-bold text-white p-16 text-center">
           Welcome Back, {profile ? profile.username : "User"}!
         </Text>
-      <View className="flex-1 justify-center items-center mb-24"> 
-    
-        <View className="relative items-center">
-     
+        <View className="flex-1 justify-center items-center mb-24">
+          <View className="relative items-center">
             <View className="absolute left-6 -top-16">
               <CircularProgress
                 value={Math.floor(progressPercentage)}
@@ -118,7 +106,7 @@ export default function Profile({ navigation }) {
                 radius={60}
                 progressValueColor={"blue"}
                 titleFontSize={10}
-                title={'Calories Limit'}
+                title={"Calories Limit"}
                 titleColor={"white"}
                 titleStyle={{ fontWeight: "bold" }}
                 activeStrokeColor={"#2465FD"}
@@ -126,65 +114,66 @@ export default function Profile({ navigation }) {
                 inActiveStrokeColor={"white"}
               />
             </View>
-          
-          {/* image */}
-          <View className="mt-8">
-            <Image
-              source={require("../assets/AvatarResized.png")}
-              className="w-80 h-80"
-              resizeMode="contain"
-            />
+
+            {/* image */}
+            <View className="mt-8">
+              <Image
+                source={require("../assets/AvatarResized.png")}
+                className="w-80 h-80"
+                resizeMode="contain"
+              />
+            </View>
           </View>
 
-        
-        </View>
-
-
-          
-        <View
-            className="flex-row justify-between"
-          >
+          <View className="flex-row justify-between">
             <View className="bg-white rounded-xl p-4 flex-1 shadow-md mr-2">
               <View className="flex-row items-center">
-                <Image 
-                source={require("../assets/Points.png")} 
-                className="w-8 h-8"
+                <Image
+                  source={require("../assets/Points.png")}
+                  className="w-8 h-8"
                 />
-          
-                <Text className="text-stone-500 text-sm text-xl font-bold">Points</Text>   
-                </View>
-                <View>
-              <Text className="text-black text-3xl font-extrabold">{points}</Text> 
+
+                <Text className="text-stone-500 text-sm text-xl font-bold">
+                  Points
+                </Text>
+              </View>
+              <View>
+                <Text className="text-black text-3xl font-extrabold">
+                  {points}
+                </Text>
               </View>
             </View>
 
             <View className="bg-white rounded-xl p-4 flex-1 shadow-md mr-2">
               <View className="flex-row items-center">
-              <Ionicons name="footsteps" size={20} color="black" />
-                <Text className="text-stone-500 text-sm text-xl font-bold">Steps</Text>   
-                </View>
-                <View>
-              <Text className="text-black text-3xl font-extrabold">{(distance / 0.75).toFixed(0)}{" "}</Text> 
+                <Ionicons name="footsteps" size={20} color="black" />
+                <Text className="text-stone-500 text-sm text-xl font-bold">
+                  Steps
+                </Text>
+              </View>
+              <View>
+                <Text className="text-black text-3xl font-extrabold">
+                  {(distance / 0.75).toFixed(0)}{" "}
+                </Text>
               </View>
             </View>
-
 
             <TouchableOpacity
               onPress={() => navigation.navigate("Activity Log")}
               className="bg-white rounded-xl p-4 flex-1 shadow-md"
-            > 
+            >
               <View className="flex-row items-center mb-1">
-              <FontAwesome5 name="fire" size={20} color="black" />
+                <FontAwesome5 name="fire" size={20} color="black" />
                 <Text className="text-stone-500 text-m font-bold"> Burnt </Text>
                 <Text className="text-stone-500 text-m font-bold">Kcal</Text>
               </View>
-              
-              <Text className="text-black text-3xl font-extrabold">{Math.round(distance * 0.05)} kcal</Text>
+
+              <Text className="text-black text-3xl font-extrabold">
+                {Math.round(distance * 0.05)} kcal
+              </Text>
             </TouchableOpacity>
           </View>
-      </View>
-      
-        
+        </View>
       </LinearGradient>
 
       <View>
@@ -222,9 +211,6 @@ export default function Profile({ navigation }) {
           ))}
         </Canvas>
       </View>
-
-    
     </ScrollView>
   );
-  
 }
