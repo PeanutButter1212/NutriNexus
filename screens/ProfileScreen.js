@@ -57,7 +57,7 @@ export default function Profile({ navigation }) {
     { day: "SUN", value: 3500 },
   ];
 
-  /
+  
   useEffect(() => {
     if (selectedDataType === "Steps") {
       setReferenceData(weeklyStepsData);
