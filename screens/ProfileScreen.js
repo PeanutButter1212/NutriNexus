@@ -26,16 +26,20 @@ import { useFocusEffect } from "@react-navigation/native";
 import useProfileData from "../hooks/useProfileData";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { useDistance } from "../contexts/DistanceTrackingContext";
 
-export default function Profile({navigation}) {
+export default function Profile({ navigation }) {
   const { session, profile, authMethod } = useAuth();
 
   const SCREEN_HEIGHT = Dimensions.get('window').height;
+  
+  const { distance } = useDistance(); 
 
   const {
     totalCalories,
     calorieGoal,
-    caloriesData
+    caloriesData,
+    points
   } = useProfileData();
   
   const [referenceData, setReferenceData] = useState([]);
@@ -53,8 +57,7 @@ export default function Profile({navigation}) {
     { day: "SUN", value: 3500 },
   ];
 
-  console.log("Calories Data: " +  caloriesData)
-
+  /
   useEffect(() => {
     if (selectedDataType === "Steps") {
       setReferenceData(weeklyStepsData);
@@ -85,7 +88,6 @@ export default function Profile({navigation}) {
   const y = d3.scaleLinear().domain(yDomain).range(yRange);
 
   const barWidth = 35;
-
 
   return (
     <ScrollView 
@@ -152,22 +154,20 @@ export default function Profile({navigation}) {
                 <Text className="text-stone-500 text-sm text-xl font-bold">Points</Text>   
                 </View>
                 <View>
-              <Text className="text-black text-3xl font-extrabold">0</Text> 
+              <Text className="text-black text-3xl font-extrabold">{points}</Text> 
               </View>
             </View>
 
             <View className="bg-white rounded-xl p-4 flex-1 shadow-md mr-2">
               <View className="flex-row items-center">
               <Ionicons name="footsteps" size={20} color="black" />
-          
                 <Text className="text-stone-500 text-sm text-xl font-bold">Steps</Text>   
                 </View>
                 <View>
-              <Text className="text-black text-3xl font-extrabold">0</Text> 
+              <Text className="text-black text-3xl font-extrabold">{(distance / 0.75).toFixed(0)}{" "}</Text> 
               </View>
             </View>
 
-       
 
             <TouchableOpacity
               onPress={() => navigation.navigate("Activity Log")}
@@ -175,16 +175,15 @@ export default function Profile({navigation}) {
             > 
               <View className="flex-row items-center mb-1">
               <FontAwesome5 name="fire" size={20} color="black" />
-                <Text className="text-stone-500 text-sm font-bold">Calories </Text>
-                <Text className="text-stone-500 text-sm font-bold">Burnt</Text>
+                <Text className="text-stone-500 text-m font-bold"> Burnt </Text>
+                <Text className="text-stone-500 text-m font-bold">Kcal</Text>
               </View>
               
-              <Text className="text-black text-3xl font-extrabold">0</Text>
+              <Text className="text-black text-3xl font-extrabold">{Math.round(distance * 0.05)} kcal</Text>
             </TouchableOpacity>
           </View>
       </View>
-       
-
+      
         
       </LinearGradient>
 

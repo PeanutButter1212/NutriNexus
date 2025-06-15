@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-
+import React, { useState } from "react";
+import { StyleSheet } from "react-native";
+import { Dropdown } from "react-native-element-dropdown";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 const data = [
-    { label: 'Steps', val: 'Steps'},
-    { label: 'Calories', val: 'Calories' },
-  ];
+  { label: "Steps", val: "Steps" },
+  { label: "Calories", val: "Calories" },
+];
 
 const DropdownComponent = ({ value, onChange }) => {
+
   return (
     <Dropdown
       style={styles.dropdown}
@@ -26,16 +26,17 @@ const DropdownComponent = ({ value, onChange }) => {
       placeholder="Select item"
       searchPlaceholder="Search..."
       value={value}
-      onChange={item => {
+      onChange={(item) => {
         onChange(item.val);
       }}
       renderLeftIcon={() => {
-        const selectedItem = data.find(item => item.val === value);
-        return selectedItem?.val === "Steps" ? 
-                                    (<Ionicons name="footsteps-sharp" size={24} color="#ba4a00" />)
-                                     : (<FontAwesome5 name="fire" size={20} color="#FF7F50" />)
-        
-       } }
+        const selectedItem = data.find((item) => item.val === value);
+        return selectedItem?.val === "Steps" ? (
+          <Ionicons name="footsteps-sharp" size={24} color="#ba4a00" />
+        ) : (
+          <FontAwesome5 name="fire" size={20} color="#FF7F50" />
+        );
+      }}
     />
   );
 };
@@ -46,7 +47,7 @@ const styles = StyleSheet.create({
   dropdown: {
     margin: 16,
     height: 50,
-    borderBottomColor: 'gray',
+    borderBottomColor: "gray",
     borderBottomWidth: 0.5,
   },
   icon: {

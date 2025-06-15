@@ -21,25 +21,24 @@ export default function ActivityLogScreen({ navigation }) {
   const [entries, setEntries] = useState([]);
   const { session, refreshFlag } = useAuth();
 
-
   useEffect(() => {
     const loadEntries = async () => {
-      const userId = session?.user?.id
+      const userId = session?.user?.id;
 
       if (!userId) {
-        console.log("User ID not ready yet. Skipping fetch.");
+        console.log("HELP!");
         return;
       }
       try {
-        const userLog = await fetchActivityLog(userId)
-        setEntries(userLog || [])
+        const userLog = await fetchActivityLog(userId);
+        setEntries(userLog || []);
       } catch (err) {
-        console.error("error from fetchActivityLog: " + err.message)
+        console.error("error from fetchActivityLog: " + err.message);
       }
     };
-    loadEntries(); 
-  }, [refreshFlag, session])
-   //whenever the refresh flag changes(ie when updated table then it updates log)
+    loadEntries();
+  }, [refreshFlag, session]);
+  //whenever the refresh flag changes(ie when updated table then it updates log)
 
   return (
     <View className="flex-1 items-center justify-start bg-green-300 pt-28 px-4">
@@ -56,10 +55,7 @@ export default function ActivityLogScreen({ navigation }) {
           Activity Log
         </Text>
         {/* Folder image*/}
-        <Image
-          source={require("../assets/Folder.png")}
-          className="w-40 h-40"
-        />
+        <Image source={require("../assets/Folder.png")} className="w-40 h-40" />
       </View>
 
       {/*Headings*/}
