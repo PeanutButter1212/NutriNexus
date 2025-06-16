@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Alert,
   ScrollView,
+  ImageBackground,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { Image } from "react-native";
@@ -16,23 +17,31 @@ import { useAuth } from "../contexts/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import useProfileData from "../hooks/useProfileData";
 import { supabase } from "../lib/supabase";
+import japaneseKoreanImg from "../assets/Japanese_Korean_Stall.jpeg";
+import roastedDelightImg from "../assets/Chicken_Rice_Stall.jpg";
+import fishBallNoodlesImg from "../assets/FishBallNoodle_Stall.jpg";
+import fishNoodlesImg from "../assets/FishNoodle_Stall.jpg";
 
 const stalls = [
   {
     name: "Roasted Delights",
     foods: ["Roasted Chicken Rice", "Steamed Chicken Rice", "Char Siew Rice"],
+    pic: roastedDelightImg,
   },
   {
     name: "Japanese Korean",
     foods: ["Saba Fish Set", "Chicken Cutlet Rice", "Bibimbap ✅ "],
+    pic: japaneseKoreanImg,
   },
   {
     name: "Fish Noodles",
     foods: ["Sliced Fish Noodle ✅ ", "Fried Fish Noodles", "Bittergourd Soup"],
+    pic: fishNoodlesImg,
   },
   {
     name: "FishBall Noodles",
     foods: ["Dry FishBall Noodles", "Bak Kut Teh", "Soup FishBall Noodles"],
+    pic: fishBallNoodlesImg,
   },
 ];
 
@@ -64,7 +73,7 @@ export default function Location1Screen() {
   };
 
   return (
-    <ScrollView className="bg-green-100">
+    <ScrollView className="bg-green-200">
       <View className="items-center justify-start  pt-16 px-6 space-y-10">
         <Text className="text-4xl font-extrabold text-black mb-8">
           Happy Hawker
@@ -82,13 +91,28 @@ export default function Location1Screen() {
           className="w-full h-64 rounded-2xl object-cover mb-8"
         />
         <Text className="text-xl font-bold mb-2">Food Options:</Text>
-        <View className="flex-row flex-wrap justify-between">
+        {/*<View className="flex-row flex-wrap justify-between"> */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          className="w-full mb-6"
+        >
           {stalls.map((stall, index) => (
-            <View
+            <TouchableOpacity
               key={index}
-              className="w-[48%] bg-white rounded-2xl p-4 mb-4 shadow-md"
-              style={{ minHeight: 140 }}
+              className="w-[48%] bg-white rounded-2xl  mb-4 shadow-md  overflow-hidden"
+              style={{ minHeight: 140 }} /*onPress={{}}*/
             >
+              <ImageBackground
+                source={stall.pic}
+                className=" flex-1 h-full w-full justify-end rounded-2xl overflow-hidden"
+                imageStyle={{ borderRadius: 16 }}
+              >
+                <Text className="text-lg font-bold text-gray-900 mb-2 bg-white/80 text-center">
+                  {stall.name}
+                </Text>
+              </ImageBackground>
+              /*
               <Text className="text-lg font-bold text-gray-900 mb-2">
                 {stall.name}
               </Text>
@@ -96,10 +120,12 @@ export default function Location1Screen() {
                 <Text key={i} className="text-sm text-gray-700">
                   {food}
                 </Text>
-              ))}
-            </View>
+              ))}{" "}
+              */
+            </TouchableOpacity>
           ))}
-        </View>
+        </ScrollView>
+
         <TouchableOpacity
           className="flex-row items-center justify-center rounded-xl mt-6 py-3"
           onPress={handleFirstVisit}
