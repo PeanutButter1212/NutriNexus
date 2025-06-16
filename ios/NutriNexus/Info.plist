@@ -27,6 +27,18 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
+          <string>com.googleusercontent.apps.960982903167-krh2o19m7vtkcrsao5kspkor8qlfu9af</string>
+        </array>
+      </dict>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>exp+nutrinexus</string>
+        </array>
+      </dict>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
           <string>com.googleusercontent.apps.960982903167-krh2019m7vtkcrsao5kspkor8qlfu9af</string>
         </array>
       </dict>
@@ -56,6 +68,8 @@
     <string>Allow NutriNexus to use your location</string>
     <key>NSMicrophoneUsageDescription</key>
     <string>Allow ${PRODUCT_NAME} to access your microphone</string>
+    <key>NSMotionUsageDescription</key>
+    <string>Allow $(PRODUCT_NAME) to access your device motion</string>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>
