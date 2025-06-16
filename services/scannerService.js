@@ -45,8 +45,29 @@ export async function fetchCaloriesByFood(food) {
   const { data, error } = await supabase
     .from("food")
     .select("calories")
-    .ilike("name", `%${food}%`)
+    .eq("name", food)
     .single();
 
+  //console.log("Supabase response:", { data, error });
+
+  if (error) {
+    console.error("Supabase error:", error.message);
+  }
+
   return data.calories.toString();
+}
+
+//get food names from database
+export async function fetchFoodSuggestions(input) {
+  const { data, error } = await supabase
+    .from("food")
+    .select("name")
+    .ilike("name", `%${input}%`)
+    .limit(5); //for same name we set limit to 5 so nicer lol
+
+  if (error) {
+    console.error("Failed to fetch food", error.message);
+    return [];
+  }
+  return data;
 }
