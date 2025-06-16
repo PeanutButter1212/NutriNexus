@@ -7,3 +7,4 @@ node_modules/
 *.log
 .expo/devices.json
 .expo/xcodebuild.log
+.expo/
