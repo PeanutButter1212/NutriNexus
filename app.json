@@ -17,7 +17,7 @@
       [
         "@react-native-google-signin/google-signin",
         {
-          "iosUrlScheme": "com.googleusercontent.apps.960982903167-krh2019m7vtkcrsao5kspkqr8qlfu9af"
+          "iosUrlScheme": "com.googleusercontent.apps.960982903167-krh2019m7vtkcrsao5kspkor8qlfu9af"
         }
       ],
       [
@@ -45,6 +45,13 @@
       "supportsTablet": true,
       "bundleIdentifier": "nutrinuxus.club",
       "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": [
+              "com.googleusercontent.apps.960982903167-krh2o19m7vtkcrsao5kspkor8qlfu9af"
+            ]
+          }
+        ],
         "ITSAppUsesNonExemptEncryption": false,
         "NSCameraUsageDescription": "This app uses the camera to scan QR codes and take pictures.",
         "NSLocationWhenInUseUsageDescription": "We use your location to show nearby foodspots on the map.",

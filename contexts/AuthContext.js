@@ -35,6 +35,7 @@ export const AuthProvider = ({ children }) => {
       iosClientId:
         "960982903167-krh2o19m7vtkcrsao5kspkor8qlfu9af.apps.googleusercontent.com",
       offlineAccess: true,
+      behavior: 'web',
     });
 
 
@@ -177,6 +178,13 @@ export const AuthProvider = ({ children }) => {
   const googleSignIn = async (navigation) => {
     try {
       console.log("Google SIgn In")
+      try {
+        const userInfo = await GoogleSignin.signIn();
+        console.log(userInfo);
+      } catch (error) {
+        console.log(JSON.stringify(error, null, 2)); // show full error details
+      }
+      
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       console.log("console info: " + JSON.stringify(userInfo, null, 2));

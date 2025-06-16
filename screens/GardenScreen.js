@@ -414,13 +414,13 @@ export default function GardenScreen() {
             onDragMove={handleDragMove}
           />
         )}
-
+     {/*   
     <Pressable onPress={() => handleDebug()}>
       <Text style={{ color: 'white', padding: 3, backgroundColor: 'red' }}>
         Clear Garden
       </Text>
     </Pressable>
-
+    */}
 
 
 
