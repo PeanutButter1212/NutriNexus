@@ -79,8 +79,8 @@ export const DistanceProvider = ({ children }) => {
     initialize();
   }, [session]);
 
-  //to imporve accuracy i try use this to detect movement
-  //now it wont increase when i not moving
+  //to imporve accuracy try use this to detect movement
+  //now it wont increase when not moving
   useEffect(() => {
     const accelSubscription = Accelerometer.addListener(({ x, y, z }) => {
       const total = Math.sqrt(x * x + y * y + z * z);
