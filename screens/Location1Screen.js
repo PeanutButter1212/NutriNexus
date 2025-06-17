@@ -39,12 +39,12 @@ const stalls = [
   },
   {
     name: "Japanese Korean",
-    foods: ["Saba Fish Set", "Chicken Cutlet Rice", "Bibimbap ✅ "],
+    foods: ["Saba Fish Set", "Chicken Cutlet Rice", "Bibimbap "],
     pic: japaneseKoreanImg,
   },
   {
     name: "Fish Noodles",
-    foods: ["Sliced Fish Noodle ✅ ", "Fried Fish Noodles", "Bittergourd Soup"],
+    foods: ["Sliced Fish Noodle ", "Bittergourd Soup"],
     pic: fishNoodlesImg,
   },
   {
@@ -89,6 +89,7 @@ export default function Location1Screen() {
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View className="flex-1 justify-center items-center bg-black/50">
           <View className="bg-white w-4/5 p-6 rounded-2xl shadow-lg">
+         {/* jic got undefined */}
             {selectedStall && (
               <>
                 <Text className="text-lg font-bold text-green-800 mb-4 text-center">
@@ -147,7 +148,7 @@ export default function Location1Screen() {
                 style={{ minHeight: 140 }}
                 onPress={() => {
                   setModalVisible(true);
-                  setSelectedStall(stalls);
+                  setSelectedStall(stall);
                 }}
               >
                 <ImageBackground
