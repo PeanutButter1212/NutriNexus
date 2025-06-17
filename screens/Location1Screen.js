@@ -83,7 +83,7 @@ export default function Location1Screen() {
   console.log("MODAL STATE:", modalVisible);
   return (
     <>
-      //popup screen
+      {/* popup screen */}
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View className="flex-1 justify-center items-center bg-black/50">
           <View className="bg-white w-4/5 p-6 rounded-2xl shadow-lg">

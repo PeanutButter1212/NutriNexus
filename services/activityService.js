@@ -17,7 +17,7 @@ export async function activityService(session) {
     .eq("date", today)
     .maybeSingle();
 
-  console.log("📥 Data from Supabase:", data);
+  console.log("Data from Supabase:", data);
 
   if (error) {
     console.error("Error fetching data");
