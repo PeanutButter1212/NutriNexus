@@ -57,6 +57,8 @@ export const DistanceProvider = ({ children }) => {
             .eq("date", today)
             .maybeSingle();
 
+          console.log("📦 Supabase fetch result:", todayEntry);
+
           if (error) {
             console.error("Error checking today's step log:", error);
           }
