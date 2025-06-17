@@ -4,6 +4,7 @@ import { supabase } from "../lib/supabase";
 
 export async function activityService(session) {
   const userId = session?.user?.id;
+  const today = new Date().toISOString().split("T")[0];
 
   if (!userId) {
     console.warn("No USER ID HELP!");
@@ -13,7 +14,8 @@ export async function activityService(session) {
     .from("step_log")
     .select("steps, distance")
     .eq("user_id", userId)
-    .single();
+    .eq("date", today)
+    .maybeSingle();
 
   console.log("📥 Data from Supabase:", data);
 

@@ -17,7 +17,7 @@ export const DistanceProvider = ({ children }) => {
   const [previousLocation, setPreviousLocation] = useState(null);
   const [location, setLocation] = useState(null);
   const [isMoving, setIsMoving] = useState(false);
-  const hasInitialized = useRef(false); //make sure tabel not updated with 0
+  const [initialized, setInitialized] = useState(false); //make sure tabel not updated with 0
   const distanceRef = useRef(0);
   const [currentDate, setCurrentDate] = useState(
     new Date().toISOString().split("T")[0]
@@ -29,7 +29,19 @@ export const DistanceProvider = ({ children }) => {
 
   const user = session?.user;
 
-  //check for new day to reset
+  //obtain diatnce and steps from supbase
+  const { distance: fetchedDistance, loading } = useStepsData(session);
+
+  useEffect(() => {
+    if (!loading && typeof fetchedDistance === "number") {
+      setDistance(fetchedDistance);
+      distanceRef.current = fetchedDistance;
+      console.log("Loaded distance from Supabase:", fetchedDistance);
+      setInitialized(true);
+    }
+  }, [loading, fetchedDistance]);
+
+  /*check for new day to reset
   const checkNewDay = async () => {
     const today = new Date().toISOString().split("T")[0];
     if (today !== currentDate) {
@@ -80,6 +92,7 @@ export const DistanceProvider = ({ children }) => {
 
     initialize();
   }, [session]);
+  */
 
   //to imporve accuracy try use this to detect movement
   //now it wont increase when not moving
@@ -163,11 +176,11 @@ export const DistanceProvider = ({ children }) => {
     };
   }, [isMoving, previousLocation]);
 
-  //update supabase table with steps for users each time they enter app(best way possible)
+  //update supabase table with steps for users each time they enter app + every 10 sec(best way possible)
   useEffect(() => {
+    if (!initialized) return;
     const interval = setInterval(async () => {
-      await checkNewDay();
-      if (!hasInitialized.current) return;
+      // await checkNewDay();
 
       const currentDistance = distanceRef.current;
       //console.log("📏 distanceRef.current is", currentDistance);
@@ -221,7 +234,7 @@ export const DistanceProvider = ({ children }) => {
     }, 10000); //update supabase every 10 sec
 
     return () => clearInterval(interval);
-  }, []);
+  }, [initialized]);
 
   //this is to wrap it around children so we can track disatnce across all screens like we want
   return (
