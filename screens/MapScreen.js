@@ -4,7 +4,7 @@ import MapView, { Marker, Circle } from "react-native-maps";
 import { useDistance } from "../contexts/DistanceTrackingContext";
 import haversineDistance from "haversine-distance";
 import { useNavigation } from "@react-navigation/native";
-import BottomSheet from "@gorhom/bottom-sheet";
+
 import useProfileData from "../hooks/useProfileData";
 
 //to expand more markers i can create an array for markers and usestate to see which is selected then display that instead of creating multiple
@@ -36,6 +36,14 @@ export default function MapScreen() {
     }
   }, [location]);
 
+  useEffect(() => {
+    if (!location) return;
+
+    const distanceToLoc1 = haversineDistance(location, loc1Coords);
+
+    setLoc1InRadius(distanceToLoc1 < 50); // 50 meters radius
+  }, [location]);
+
   if (!location) {
     return (
       <View className="flex-1 justify-center items-center">
@@ -47,13 +55,6 @@ export default function MapScreen() {
   //check for location 1
 
   const loc1Coords = { latitude: 1.350624, longitude: 103.749 };
-  useEffect(() => {
-    if (!location) return;
-
-    const distanceToLoc1 = haversineDistance(location, loc1Coords);
-
-    setLoc1InRadius(distanceToLoc1 < 50); // 50 meters radius
-  }, [location]);
 
   return (
     //Since cannot use pedometer we use estimate to determine steps(0.75 is average stride)

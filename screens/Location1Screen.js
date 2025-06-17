@@ -30,6 +30,7 @@ const cardWidth = 256;
 const margin = 12;
 const totalAlign = cardWidth - (screenWidth - cardWidth) / 2 - margin;
 
+//save this to database?
 const stalls = [
   {
     name: "Roasted Delights",
@@ -59,6 +60,7 @@ export default function Location1Screen() {
   const userId = session?.user?.id;
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
+  const [selectedStall, setSelectedStall] = useState(null);
 
   const handleFirstVisit = async () => {
     if (!visited1) {
@@ -83,16 +85,23 @@ export default function Location1Screen() {
   console.log("MODAL STATE:", modalVisible);
   return (
     <>
-      {/* popup screen */}
+      {/* popup screen showing list of healthy food */}
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View className="flex-1 justify-center items-center bg-black/50">
           <View className="bg-white w-4/5 p-6 rounded-2xl shadow-lg">
-            <Text className="text-lg font-bold text-green-800 mb-4 text-center">
-              Stall Details
-            </Text>
-            <Text className="text-gray-700 text-center mb-6">
-              More info about the selected stall here.
-            </Text>
+            {selectedStall && (
+              <>
+                <Text className="text-lg font-bold text-green-800 mb-4 text-center">
+                  {selectedStall.name}
+                </Text>
+                {selectedStall.foods.map((food, i) => (
+                  <Text key={i} className="text-gray-700 text-center mb-1">
+                    - {food}
+                  </Text>
+                ))}
+              </>
+            )}
+
             <TouchableOpacity
               className="bg-green-600 py-2 rounded-full"
               onPress={() => setModalVisible(false)}
@@ -136,7 +145,10 @@ export default function Location1Screen() {
                 key={index}
                 className="w-64 mr-4 bg-white rounded-2xl  mb-4 shadow-md  overflow-hidden"
                 style={{ minHeight: 140 }}
-                onPress={() => setModalVisible(true)}
+                onPress={() => {
+                  setModalVisible(true);
+                  setSelectedStall(stalls);
+                }}
               >
                 <ImageBackground
                   source={stall.pic}
