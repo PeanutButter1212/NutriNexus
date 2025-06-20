@@ -1,4 +1,4 @@
-import { View, Text, Image, Dimensions, ImageBackground, ScrollView, UIManager, Pressable, findNodeHandle, TouchableWithoutFeedback} from 'react-native';
+import { View, Text, Image, Dimensions, ImageBackground, Animated, ScrollView, UIManager, Pressable, findNodeHandle, TouchableWithoutFeedback} from 'react-native';
 import React,  { useRef, useState, useEffect, useMemo } from 'react'
 import gardenImage from '../assets/garden/garden.png'
 import woodenBackground from '../assets/backgrounds/inventoryBackground.png'
@@ -76,18 +76,21 @@ export default function GardenScreen() {
   
   const itemBank = useItemBank()
 
-  const [isDragging, setIsDragging] = useState(false);
-  const [draggedItemData, setDraggedItemData] = useState(null);
+
 
   const [placedPlants, setPlacedPlants] = useState([]);
 
   const [localInventory, setLocalInventory] = useState([]);
+  const decorInventory = useDecorInventory();
 
   const gardenAreaRef = useRef(null);
-  const [gardenOffset, setGardenOffset] = useState({ x: 0, y: 0 });
   const [hoverTile, setHoverTile] = useState(null);
 
-  const decorInventory = useDecorInventory();
+  const floatingDragRef = useRef(null);
+  const draggedItemRef = useRef(null);
+  const [renderTrigger, setRenderTrigger] = useState(0);
+
+
 
   useEffect(() => {
     setLocalInventory(decorInventory); 
@@ -100,6 +103,13 @@ export default function GardenScreen() {
       ref: React.createRef(),
     }));
   }, [localInventory]);
+
+    
+
+
+
+
+  
 
   // for display of inventory columns 
   const renderInventoryColumns = () => {
@@ -126,38 +136,33 @@ export default function GardenScreen() {
           topItem={{
             count: topInv.count,
             children: (
-              <Pressable
-                ref={topRef}
-                onPressIn={() => 
-                  handlePressIn(topRef, topInv.item_id, topInfo.image_url, 7, 7) 
-                  
-                }
-              >
-                <Image
-                  source={{ uri: topInfo?.image_url }}
-                  className="w-20 h-20"
-                />
-              </Pressable>
+              <DraggableItem
+                item={topInv}
+                itemInfo={topInfo}
+                index={i}
+                draggedItemData={draggedItemRef.current}
+                onDragStart={handleDragStart}
+                onDragMove={handleDragMove}
+                onDragEnd={handleDragEnd}
+              />
             ),
-            slotRef: topRef,
           }}
           bottomItem={
             bottomInv && bottomInfo
               ? {
                   count: bottomInv.count,
                   children: (
-                    <Pressable
-                      ref={bottomRef}
-                      onPressIn={() => 
-                        handlePressIn(bottomRef, bottomInv.item_id, bottomInfo.image_url, 0, 0) }
-                    >
-                      <Image
-                        source={{ uri: bottomInfo.image_url }}
-                        className="w-20 h-20"
-                      />
-                    </Pressable>
+                    <DraggableItem
+                      item={bottomInv}
+                      itemInfo={bottomInfo}
+                      index={i + 1}
+                      draggedItemData={draggedItemRef.current}
+                      onDragStart={handleDragStart}
+                      onDragMove={handleDragMove}
+                      onDragEnd={handleDragEnd}
+
+                    />
                   ),
-                  slotRef: bottomRef,
                 }
               : undefined
           }
@@ -183,33 +188,7 @@ export default function GardenScreen() {
     )
 
   }
-// when we click on inventory item, a draggable item will be spawned at the exact same location as the inventory slot
-  const handlePressIn = (ref, plantId, imageUrl, offsetX, offsetY) => {
-    setIsDragging(false);
-    setDraggedItemData(null);
-
-    
   
-    setTimeout(() => {
-      ref.current.measure((fx, fy, width, height, px, py) => {
-        setDraggedItemData({
-          startX: px + offsetX,
-          startY: py + offsetY,
-          plantId,
-          image: { uri: imageUrl },
-        });
-        setIsDragging(true);
-      });
-    }, 0);
-
-  }
-
-  
-
-  const handleDebug = () => {
-    setPlacedPlants([]);
-    console.log("Item Bank: " + JSON.stringify(placedPlants, null, 2));
-  }
 
 // 5 x 5 grid so run the loop 25 times to generate 25 diamond tiles that have consistent spacing throughout the garden 
   const tileArray = () => {
@@ -262,24 +241,51 @@ export default function GardenScreen() {
 
     return tile; 
   }
-  
+
+  const handleDragStart = (plantId, index, image, startPosition) => {
+    
+    const dragData = { plantId, image, index };
+    const itemInfo = itemBank?.find(item => item.id === plantId);
+    
+    const floatingItem = {
+        ...dragData,
+        x: startPosition.x,
+        y: startPosition.y,
+        itemInfo: itemInfo || { image_url: image.uri }
+    };
+    
+    floatingDragRef.current = floatingItem;
+    draggedItemRef.current = dragData;
+    setRenderTrigger(prev => prev + 1);
+    
+};
+
+    
 //during movement of the drag, we use getClosestTile to determine which tile the location is closest to, that tile will be set
 //to hovering state and displays a white translucent overlay 
-  const handleDragMove = ({ x, y }) => {
-    setHoverTile(getClosestTile(x, y));
-  };
+const handleDragMove = ({ x, y }) => {
   
+  setHoverTile(getClosestTile(x, y));
+  
+  if (floatingDragRef.current) {
+      floatingDragRef.current = {
+          ...floatingDragRef.current,
+          x: x - 40,
+          y: y - 40
+      };
+      setRenderTrigger(prev => prev + 1);
+  }
+};
+
 //upon end of drag motion of draggable item, if the point at which the drag end is near the tile, getClosestTile will return 
 //the nearest tile and we will add this items to the placedplants array so that the item (plant) will be added to the garden 
-  const handleDragEnd = async ({ dropX, dropY }) => {
-    setIsDragging(false);
-    setHoverTile(null);
-    console.log("handleDragEnd")
-    const tile = getClosestTile(dropX, dropY)
+  const handleDragEnd = async ({ dropX, dropY, dragData }) => {
 
-    console.log(draggedItemData.plantId)
-    if (tile && draggedItemData?.plantId) {
-      const item = itemBank.find(decor => decor.id === draggedItemData.plantId)
+    const tile = getClosestTile(dropX, dropY)
+  
+    const currentDragData = dragData 
+    if (tile && currentDragData?.plantId) {
+      const item = itemBank.find(decor => decor.id === currentDragData.plantId)
 
       if (!item) {
         console.log("Item not found")
@@ -295,11 +301,16 @@ export default function GardenScreen() {
         },
       ]);
 
-      decrementInventory(draggedItemData.plantId)
-      await handleSuccessfulPlacement(session.user.id, draggedItemData.plantId)
-    
+      decrementInventory(currentDragData.plantId)
+      await handleSuccessfulPlacement(session.user.id, currentDragData.plantId)
+    } else {
+      console.log("failed in placing plants")
     }
 
+    setHoverTile(null);
+    floatingDragRef.current = null;  
+    draggedItemRef.current = null;   
+    setRenderTrigger(prev => prev + 1);
    
 
   };
@@ -331,16 +342,16 @@ export default function GardenScreen() {
         height: SCREEN_HEIGHT,
        }}
        > 
-        {isDragging && gridView.map(({ path, col, row, x, y }, index) => (         
-          <Path
-            key={`tile-${col}-${row}`}
-            path={path}
-            style="fill"
-            color="rgba(255, 100, 100, 0.4)"
-            strokeWidth={1.5}
-            strokeColor="#ff6666"
-          />
-        ))}
+      {draggedItemRef.current && gridView.map(({ path, col, row, x, y }, index) => (         
+        <Path
+          key={`tile-${col}-${row}`}
+          path={path}
+          style="fill"
+          color="rgba(255, 100, 100, 0.4)"
+          strokeWidth={1.5}
+          strokeColor="#ff6666"
+        />
+      ))}
     
 
         {placedPlants.map((plant, idx) => (
@@ -389,7 +400,7 @@ export default function GardenScreen() {
 
         <SafeAreaProvider> 
           <SafeAreaView>
-          <ScrollView className="flex-row flex-wrap m-4" horizontal scrollEnabled={!isDragging}>
+          <ScrollView className="flex-row flex-wrap m-4" horizontal scrollEnabled={!draggedItemRef.current}>
               {renderInventoryColumns()}
             </ScrollView>
               
@@ -404,28 +415,37 @@ export default function GardenScreen() {
 
         </ImageBackground>
 
-      
-        {isDragging && draggedItemData && (
-          <DraggableItem
-            image={draggedItemData.image}
-            startX={draggedItemData.startX}
-            startY={draggedItemData.startY}
-            onDragEnd={handleDragEnd}
-            onDragMove={handleDragMove}
-          />
-        )}
-     {/*   
-    <Pressable onPress={() => handleDebug()}>
-      <Text style={{ color: 'white', padding: 3, backgroundColor: 'red' }}>
-        Clear Garden
-      </Text>
-    </Pressable>
-    */}
-
+   
 
 
     </View>
-   
+     {floatingDragRef.current && (
+      <>   
+      <View
+        style={{
+            position: 'absolute',
+            left: floatingDragRef.current.x,
+            top:  floatingDragRef.current.y,
+            zIndex: 9999,
+            elevation: 9999,
+            pointerEvents: 'none',
+        }}
+    >
+        <Image
+            source={{ uri: floatingDragRef.current.itemInfo?.image_url }}
+            style={{
+                width: 70,
+                height: 70,
+                opacity: 0.8,
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.3,
+                shadowRadius: 8,
+            }}
+        />
+    </View></>
+  
+)}
     </View>
 
   )

@@ -1,63 +1,92 @@
-import { Animated, PanResponder, Image, UIManager, findNodeHandle } from 'react-native';
-import React, { Component, useRef, useState } from 'react'
-
+import { PanResponder, Animated, View, Text, Image } from 'react-native';
+import { useRef, useState } from 'react';
 const DraggableItem = ({
-    image,
-    startX = 0,
-    startY = 0, 
-    onDragEnd,
-    onDragMove
-  }) => {
-    const initialPosition = useRef({ x: startX, y: startY });
+    item,
+    itemInfo, 
+    index, 
+    draggedItemData, 
+    onDragStart, 
+    onDragMove, 
+    onDragEnd
+}) => {
+    
+    const [isDraggingThis, setIsDraggingThis] = useState(false);
+    const itemRef = useRef(null);
 
-    const pan = useRef(new Animated.ValueXY(initialPosition.current)).current;
+// create draggable items which respond to user's touches 
+const panResponder = useRef(
+    PanResponder.create({
+        onStartShouldSetPanResponder: (evt, gestureState) => {
+            console.log("🔵 onStartShouldSetPanResponder");
+            return true;
+        }, 
+        onStartShouldSetPanResponderCapture: (evt, gestureState) => {
+            return true;
+        },
+        onMoveShouldSetPanResponder: (evt, gestureState) => {
+            return true;
+        }, 
+        onMoveShouldSetPanResponderCapture: (evt, gestureState) => {
+            return true;
+        }, 
+        onPanResponderGrant: (evt, gestureState) => {
+            
+            itemRef.current?.measure((fx, fy, width, height, px, py) => {
+                setIsDraggingThis(true);
+                onDragStart(item.item_id, index, { uri: itemInfo.image_url }, { x: px, y: py });
+            });
+        },
+        onPanResponderMove: (evt, gestureState) => {
+      
 
-    const panResponder = useRef(
-        PanResponder.create({
-            onStartShouldSetPanResponder: (evt, gestureState) => true,
-            onStartShouldSetPanResponderCapture: (evt, gestureState) =>
-                true,
-            onMoveShouldSetPanResponder: (evt, gestureState) => true,
-            onMoveShouldSetPanResponderCapture: (evt, gestureState) =>
-                true,
-            onPanResponderGrant: () => {
-                pan.setOffset({ x: startX, y: startY }); 
-                pan.setValue({ x: 0, y: 0 });           
-              },
+            const result = onDragMove?.({ x: gestureState.moveX, y: gestureState.moveY });
+           
+        },
+        onPanResponderRelease: (evt, gestureState) => {
+     
+            const dropX = gestureState.moveX;
+            const dropY = gestureState.moveY;
+
+            const freshDragData = {
+                plantId: item.item_id,
+                image: { uri: itemInfo.image_url },
+                index: index
+            };
+
+            onDragEnd?.({ dropX, dropY, dragData: freshDragData });
+            setIsDraggingThis(false);
+        },
+        onPanResponderTerminate: (evt, gestureState) => {
+ 
+            setIsDraggingThis(false);
+        },
+    })
+).current;
+          const isThisItemBeingDragged = draggedItemData && draggedItemData.index === index;
         
-            onPanResponderMove: (evt, gestureState) => {
-              const xDisplacement = gestureState.moveX
-              const yDisplacement = gestureState.moveY 
+          return (
+            <View style={{ position: 'relative' }}>
+            <View
+                ref={itemRef}
+                {...panResponder.panHandlers}
+                style={{
+                    opacity: isThisItemBeingDragged ? 0.3 : 1
+                }}
+            > 
+                <Image
+                    source={{ uri: itemInfo?.image_url }}
+                    style={{ width: 80, height: 80 }}
+                />
+            </View>
 
-              pan.setValue({ x: gestureState.dx, y: gestureState.dy });
-              onDragMove?.({ x: xDisplacement, y: yDisplacement
-               });
-            },
+        </View>
 
-            onPanResponderRelease: (evt, gestureState) => {
-                const dropX = gestureState.moveX;
-                const dropY = gestureState.moveY; 
-
-
-                onDragEnd?.({dropX, dropY});
-                pan.setValue(initialPosition.current);
-              },
-            })
-          ).current;
+          );
         
-
-    return (
-        <Animated.View
-            {...panResponder.panHandlers}
-            style={{
-                position: 'absolute',
-                transform: pan.getTranslateTransform(),
-              }}
-            >
-            <Image source={image}  className="w-20 h-20" />
-        </Animated.View>
-
-    )
-}
+}; 
 
 export default DraggableItem
+
+
+             
+        
