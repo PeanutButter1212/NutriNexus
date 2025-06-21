@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 const DraggableItem = ({
     item,
     itemInfo, 
-    index, 
+    itemData, 
     draggedItemData, 
     onDragStart, 
     onDragMove, 
@@ -13,6 +13,8 @@ const DraggableItem = ({
     const [isDraggingThis, setIsDraggingThis] = useState(false);
     const itemRef = useRef(null);
 
+    const currentItem = itemData || item;
+    const currentItemId = currentItem?.item_id;
 // create draggable items which respond to user's touches 
 const panResponder = useRef(
     PanResponder.create({
@@ -33,12 +35,10 @@ const panResponder = useRef(
             
             itemRef.current?.measure((fx, fy, width, height, px, py) => {
                 setIsDraggingThis(true);
-                onDragStart(item.item_id, index, { uri: itemInfo.image_url }, { x: px, y: py });
+                onDragStart(currentItemId, currentItem, { uri: itemInfo.image_url }, { x: px, y: py });
             });
         },
         onPanResponderMove: (evt, gestureState) => {
-      
-
             const result = onDragMove?.({ x: gestureState.moveX, y: gestureState.moveY });
            
         },
@@ -48,21 +48,21 @@ const panResponder = useRef(
             const dropY = gestureState.moveY;
 
             const freshDragData = {
-                plantId: item.item_id,
+                plantId: currentItemId, 
                 image: { uri: itemInfo.image_url },
-                index: index
+                itemData: currentItem 
             };
+
 
             onDragEnd?.({ dropX, dropY, dragData: freshDragData });
             setIsDraggingThis(false);
         },
         onPanResponderTerminate: (evt, gestureState) => {
- 
             setIsDraggingThis(false);
         },
     })
 ).current;
-          const isThisItemBeingDragged = draggedItemData && draggedItemData.index === index;
+          const isThisItemBeingDragged = draggedItemData && draggedItemData.plantId === currentItemId;
         
           return (
             <View style={{ position: 'relative' }}>

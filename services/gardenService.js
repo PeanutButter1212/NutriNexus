@@ -29,8 +29,8 @@ export async function fetchPlants() {
   return data;
 };
 
-export async function handleSuccessfulPlacement(userId, plantId) {
-  console.log("Start handleSuccessfulPlacement", { userId, plantId });
+export async function handleAssetConsumption(userId, plantId) {
+  console.log("now handling asset")
   const { data, error } = await supabase
     .from("inventory")
     .select("id, count")
@@ -41,10 +41,9 @@ export async function handleSuccessfulPlacement(userId, plantId) {
 
 
   if (!data) {
-  console.error("No inventory item found for:", { userId, plantId });
+    console.error("No inventory item found for:", { userId, plantId });
   return;
 }
-  console.log(data)
 
   if (error) {
     throw error;
@@ -62,8 +61,11 @@ export async function handleSuccessfulPlacement(userId, plantId) {
       
     
       if (deleteError) {
-        console.error("Delete Error: " + deleteError)
+        return { success: false, error: deleteError, message: "Failed to delete inventory item." };
       }
+
+    return { success: true, message: "Item removed from inventory." };
+
 
   } else {
     
@@ -76,12 +78,16 @@ export async function handleSuccessfulPlacement(userId, plantId) {
 
 
     if (decrementError) {
-      console.error("Decrement Error: " + JSON.stringify(decrementError, null, 2))
+      return { success: false, error: decrementError, message: "Failed to decrement item count." };
     }
+
+    return { success: true, message: "Item count decremented." };
 
 
 
   }
+
+
   
 
 }
@@ -97,4 +103,46 @@ export async function fetchItemBank() {
   }
 
   return data; 
+}
+
+export async function retrieveGardenLayout(userId) {
+  const { data, error } = await supabase
+    .from("garden_layout")
+    .select("*")
+    .eq('user_id', userId)
+  
+  if (error) {
+    console.log("Error fetching user's garden layout: " + error)
+  }
+
+  return data; 
+}
+
+export async function insertToGarden(userId, row, col, decorId) {
+
+  console.log("inserting... ")
+  const { data, error } = await supabase
+  .from("garden_layout")
+  .insert([
+    {
+    user_id: userId,
+    row,
+    col,
+    decor_id: decorId
+    } ])
+
+  if (error) {
+    return {
+      success: false,
+      error,
+      message: "Failed to insert into garden layout.",
+    };
+  }
+
+    return {
+      success: true,
+      data,
+      message: "Successfully inserted item into garden layout.",
+    };
+
 }
