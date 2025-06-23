@@ -8,6 +8,7 @@ import SettingScreen from "../screens/SettingScreen";
 import ActivityLogScreen from "../screens/ActivityLogScreen";
 import OTPScreen from "../screens/OTPScreen";
 import Location1Screen from "../screens/Location1Screen";
+import ShopScreen from "../screens/ShopScreen";
 const Stack = createNativeStackNavigator();
 
 export default function RootStack() {
@@ -16,7 +17,7 @@ export default function RootStack() {
 
     return (
     <Stack.Navigator screenOptions={{ headerShown: false }}> 
-        { !isAuthenticated  
+        { false
         ? (
            <Stack.Screen name="AuthStack" component={AuthStack} />
         ) : (
@@ -38,6 +39,15 @@ export default function RootStack() {
               headerBackTitle: "Back",
             }}
           />
+            <Stack.Screen
+            name="Shop"
+            component={ShopScreen}
+            options={{
+              headerShown: false, 
+              title:"Shop", 
+              headerBackTitle: "Back", 
+            }} 
+            /> 
         </>
       )}
     </Stack.Navigator>

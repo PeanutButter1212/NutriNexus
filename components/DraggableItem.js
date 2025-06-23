@@ -75,7 +75,7 @@ const panResponder = useRef(
             > 
                 <Image
                     source={{ uri: itemInfo?.image_url }}
-                    style={{ width: 80, height: 80 }}
+                    style={{ width: 90, height: 90 }}
                 />
             </View>
 

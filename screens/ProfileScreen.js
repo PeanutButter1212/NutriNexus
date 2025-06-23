@@ -183,6 +183,28 @@ export default function Profile({ navigation }) {
               </Text>
             </TouchableOpacity>
           </View>
+
+          <LinearGradient
+          colors={['#FF7A00', '#E85A2B']}  
+          style={{
+            padding: 10,         
+            marginTop: 16,       
+            borderRadius: 8,       
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5, 
+            paddingHorizontal: 35
+          }}
+  >
+              <TouchableOpacity
+              onPress={() => navigation.navigate("Shop")}
+              > 
+                <Text className="text-3xl text-white"> Shop </Text>
+              </TouchableOpacity>
+       
+            </LinearGradient>
         </View>
       </LinearGradient>
 

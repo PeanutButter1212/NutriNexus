@@ -14,7 +14,17 @@ module.exports = {
      'primary': '#3490dc',
      'secondary': '#ffed4a',
      'danger': '#e3342f',
-    })
+    }),
+    extend: {
+      colors: {
+        'wood': '#c99351'
+      },
+      fontFamily: {
+        'nunito-regular': ['Nunito-Regular', 'sans-serif'], 
+        'nunito-bold': ['Nunito-Bold', 'sans-serif'], 
+        'nunito-extrabold': ['Nunito-ExtraBold', 'sans-serif'], 
+      },
+    },
   },
   plugins: [],
 };
