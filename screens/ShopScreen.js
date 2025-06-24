@@ -1,10 +1,15 @@
-import { Text, View, ImageBackground, Image, TouchableOpacity, ScrollView } from 'react-native'
-import React, { Component, useState } from 'react'
+import { Text, View, ImageBackground, Image, TouchableOpacity, ScrollView , Modal} from 'react-native'
+import React, { Component, useState, useCallback, useMemo } from 'react'
 import woodenBackground from '../assets/backgrounds/shopBackground.png'
 import woodenSquare from '../assets/backgrounds/woodenSquare.png'
 import { useAuth } from '../contexts/AuthContext'
 import ShopRow from '../components/ShopRow'
+import ShopOrder from '../components/ShopOrder'
+
 export default function ShopScreen({navigation}) {
+
+    const [showPopup, setShowPopup] = useState(false)
+    const [selectedItem, setSelectedItem] = useState(null)
 
     const { session, profile } = useAuth();
 
@@ -13,34 +18,57 @@ export default function ShopScreen({navigation}) {
            id: "87c30106-bb4c-4796-a61a-6a1fd31be753",
            name: "bougainvilla",
            image_url: "https://rkrdnsnujizdskzbdwlp.supabase.co/storage/v1/object/public/item-images//bougainvilla.png",
-           type: "decor",
+           type: "Decor",
            cost: "1000"
         }, 
         {
             id: "87c30106-bb4c-4796-a61a-6a1fd31be753",
             name: "durian",
             image_url: "https://rkrdnsnujizdskzbdwlp.supabase.co/storage/v1/object/public/item-images//durian.png",
-            type: "decor",
+            type: "Decor",
             cost: "1800"
         }
 
     ]
 
+    const handleGet = useCallback((item) => {
+        setSelectedItem(item)
+        setShowPopup(true)
+    }, [])
+
+    const handleClosePopup = useCallback(() => {
+        setShowPopup(false)
+        setSelectedItem(null)
+    }, [])
+
+    const handlePurchaseConfirm = useCallback(() => {
+        handleClosePopup()
+    }, [selectedItem, handleClosePopup])
+
+    const handlePurchaseCancel = useCallback(() => {
+        handleClosePopup()
+    }, [selectedItem, handleClosePopup])
+
+
     const renderShopItemRows = () => {
         const columns = [];
-    
-        if (mockItemBank.length == 0) {
+        const filteredItemBank = mockItemBank.filter(item => item.type === currentTab)
+
+        if (filteredItemBank.length == 0) {
           return [];
         } 
-    
-        for (let i = 0; i < mockItemBank.length; i += 2) {
-          const leftItemInfo = mockItemBank[i];
-          const rightItemInfo = mockItemBank[i + 1];
+
+      
+
+        for (let i = 0; i < filteredItemBank.length; i += 2) {
+          const leftItemInfo = filteredItemBank[i];
+          const rightItemInfo = filteredItemBank[i + 1];
     
 
           columns.push(
             <ShopRow
               key={`row-${leftItemInfo.id}-${rightItemInfo?.id || 'empty'}`} 
+              onGetPress={handleGet}
               topItem={{
                 children: (
                     <Image
@@ -48,7 +76,10 @@ export default function ShopScreen({navigation}) {
                     style={{ width: 90, height: 90 }}
                     />
                 ),
-                cost: leftItemInfo.cost
+                cost: leftItemInfo.cost,
+                name: leftItemInfo.name,
+                item: leftItemInfo
+
               }}
               bottomItem={
                 rightItemInfo
@@ -59,8 +90,9 @@ export default function ShopScreen({navigation}) {
                         style={{ width: 90, height: 90 }}
                     />
                       ),
-                      cost: rightItemInfo.cost 
-
+                      cost: rightItemInfo.cost,
+                      name: rightItemInfo.name,
+                      item: rightItemInfo
                     }
                   : undefined
               }
@@ -197,6 +229,24 @@ export default function ShopScreen({navigation}) {
 
 
         </ImageBackground>
+
+
+      {/* Modal for Shop Popup */}
+      <Modal
+            visible={showPopup}
+            transparent={true}
+            animationType="none"
+            onRequestClose={handleClosePopup}
+        >
+           <View className="flex-1 bg-black/50">
+                    <ShopOrder
+                        item={selectedItem}
+                        onConfirm={handlePurchaseConfirm}
+                        onCancel={handlePurchaseCancel}
+                    />
+                </View>
+        </Modal>
+
 
         </View>
         

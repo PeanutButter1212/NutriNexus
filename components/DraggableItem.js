@@ -16,7 +16,7 @@ const DraggableItem = ({
     const currentItem = itemData || item;
     const currentItemId = currentItem?.item_id;
 // create draggable items which respond to user's touches 
-const panResponder = useRef(
+    const panResponder = useRef(
     PanResponder.create({
         onStartShouldSetPanResponder: (evt, gestureState) => {
             console.log("🔵 onStartShouldSetPanResponder");
@@ -61,7 +61,7 @@ const panResponder = useRef(
             setIsDraggingThis(false);
         },
     })
-).current;
+    ).current;
           const isThisItemBeingDragged = draggedItemData && draggedItemData.plantId === currentItemId;
         
           return (

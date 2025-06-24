@@ -1,11 +1,13 @@
-import { View, Text, Image } from 'react-native'
+import { View, Text, Image, TouchableOpacity, Modal } from 'react-native'
 import React from 'react'
 import pointLogo from '../assets/Points.png'
 
-const ShopRow = ({topItem, bottomItem}) => {
+const ShopRow = ({topItem, bottomItem, onGetPress}) => {
 
     const outerBoxWidth = 140
     const innerBoxWidth = 130
+
+   
     return (
     <View className="flex-column">
          <View className="flex-row justify-between">
@@ -21,6 +23,14 @@ const ShopRow = ({topItem, bottomItem}) => {
                   className="flex-column items-center justify-center"
                   >
                       {topItem.children}
+                      <View className="items-center justify-center"> 
+                        <Text
+                        className="text-white font-nunito-bold mb-3 text-xl"
+                        >
+                        {topItem.name}
+                        </Text>
+                      </View>
+                      
                       <View className="bg-gray-800 border-2 border-yellow-500 rounded-xl px-4 py-2 mb-4">
                       
                             <View className="justify-center items-center flex-row">
@@ -37,8 +47,9 @@ const ShopRow = ({topItem, bottomItem}) => {
 
                         </View>
 
-                        <View
+                        <TouchableOpacity
                         className="bg-blue-500 px-6 rounded-xl py-2"
+                        onPress={() => onGetPress?.(topItem.item)}
                         >
                             <Text
                             className="text-white font-bold"
@@ -46,7 +57,7 @@ const ShopRow = ({topItem, bottomItem}) => {
                             GET
                             </Text>
                                 
-                      </View>
+                      </TouchableOpacity>
                   </View>
                   
         
@@ -65,6 +76,11 @@ const ShopRow = ({topItem, bottomItem}) => {
                 className="flex-column items-center justify-center"
                 >
                     {bottomItem.children}
+                    <Text
+                        className="text-white font-nunito-bold mb-3 text-xl"
+                        >
+                        {bottomItem.name}
+                        </Text>
                     <View className="bg-gray-800 border-2 border-yellow-500 rounded-xl px-4 py-2 mb-4">
                     
                         <View className="justify-center items-center flex-row">
@@ -81,16 +97,17 @@ const ShopRow = ({topItem, bottomItem}) => {
 
                     </View>
 
-                    <View
-                    className="bg-blue-500 px-6 rounded-xl py-2"
-                    >
-                        <Text
-                        className="text-white font-bold"
+                    <TouchableOpacity
+                        className="bg-blue-500 px-6 rounded-xl py-2"
+                        onPress={() => onGetPress?.(bottomItem.item)}
                         >
-                        GET
-                        </Text>
-                            
-                    </View>
+                            <Text
+                            className="text-white font-bold"
+                            >
+                            GET
+                            </Text>
+                                
+                      </TouchableOpacity>
                 </View>
         
              </View>  

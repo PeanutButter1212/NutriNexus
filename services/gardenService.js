@@ -102,6 +102,7 @@ export async function fetchItemBank() {
     console.log("Error fetching item bank: " + error)
   }
 
+
   return data; 
 }
 
