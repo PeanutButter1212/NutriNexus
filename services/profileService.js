@@ -1,6 +1,7 @@
 //this file handles services related to profiles and profile_page table
 import { supabase } from "../lib/supabase";
 
+//retrieve profile details
 export async function updateProfileDetails(session, profile, details) {
   const userId = session?.user?.id;
   try {
@@ -40,6 +41,8 @@ export async function updateProfileDetails(session, profile, details) {
   }
 }
 
+//retrieve calorie info
+
 export async function fetchProfileCalories(userId) {
   const { data, error } = await supabase
     .from("profile_page")
@@ -49,6 +52,8 @@ export async function fetchProfileCalories(userId) {
 
   return data;
 }
+
+//retrieve points info
 
 export async function fetchPoints(userId) {
   console.log("userId passed to fetchPoints:", userId);
@@ -63,6 +68,8 @@ export async function fetchPoints(userId) {
   return data?.points;
 }
 
+//retrieve info to check if visited location marker
+
 export async function fetchVisited1(userId) {
   console.log("userId passed to fetchPoints:", userId);
   const { data, error } = await supabase
@@ -73,6 +80,8 @@ export async function fetchVisited1(userId) {
 
   return data?.visited1;
 }
+
+//retrieve weekly calorie data for bar graph
 
 export async function fetchWeeklyCalories(userId) {
   const { data, error } = await supabase
@@ -141,6 +150,8 @@ export async function fetchWeeklyCalories(userId) {
   return output;
 }
 
+//update calories when scanned and submitted
+
 export async function updateCaloriesConsumed(userId) {
   try {
     const { data, error } = await supabase
@@ -173,6 +184,8 @@ export async function updateCaloriesConsumed(userId) {
   }
 }
 
+//fetch and display log in activity log screen
+
 export async function fetchActivityLog(userId) {
   const { data, error } = await supabase
     .from("activity_log")
@@ -184,4 +197,60 @@ export async function fetchActivityLog(userId) {
     throw error;
   }
   return data;
+}
+
+//for the checked boxes in location1 so loads which one alr visited(put in hook)
+
+export async function fetchClaimedCheckboxes(userId) {
+  const { data, error } = await supabase
+    .from("profile_page")
+    .select("checkBoxes")
+    .eq("id", userId)
+    .single();
+
+  if (error) {
+    console.error("Error fetching checkBoxes:", error);
+    return [];
+  }
+
+  return data?.checkBoxes || [];
+}
+
+//this is for handling points update and also update alr claimed locations (not in hook)
+export default async function handleCheckboxes(userId, checkBoxKey) {
+  const { data, error } = await supabase
+    .from("profile_page")
+    .select("checkBoxes, points")
+    .eq("id", userId)
+    .single();
+
+  if (error) {
+    console.error("Error fetching profile:", error);
+    return { success: false };
+  }
+
+  const claimed = data?.checkBoxes || [];
+  const currentPoints = data?.points || 0;
+
+  if (claimed.includes(checkBoxKey)) {
+    console.log("alr claimed", checkBoxKey);
+    return { success: false, alreadyClaimed: true };
+  }
+
+  const updatedClaimed = [...claimed, checkBoxKey];
+  const updatedPoints = currentPoints + 10;
+
+  const { error: updateError } = await supabase
+    .from("profile_page")
+    .update({
+      checkBoxes: updatedClaimed,
+      points: updatedPoints,
+    })
+    .eq("id", userId);
+
+  if (updateError) {
+    console.error("Failed to update", updateError);
+    return { success: false };
+  }
+  return { success: true };
 }
