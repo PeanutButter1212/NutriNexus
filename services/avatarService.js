@@ -16,7 +16,7 @@ export async function retrieveAccessoryInventory(userId) {
 export async function fetchAccessory() {
   const { data, error } = await supabase
     .from("item")
-    .select("id, name, image_url")
+    .select("id, name, image_url, slot, position")
     .eq("type", "Accessory");
 
   if (error) {

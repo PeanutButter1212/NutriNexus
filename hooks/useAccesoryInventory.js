@@ -7,20 +7,19 @@ export default function useAccessoryInventory() {
   const [accessoryInventory, setAccessoryInventory] = useState([]);
   const userId = session?.user?.id;
 
-  if (!userId) return;
-
   useEffect(() => {
+    if (!userId) return;
     async function fetchAccessoryInventory() {
       try {
         const data = await retrieveAccessoryInventory(userId);
-        setDecorInventory(data);
+        setAccessoryInventory(data);
       } catch (err) {
         console.error(err);
       }
     }
 
     fetchAccessoryInventory();
-  }, [session]);
+  }, [userId]);
 
   return accessoryInventory;
 }
