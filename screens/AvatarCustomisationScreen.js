@@ -4,6 +4,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   Image,
+  Alert,
 } from "react-native";
 import backgroundImage from "../assets/CustomisationBackground.png";
 import avatarImage from "../assets/MaleCharacter.png";
@@ -11,12 +12,19 @@ import inventoryImage from "../assets/InventorySign.png";
 import inventoryBackground from "../assets/Background.png";
 import useAccessoryInventory from "../hooks/useAccessoryInventory";
 import { useEffect, useState } from "react";
+import { saveEquippedItems } from "../services/avatarService";
+import { useAuth } from "../contexts/AuthContext";
+import useEquippedItems from "../hooks/useEquippedItems";
 
 import SimpleInventorySlot from "../components/SimpleInventorySlot";
 
 export default function AvatarCustomisationScreen({ navigation }) {
   //const [accessories, setAccessories] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const { session } = useAuth();
+  const userId = session?.user?.id;
+
+  //3 different kinda accessories
   const [equipped, setEquipped] = useState({
     head: null,
     body: null,
@@ -47,6 +55,12 @@ export default function AvatarCustomisationScreen({ navigation }) {
   image_url: "https://..."
   slot: "head"  
 }*/
+
+  const equippedFromDB = useEquippedItems();
+
+  useEffect(() => {
+    setEquipped(equippedFromDB);
+  }, [equippedFromDB]);
 
   /*useEffect(() => {
     const loadAccessories = async () => {
@@ -103,13 +117,13 @@ export default function AvatarCustomisationScreen({ navigation }) {
           {accessories.map((item, index) => (
             <SimpleInventorySlot
               key={index}
-              selected={equipped[item.slot]?.id === item.id}
+              selected={equipped[item.slot]?.item_id === item.item_id}
               onPress={() => {
                 const slot = item.slot; //store position(head,hand) etc)
 
                 setEquipped((prev) => ({
                   ...prev,
-                  [slot]: prev[slot]?.id === item.id ? null : item, //if same item alr equip set to null so basically remove else equip
+                  [slot]: prev[slot]?.item_id === item.item_id ? null : item, //if same item alr equip set to null so basically remove else equip
                 }));
               }}
             >
@@ -122,7 +136,15 @@ export default function AvatarCustomisationScreen({ navigation }) {
           ))}
         </View>
 
-        <TouchableOpacity className="bg-white rounded-xl p-4 shadow-md">
+        <TouchableOpacity
+          className="bg-white rounded-xl p-4 shadow-md mt-4"
+          onPress={async () => {
+            const success = await saveEquippedItems(userId, equipped);
+            if (success) {
+              Alert.alert("Avatar has been saved");
+            }
+          }}
+        >
           <Text className="text-black text-base font-medium">Save</Text>
         </TouchableOpacity>
       </ImageBackground>
