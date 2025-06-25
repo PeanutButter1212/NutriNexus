@@ -41,6 +41,7 @@ export default function Location1Screen() {
   const [claimedStalls, setClaimedStalls] = useState({});
   const [showPopup, setShowPopup] = useState(false);
 
+  //checks which alr claimed so cannot claim again
   useEffect(() => {
     const claimed = checkBoxes.reduce((acc, key) => {
       acc[key] = true;
