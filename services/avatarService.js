@@ -13,7 +13,7 @@ export async function retrieveAccessoryInventory(userId) {
   return accessoryInventory;
 }
 
-export async function fetchAccessory() {
+/*export async function fetchAccessory() {
   const { data, error } = await supabase
     .from("item")
     .select("id, name, image_url, slot, position")
@@ -25,4 +25,4 @@ export async function fetchAccessory() {
   }
 
   return data;
-}
+} */

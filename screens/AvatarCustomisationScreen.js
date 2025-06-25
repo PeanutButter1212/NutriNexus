@@ -9,13 +9,13 @@ import backgroundImage from "../assets/CustomisationBackground.png";
 import avatarImage from "../assets/MaleCharacter.png";
 import inventoryImage from "../assets/InventorySign.png";
 import inventoryBackground from "../assets/Background.png";
+import useAccessoryInventory from "../hooks/useAccessoryInventory";
 import { useEffect, useState } from "react";
 
 import SimpleInventorySlot from "../components/SimpleInventorySlot";
-import { fetchAccessory } from "../services/avatarService";
 
 export default function AvatarCustomisationScreen({ navigation }) {
-  const [accessories, setAccessories] = useState([]);
+  //const [accessories, setAccessories] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [equipped, setEquipped] = useState({
     head: null,
@@ -39,14 +39,16 @@ export default function AvatarCustomisationScreen({ navigation }) {
       return { top: 85, left: 55, width: 50, height: 25 };
     }
   };
-  /* data should look sth like this
+
+  const accessories = useAccessoryInventory();
+  /* accessories should look sth like this
   id: .....
   name: "Sunglasses"
   image_url: "https://..."
   slot: "head"  
 }*/
 
-  useEffect(() => {
+  /*useEffect(() => {
     const loadAccessories = async () => {
       const data = await fetchAccessory();
       console.log("Loaded accessories:", data);
@@ -54,7 +56,7 @@ export default function AvatarCustomisationScreen({ navigation }) {
     };
 
     loadAccessories();
-  }, []);
+  }, []);*/
 
   return (
     <View className="flex-1 m-0 p-0 bg-black">
