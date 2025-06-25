@@ -1,3 +1,5 @@
+//rn its not being used oops
+
 import { useEffect, useState } from "react";
 import { retrieveAccessoryInventory } from "../services/avatarService";
 import { useAuth } from "../contexts/AuthContext";
