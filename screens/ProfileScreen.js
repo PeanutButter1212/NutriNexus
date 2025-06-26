@@ -27,26 +27,22 @@ import useProfileData from "../hooks/useProfileData";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useDistance } from "../contexts/DistanceTrackingContext";
+import { useNavigation } from "@react-navigation/native";
 
-export default function Profile({ navigation }) {
+export default function Profile() {
+  const navigation = useNavigation();
   const { session, profile, authMethod, logout } = useAuth();
 
   const SCREEN_HEIGHT = Dimensions.get("window").height;
 
   const { distance } = useDistance();
 
-
   const handleLogout = () => {
     logout(authMethod, navigation);
   };
 
-  const {
-    totalCalories,
-    calorieGoal,
-    caloriesData,
-    points
-  } = useProfileData();
-  
+  const { totalCalories, calorieGoal, caloriesData, points } = useProfileData();
+
   const [referenceData, setReferenceData] = useState([]);
   const [selectedDataType, setSelectedDataType] = useState("Steps");
 
@@ -206,6 +202,14 @@ export default function Profile({ navigation }) {
        
             </LinearGradient>
         </View>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Avatar Customisation")}
+          className="bg-white rounded-xl p-4 flex-1 shadow-md"
+        >
+          <Text className="text-black text-base font-medium">
+            Customise Avatar
+          </Text>
+        </TouchableOpacity>
       </LinearGradient>
 
       <View>
@@ -243,18 +247,14 @@ export default function Profile({ navigation }) {
           ))}
         </Canvas>
       </View>
-      <View
-      className="justify-center items-center"
-      > 
-      <TouchableOpacity
-        onPress={handleLogout}
-        className="items-center justify-center bg-red-500 w-3/4 rounded-xl mt-6 py-3 mt-3"
-      >
-        <Text className="text-white text-base font-medium">Log Out</Text>
-      </TouchableOpacity>
-    </View>
-
-    
+      <View className="justify-center items-center">
+        <TouchableOpacity
+          onPress={handleLogout}
+          className="items-center justify-center bg-red-500 w-3/4 rounded-xl mt-6 py-3 mt-3"
+        >
+          <Text className="text-white text-base font-medium">Log Out</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 }

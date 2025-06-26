@@ -14,15 +14,16 @@ import {
   Modal,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigation } from "@react-navigation/native";
-import useProfileData from "../hooks/useProfileData";
 import { supabase } from "../lib/supabase";
 import japaneseKoreanImg from "../assets/Japanese_Korean_Stall.jpeg";
 import roastedDelightImg from "../assets/Chicken_Rice_Stall.jpg";
 import fishBallNoodlesImg from "../assets/FishBallNoodle_Stall.jpg";
 import fishNoodlesImg from "../assets/FishNoodle_Stall.jpg";
+import useProfileData from "../hooks/useProfileData";
+import handleCheckboxes from "../services/profileService";
 
 //to center the horizontal scroll
 const screenWidth = Dimensions.get("window").width;
@@ -30,37 +31,52 @@ const cardWidth = 256;
 const margin = 12;
 const totalAlign = cardWidth - (screenWidth - cardWidth) / 2 - margin;
 
-//save this to database?
-const stalls = [
-  {
-    name: "Roasted Delights",
-    foods: ["Roasted Chicken Rice", "Steamed Chicken Rice", "Char Siew Rice"],
-    pic: roastedDelightImg,
-  },
-  {
-    name: "Japanese Korean",
-    foods: ["Saba Fish Set", "Chicken Cutlet Rice", "Bibimbap "],
-    pic: japaneseKoreanImg,
-  },
-  {
-    name: "Fish Noodles",
-    foods: ["Sliced Fish Noodle ", "Bittergourd Soup"],
-    pic: fishNoodlesImg,
-  },
-  {
-    name: "FishBall Noodles",
-    foods: ["Dry FishBall Noodles", "Bak Kut Teh", "Soup FishBall Noodles"],
-    pic: fishBallNoodlesImg,
-  },
-];
-
 export default function Location1Screen() {
-  const { visited1, points } = useProfileData();
+  const { visited1, points, checkBoxes } = useProfileData();
   const { session } = useAuth();
   const userId = session?.user?.id;
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedStall, setSelectedStall] = useState(null);
+  const [claimedStalls, setClaimedStalls] = useState({});
+  const [showPopup, setShowPopup] = useState(false);
+
+  //checks which alr claimed so cannot claim again
+  useEffect(() => {
+    const claimed = checkBoxes.reduce((acc, key) => {
+      acc[key] = true;
+      return acc;
+    }, {});
+    setClaimedStalls(claimed);
+  }, [checkBoxes]);
+
+  //save this to database?
+  const stalls = [
+    {
+      name: "Roasted Delights",
+      foods: [
+        "Vegetarain Char Siew Rice",
+        "Steamed Chicken Rice",
+        "Wonton Noodles",
+      ],
+      pic: roastedDelightImg,
+    },
+    {
+      name: "Japanese Korean",
+      foods: ["Saba Fish Set", "Chicken Cutlet Rice", "Bibimbap "],
+      pic: japaneseKoreanImg,
+    },
+    {
+      name: "Fish Noodles",
+      foods: ["Sliced Fish Noodle ", "Bittergourd Soup"],
+      pic: fishNoodlesImg,
+    },
+    {
+      name: "FishBall Noodles",
+      foods: ["Dry FishBall Noodles", "Bak Kut Teh", "Soup FishBall Noodles"],
+      pic: fishBallNoodlesImg,
+    },
+  ];
 
   const handleFirstVisit = async () => {
     if (!visited1) {
@@ -89,7 +105,7 @@ export default function Location1Screen() {
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View className="flex-1 justify-center items-center bg-black/50">
           <View className="bg-white w-4/5 p-6 rounded-2xl shadow-lg">
-         {/* jic got undefined */}
+            {/* jic got undefined */}
             {selectedStall && (
               <>
                 <Text className="text-lg font-bold text-green-800 mb-4 text-center">
@@ -100,6 +116,45 @@ export default function Location1Screen() {
                     - {food}
                   </Text>
                 ))}
+                {showPopup && (
+                  <Text className="text-green-600 text-sm text-center mb-2">
+                    +10 points!
+                  </Text>
+                )}
+                <TouchableOpacity
+                  onPress={async () => {
+                    const key = selectedStall.name;
+                    //console.log("Clicked checkbox for:", key);
+                    const result = await handleCheckboxes(userId, key);
+                    console.log("Result from handleCheckboxes:", result);
+
+                    if (result?.success || result?.alreadyClaimed) {
+                      setClaimedStalls((prev) => ({ ...prev, [key]: true }));
+
+                      if (result.success) {
+                        setShowPopup(true);
+                        setTimeout(() => setShowPopup(false), 2000);
+                      }
+                    }
+                  }}
+                  //disabled={claimedStalls[selectedStall.name]}
+                  className="flex-row items-center justify-center mt-4"
+                >
+                  <View
+                    className={`w-6 h-6 rounded border-2 mr-2 ${
+                      claimedStalls[selectedStall.name]
+                        ? "bg-green-500 border-green-700"
+                        : "bg-white border-gray-400"
+                    } items-center justify-center`}
+                  >
+                    {claimedStalls[selectedStall.name] && (
+                      <Text className="text-white text-xs">✔️</Text>
+                    )}
+                  </View>
+                  <Text className="text-sm">
+                    I have eaten healthy food at this place
+                  </Text>
+                </TouchableOpacity>
               </>
             )}
 

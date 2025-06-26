@@ -41,59 +41,6 @@ export const DistanceProvider = ({ children }) => {
     }
   }, [loading, fetchedDistance]);
 
-  /*check for new day to reset
-  const checkNewDay = async () => {
-    const today = new Date().toISOString().split("T")[0];
-    if (today !== currentDate) {
-      setCurrentDate(today);
-      setDistance(0);
-      distanceRef.current = 0;
-      await AsyncStorage.setItem("lastTrackingDate", today);
-    }
-  };
-
-  //obtain from supabase svaed values so when user logs in will see past values
-  useEffect(() => {
-    const initialize = async () => {
-      if (!hasInitialized.current && session?.user) {
-        await checkNewDay();
-
-        const today = new Date().toISOString().split("T")[0];
-        const lastTrackingDate = await AsyncStorage.getItem("lastTrackingDate");
-
-        if (lastTrackingDate === today) {
-          const { data: todayEntry, error } = await supabase
-            .from("step_log")
-            .select("distance")
-            .eq("user_id", session.user.id)
-            .eq("date", today)
-            .maybeSingle();
-
-          console.log("📦 Supabase fetch result:", todayEntry);
-
-          if (error) {
-            console.error("Error checking today's step log:", error);
-          }
-
-          if (todayEntry && typeof todayEntry.distance === "number") {
-            setDistance(todayEntry.distance);
-            distanceRef.current = todayEntry.distance;
-          } else {
-            setDistance(0);
-            distanceRef.current = 0;
-          }
-
-          await AsyncStorage.setItem("lastTrackingDate", today);
-        }
-
-        hasInitialized.current = true;
-      }
-    };
-
-    initialize();
-  }, [session]);
-  */
-
   //to imporve accuracy try use this to detect movement
   //now it wont increase when not moving
   useEffect(() => {
