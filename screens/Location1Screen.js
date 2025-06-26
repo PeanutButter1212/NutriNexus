@@ -63,12 +63,12 @@ export default function Location1Screen() {
     },
     {
       name: "Japanese Korean",
-      foods: ["Saba Fish Set", "Chicken Cutlet Rice", "Bibimbap "],
+      foods: ["Beef Bibimbap", "Vegetarian Bibimbap", "Chicken Bibimbap "],
       pic: japaneseKoreanImg,
     },
     {
       name: "Fish Noodles",
-      foods: ["Sliced Fish Noodle ", "Bittergourd Soup"],
+      foods: ["Sliced Fish Noodle ", "Bittergourd Soup", "Vegetarian Soup"],
       pic: fishNoodlesImg,
     },
     {
@@ -138,7 +138,7 @@ export default function Location1Screen() {
                     }
                   }}
                   //disabled={claimedStalls[selectedStall.name]}
-                  className="flex-row items-center justify-center mt-4"
+                  className="flex-row items-center justify-center mt-4 mb-4"
                 >
                   <View
                     className={`w-6 h-6 rounded border-2 mr-2 ${

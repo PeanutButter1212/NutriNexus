@@ -20,6 +20,18 @@ export default function MapScreen() {
 
   const { visited1 } = useProfileData();
 
+  //to load the marker next to user so all users can test it out
+  const [loc1Coords, setLoc1Coords] = useState(null);
+
+  useEffect(() => {
+    if (location && !loc1Coords) {
+      setLoc1Coords({
+        latitude: location.latitude + 0.00002,
+        longitude: location.longitude + 0.00002,
+      });
+    }
+  }, [location]);
+
   //camera tracking
 
   React.useEffect(() => {
@@ -37,14 +49,14 @@ export default function MapScreen() {
   }, [location]);
 
   useEffect(() => {
-    if (!location) return;
+    if (!location || !loc1Coords) return;
 
     const distanceToLoc1 = haversineDistance(location, loc1Coords);
 
     setLoc1InRadius(distanceToLoc1 < 50); // 50 meters radius
   }, [location]);
 
-  if (!location) {
+  if (!location || !loc1Coords) {
     return (
       <View className="flex-1 justify-center items-center">
         <Text>Getting location please wait...</Text>
@@ -54,7 +66,7 @@ export default function MapScreen() {
 
   //check for location 1
 
-  const loc1Coords = { latitude: 1.350624, longitude: 103.749 };
+  //const loc1Coords = { latitude: 1.350624, longitude: 103.749 };
 
   return (
     //Since cannot use pedometer we use estimate to determine steps(0.75 is average stride)

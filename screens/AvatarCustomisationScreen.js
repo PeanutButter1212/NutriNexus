@@ -15,14 +15,16 @@ import { useEffect, useState } from "react";
 import { saveEquippedItems } from "../services/avatarService";
 import { useAuth } from "../contexts/AuthContext";
 import useEquippedItems from "../hooks/useEquippedItems";
-
+import { useNavigation } from "@react-navigation/native";
 import SimpleInventorySlot from "../components/SimpleInventorySlot";
+import { Ionicons } from "@expo/vector-icons";
 
-export default function AvatarCustomisationScreen({ navigation }) {
+export default function AvatarCustomisationScreen() {
   //const [accessories, setAccessories] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const { session } = useAuth();
   const userId = session?.user?.id;
+  const navigation = useNavigation();
 
   //3 different kinda accessories
   const [equipped, setEquipped] = useState({
@@ -32,28 +34,14 @@ export default function AvatarCustomisationScreen({ navigation }) {
   });
   const [accessoryPosition, setAccessoryPosition] = useState(null);
 
-  //to be deleted once im done testing positions
-  const getAccessoryStyle = (item) => {
-    if (item.name === "Sunglasses") {
-      return { top: 65, left: 43, width: 120, height: 60 };
-    }
-    if (item.name === "Airsm") {
-      return { top: 90, left: -23, width: 250, height: 125 };
-    }
-    if (item.name === "MajongTile") {
-      return { top: 170, left: -25, width: 180, height: 90 };
-    }
-    if (item.name === "Airpods") {
-      return { top: 85, left: 55, width: 50, height: 25 };
-    }
-  };
-
   const accessories = useAccessoryInventory();
   /* accessories should look sth like this
-  id: .....
-  name: "Sunglasses"
+  item_id: .....
+  user_id
+  item_name: "Sunglasses"
   image_url: "https://..."
   slot: "head"  
+  position:
 }*/
 
   const equippedFromDB = useEquippedItems();
@@ -91,11 +79,12 @@ export default function AvatarCustomisationScreen({ navigation }) {
                 className="w-full h-full absolute"
                 resizeMode="contain"
                 style={{
+                  //i converted position to percenatges and store in backend so it will not be misaligned for different device sizes
                   position: "absolute",
-                  top: item.position?.top,
-                  left: item.position?.left,
-                  width: item.position?.width,
-                  height: item.position?.height,
+                  top: item.position?.topPct * 384,
+                  left: item.position?.leftPct * 224,
+                  width: item.position?.widthPct * 224,
+                  height: item.position?.heightPct * 384,
                 }}
               />
             ) : null
@@ -113,7 +102,7 @@ export default function AvatarCustomisationScreen({ navigation }) {
         className="flex-1 justify-start items-center"
       >
         {/* accessory array contains all supabase columns so we map to render a slot(press to equip press agin to unequip) and set to equip*/}
-        <View className="flex-row flex-wrap justify-center gap-4">
+        <View className="flex-row flex-wrap justify-center gap-4 mt-8">
           {accessories.map((item, index) => (
             <SimpleInventorySlot
               key={index}
@@ -135,9 +124,9 @@ export default function AvatarCustomisationScreen({ navigation }) {
             </SimpleInventorySlot>
           ))}
         </View>
-
+        {/* Save Button */}
         <TouchableOpacity
-          className="bg-white rounded-xl p-4 shadow-md mt-4"
+          className="bg-white rounded-xl px-8 shadow-md mt-8 py-4"
           onPress={async () => {
             const success = await saveEquippedItems(userId, equipped);
             if (success) {
@@ -146,6 +135,13 @@ export default function AvatarCustomisationScreen({ navigation }) {
           }}
         >
           <Text className="text-black text-base font-medium">Save</Text>
+        </TouchableOpacity>
+        {/* Back Button */}
+        <TouchableOpacity
+          className="bg-white rounded-xl p-4 shadow-md absolute bottom-8 left-4 mb-8"
+          onPress={() => navigation.goBack()}
+        >
+          <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
       </ImageBackground>
     </View>
