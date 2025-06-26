@@ -136,8 +136,6 @@ export default function GardenScreen() {
   
 
 
-  
-
   // for display of inventory columns 
   const renderInventoryColumns = () => {
     const columns = [];
@@ -146,24 +144,20 @@ export default function GardenScreen() {
       return [];
     } 
 
-    for (let i = 0; i < localInventory.length; i += 2) {
+    for (let i = 0; i < localInventory.length; i += 1) {
       const topInv = localInventory[i];
-      const bottomInv = localInventory[i + 1];
-  
+
       const topInfo = itemBank.find(item => item.id === topInv.item_id);
-      const bottomInfo = bottomInv ? itemBank.find(item => item.id === bottomInv.item_id) : null;
 
-
-      const topRef = inventoryRefs[i]?.ref;
-      const bottomRef = bottomInv ? inventoryRefs[i + 1]?.ref : null;
       columns.push(
         <InventoryColumn
-          key={`column-${topInv.item_id}-${bottomInv?.item_id || 'empty'}`} // ✅ fixed
+          key={`column-${topInv.item_id} || 'empty'}`} 
+          className={i === 0 ? "" : "ml-3"}
           topItem={{
             count: topInv.count,
             children: (
               <DraggableItem
-                key={`draggable-${topInv.item_id}`} // ✅ fixed
+                key={`draggable-${topInv.item_id}`} 
                 item={topInv}
                 itemInfo={topInfo}
                 index={topInv}
@@ -174,30 +168,12 @@ export default function GardenScreen() {
               />
             ),
           }}
-          bottomItem={
-            bottomInv && bottomInfo
-              ? {
-                  count: bottomInv.count,
-                  children: (
-                    <DraggableItem
-                      key={`draggable-${bottomInv.item_id}`} // ✅ fixed
-                      item={bottomInv}
-                      itemInfo={bottomInfo}
-                      itemData={bottomInv}
-                      draggedItemData={draggedItemRef.current}
-                      onDragStart={handleDragStart}
-                      onDragMove={handleDragMove}
-                      onDragEnd={handleDragEnd}
-                    />
-                  ),
-                }
-              : undefined
-          }
         />
       );
   
-    return columns;
+    
   };
+  return columns;
 }
 
 //we have a local copy of inventory from what was received from our hook so that UI can render count changes quickly
@@ -245,7 +221,7 @@ export default function GardenScreen() {
 
 
 const handleDebug = () => {
-  console.log(JSON.stringify(placedPlants, null, 2))
+  console.log(JSON.stringify(localInventory, null, 2))
 }
 
 // run through gridview array, on any location help us determine which tile of the garden the location is closest to, if nearest tile
@@ -321,7 +297,6 @@ const handleDragMove = ({ x, y }) => {
     const currentDragData = dragData 
     if (tile && currentDragData?.plantId) {
       if (isTileOccupied(tile.col, tile.row)) {
-        console.log("Tile is already occupied. Skipping placement.");
         setHoverTile(null);
         floatingDragRef.current = null;
         draggedItemRef.current = null;
@@ -399,6 +374,7 @@ const handleDragMove = ({ x, y }) => {
         height: SCREEN_HEIGHT,
        }}
        > 
+
       {draggedItemRef.current && gridView.map(({ path, col, row }) => {
         if (isTileOccupied(col, row)) return null;
         return (
@@ -467,7 +443,7 @@ const handleDragMove = ({ x, y }) => {
 
         <SafeAreaProvider> 
           <SafeAreaView>
-          <ScrollView className="flex-row flex-wrap m-4" horizontal scrollEnabled={!draggedItemRef.current}>
+          <ScrollView className="flex-row flex-wrap m-4 p-1" horizontal scrollEnabled={!draggedItemRef.current}>
               {renderInventoryColumns()}
             </ScrollView>
               
