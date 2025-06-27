@@ -16,19 +16,6 @@ export default function RootStack() {
   const { session } = useAuth();
   const isAuthenticated = !!session;
 
-<<<<<<< shop
-    return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}> 
-        { false
-        ? (
-           <Stack.Screen name="AuthStack" component={AuthStack} />
-        ) : (
-            <>
-            <Stack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }}/>
-            <Stack.Screen name="Detail" component={DetailScreen} options={{ headerShown: false }}/>
-            <Stack.Screen name="Activity Log" component={ActivityLogScreen} options={{ headerShown: false }}/>
-            <Stack.Screen
-=======
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {!isAuthenticated ? (
@@ -56,7 +43,6 @@ export default function RootStack() {
             options={{ headerShown: false }}
           />
           <Stack.Screen
->>>>>>> main
             name="Location1"
             component={Location1Screen}
             options={{ headerShown: false }}
@@ -70,15 +56,15 @@ export default function RootStack() {
               headerBackTitle: "Back",
             }}
           />
-            <Stack.Screen
+          <Stack.Screen
             name="Shop"
             component={ShopScreen}
             options={{
-              headerShown: false, 
-              title:"Shop", 
-              headerBackTitle: "Back", 
-            }} 
-            /> 
+              headerShown: false,
+              title: "Shop",
+              headerBackTitle: "Back",
+            }}
+          />
         </>
       )}
     </Stack.Navigator>
