@@ -7,7 +7,7 @@
     "scheme": "com.supabase",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -69,7 +69,13 @@
         "backgroundColor": "#ffffff"
         
       },
-      "permissions": ["ACTIVITY_RECOGNITION"],
+      "permissions": [
+  "ACTIVITY_RECOGNITION",
+  "ACCESS_FINE_LOCATION",
+  "ACCESS_COARSE_LOCATION",
+  "CAMERA",
+  "RECORD_AUDIO"
+],
       "edgeToEdgeEnabled": true,
       "package": "nutrinuxus.club",
       "config" : {
