@@ -9,24 +9,24 @@
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		45E458A27F88A58BC57923F3 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 33FA033E73DCFD828AC9E466 /* PrivacyInfo.xcprivacy */; };
-		B12A01DCB005E708B3362CB9 /* libPods-NutriNexus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 467135EA17E1212DA95628EE /* libPods-NutriNexus.a */; };
+		4BA19D4F5B92B2F030500ED1 /* libPods-NutriNexus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A5D3B123099AC36EC9A81D1 /* libPods-NutriNexus.a */; };
+		8166D3C85AE3F78A7DECDBE9 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D96746C3E2EDA220D20A32CB /* PrivacyInfo.xcprivacy */; };
+		A797A6CD0F88CAD41279A666 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EA5E0B0AABED9A5F3245A6 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		D2BFED4361A38523EE6BF21C /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C04355ABA8A749018639899 /* ExpoModulesProvider.swift */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0C04355ABA8A749018639899 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-NutriNexus/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		0A5D3B123099AC36EC9A81D1 /* libPods-NutriNexus.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NutriNexus.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07F961A680F5B00A75B9A /* NutriNexus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NutriNexus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = NutriNexus/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = NutriNexus/Info.plist; sourceTree = "<group>"; };
-		33FA033E73DCFD828AC9E466 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = NutriNexus/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		462DC45316DD6770C6DF2220 /* Pods-NutriNexus.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NutriNexus.debug.xcconfig"; path = "Target Support Files/Pods-NutriNexus/Pods-NutriNexus.debug.xcconfig"; sourceTree = "<group>"; };
-		467135EA17E1212DA95628EE /* libPods-NutriNexus.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NutriNexus.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		559ED4F67C03CBD9BF40D392 /* Pods-NutriNexus.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NutriNexus.release.xcconfig"; path = "Target Support Files/Pods-NutriNexus/Pods-NutriNexus.release.xcconfig"; sourceTree = "<group>"; };
+		3AE0B1BBB1E24E989876325F /* Pods-NutriNexus.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NutriNexus.release.xcconfig"; path = "Target Support Files/Pods-NutriNexus/Pods-NutriNexus.release.xcconfig"; sourceTree = "<group>"; };
+		76EA5E0B0AABED9A5F3245A6 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-NutriNexus/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = NutriNexus/SplashScreen.storyboard; sourceTree = "<group>"; };
+		B759AED11F89606B8DF2C99D /* Pods-NutriNexus.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NutriNexus.debug.xcconfig"; path = "Target Support Files/Pods-NutriNexus/Pods-NutriNexus.debug.xcconfig"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
+		D96746C3E2EDA220D20A32CB /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = NutriNexus/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = NutriNexus/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* NutriNexus-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "NutriNexus-Bridging-Header.h"; path = "NutriNexus/NutriNexus-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -37,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B12A01DCB005E708B3362CB9 /* libPods-NutriNexus.a in Frameworks */,
+				4BA19D4F5B92B2F030500ED1 /* libPods-NutriNexus.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,36 +53,34 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				33FA033E73DCFD828AC9E466 /* PrivacyInfo.xcprivacy */,
+				D96746C3E2EDA220D20A32CB /* PrivacyInfo.xcprivacy */,
 			);
 			name = NutriNexus;
+			sourceTree = "<group>";
+		};
+		14F5CBFF7E2D40FD70948DE1 /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				709E53165EFAE95E65A1A354 /* NutriNexus */,
+			);
+			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				467135EA17E1212DA95628EE /* libPods-NutriNexus.a */,
+				0A5D3B123099AC36EC9A81D1 /* libPods-NutriNexus.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		331F12A0EA02E94039AF6773 /* NutriNexus */ = {
+		709E53165EFAE95E65A1A354 /* NutriNexus */ = {
 			isa = PBXGroup;
 			children = (
-				0C04355ABA8A749018639899 /* ExpoModulesProvider.swift */,
+				76EA5E0B0AABED9A5F3245A6 /* ExpoModulesProvider.swift */,
 			);
 			name = NutriNexus;
-			sourceTree = "<group>";
-		};
-		79C7D08837639E19D8890EC9 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				462DC45316DD6770C6DF2220 /* Pods-NutriNexus.debug.xcconfig */,
-				559ED4F67C03CBD9BF40D392 /* Pods-NutriNexus.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -99,8 +97,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				79C7D08837639E19D8890EC9 /* Pods */,
-				F3CBB4FB47F21FED85F9FBCD /* ExpoModulesProviders */,
+				BB678403FF341C57C0498EA4 /* Pods */,
+				14F5CBFF7E2D40FD70948DE1 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -124,12 +122,14 @@
 			path = NutriNexus/Supporting;
 			sourceTree = "<group>";
 		};
-		F3CBB4FB47F21FED85F9FBCD /* ExpoModulesProviders */ = {
+		BB678403FF341C57C0498EA4 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				331F12A0EA02E94039AF6773 /* NutriNexus */,
+				B759AED11F89606B8DF2C99D /* Pods-NutriNexus.debug.xcconfig */,
+				3AE0B1BBB1E24E989876325F /* Pods-NutriNexus.release.xcconfig */,
 			);
-			name = ExpoModulesProviders;
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -140,13 +140,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "NutriNexus" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				8DF682439AE3BBC8D93B16B5 /* [Expo] Configure project */,
+				84B25740E5E42ECFF6F47D2E /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				1809AC792CE75647FFA6D1AF /* [CP] Embed Pods Frameworks */,
+				FC01FE7900C6930A9E5736ED /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -196,7 +196,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				45E458A27F88A58BC57923F3 /* PrivacyInfo.xcprivacy in Resources */,
+				8166D3C85AE3F78A7DECDBE9 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -238,24 +238,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		1809AC792CE75647FFA6D1AF /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-NutriNexus/Pods-NutriNexus-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-NutriNexus/Pods-NutriNexus-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
@@ -308,7 +290,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-NutriNexus/Pods-NutriNexus-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		8DF682439AE3BBC8D93B16B5 /* [Expo] Configure project */ = {
+		84B25740E5E42ECFF6F47D2E /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -327,6 +309,24 @@
 			shellPath = /bin/sh;
 			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-NutriNexus/expo-configure-project.sh\"\n";
 		};
+		FC01FE7900C6930A9E5736ED /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-NutriNexus/Pods-NutriNexus-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-NutriNexus/Pods-NutriNexus-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -335,7 +335,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				D2BFED4361A38523EE6BF21C /* ExpoModulesProvider.swift in Sources */,
+				A797A6CD0F88CAD41279A666 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -344,7 +344,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 462DC45316DD6770C6DF2220 /* Pods-NutriNexus.debug.xcconfig */;
+			baseConfigurationReference = B759AED11F89606B8DF2C99D /* Pods-NutriNexus.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -369,7 +369,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = nutrinuxus.club;
-				PRODUCT_NAME = "NutriNexus";
+				PRODUCT_NAME = NutriNexus;
 				SWIFT_OBJC_BRIDGING_HEADER = "NutriNexus/NutriNexus-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -380,7 +380,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 559ED4F67C03CBD9BF40D392 /* Pods-NutriNexus.release.xcconfig */;
+			baseConfigurationReference = 3AE0B1BBB1E24E989876325F /* Pods-NutriNexus.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -400,7 +400,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = nutrinuxus.club;
-				PRODUCT_NAME = "NutriNexus";
+				PRODUCT_NAME = NutriNexus;
 				SWIFT_OBJC_BRIDGING_HEADER = "NutriNexus/NutriNexus-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
