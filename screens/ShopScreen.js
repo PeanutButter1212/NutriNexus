@@ -131,7 +131,7 @@ export default function ShopScreen({navigation}) {
                         />
                         <Text
                         className="text-white font-nunito-bold text-xl"
-                        > 6969 
+                        > 7000 
                         </Text>
                     </View>
               
@@ -144,7 +144,7 @@ export default function ShopScreen({navigation}) {
                     <Text
                     className="text-white font-nunito-extrabold text-3xl"
                     > 
-                        "username"    
+                    
                     </Text>
 
                 </View>

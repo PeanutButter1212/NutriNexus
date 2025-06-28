@@ -136,6 +136,8 @@ export default function GardenScreen() {
   
 
 
+  
+
   // for display of inventory columns 
   const renderInventoryColumns = () => {
     const columns = [];
@@ -221,7 +223,7 @@ export default function GardenScreen() {
 
 
 const handleDebug = () => {
-  console.log(JSON.stringify(localInventory, null, 2))
+  console.log(JSON.stringify(placedPlants, null, 2))
 }
 
 // run through gridview array, on any location help us determine which tile of the garden the location is closest to, if nearest tile
@@ -297,6 +299,7 @@ const handleDragMove = ({ x, y }) => {
     const currentDragData = dragData 
     if (tile && currentDragData?.plantId) {
       if (isTileOccupied(tile.col, tile.row)) {
+        console.log("Tile is already occupied. Skipping placement.");
         setHoverTile(null);
         floatingDragRef.current = null;
         draggedItemRef.current = null;
@@ -374,7 +377,6 @@ const handleDragMove = ({ x, y }) => {
         height: SCREEN_HEIGHT,
        }}
        > 
-
       {draggedItemRef.current && gridView.map(({ path, col, row }) => {
         if (isTileOccupied(col, row)) return null;
         return (
@@ -443,7 +445,7 @@ const handleDragMove = ({ x, y }) => {
 
         <SafeAreaProvider> 
           <SafeAreaView>
-          <ScrollView className="flex-row flex-wrap m-4 p-1" horizontal scrollEnabled={!draggedItemRef.current}>
+          <ScrollView className="flex-row flex-wrap m-4" horizontal scrollEnabled={!draggedItemRef.current}>
               {renderInventoryColumns()}
             </ScrollView>
               
@@ -457,12 +459,6 @@ const handleDragMove = ({ x, y }) => {
   
 
         </ImageBackground>
-
-  <Pressable onPress={() => handleDebug()}>
-      <Text style={{ color: 'white', padding: 3, backgroundColor: 'red' }}>
-        Clear Garden
-      </Text>
-    </Pressable>
 
       
 
@@ -499,4 +495,3 @@ const handleDragMove = ({ x, y }) => {
 
 );
 }
-

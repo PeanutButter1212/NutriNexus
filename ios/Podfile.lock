@@ -12,7 +12,7 @@ PODS:
   - EXJSONUtils (0.15.0)
   - EXManifests (0.16.5):
     - ExpoModulesCore
-  - Expo (53.0.11):
+  - Expo (53.0.12):
     - DoubleConversion
     - ExpoModulesCore
     - glog
@@ -2551,7 +2551,7 @@ SPEC CHECKSUMS:
   EXConstants: 9f310f44bfedba09087042756802040e464323c0
   EXJSONUtils: 1d3e4590438c3ee593684186007028a14b3686cd
   EXManifests: 951161dd9a63523c4eef0fa2a7476639a7ba230d
-  Expo: 9d55b6b292b97a16abb6442c84d7c74a833afdf5
+  Expo: 7ef9ca441f60ca7e7dbafb2236d9e8f70916fbdd
   expo-dev-client: cdc6599329032065992014c40413afd46629a9bc
   expo-dev-launcher: 26da66fd28ed631e28a09316b5befff79d7dd230
   expo-dev-menu: 3d07ced4449405f7b6d9fcefb551e2226ed8969c

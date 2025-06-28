@@ -16,7 +16,7 @@ const DraggableItem = ({
     const currentItem = itemData || item;
     const currentItemId = currentItem?.item_id;
 // create draggable items which respond to user's touches 
-    const panResponder = useRef(
+const panResponder = useRef(
     PanResponder.create({
         onStartShouldSetPanResponder: (evt, gestureState) => {
             console.log("🔵 onStartShouldSetPanResponder");
@@ -61,7 +61,7 @@ const DraggableItem = ({
             setIsDraggingThis(false);
         },
     })
-    ).current;
+).current;
           const isThisItemBeingDragged = draggedItemData && draggedItemData.plantId === currentItemId;
         
           return (
@@ -75,7 +75,7 @@ const DraggableItem = ({
             > 
                 <Image
                     source={{ uri: itemInfo?.image_url }}
-                    style={{ width: 90, height: 90 }}
+                    style={{ width: 80, height: 80 }}
                 />
             </View>
 
@@ -86,7 +86,3 @@ const DraggableItem = ({
 }; 
 
 export default DraggableItem
-
-
-             
-        
