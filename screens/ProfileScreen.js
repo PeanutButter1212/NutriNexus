@@ -179,35 +179,44 @@ export default function Profile() {
           </View>
 
           <LinearGradient
-          colors={['#FF7A00', '#E85A2B']}  
-          style={{
-            padding: 10,         
-            marginTop: 16,       
-            borderRadius: 8,       
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5, 
-            paddingHorizontal: 35
-          }}
-  >
-              <TouchableOpacity
-              onPress={() => navigation.navigate("Shop")}
-              > 
-                <Text className="text-3xl text-white"> Shop </Text>
-              </TouchableOpacity>
-       
-            </LinearGradient>
+            colors={["#FF7A00", "#E85A2B"]}
+            style={{
+              padding: 10,
+              marginTop: 16,
+              borderRadius: 8,
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5,
+              paddingHorizontal: 35,
+            }}
+          >
+            <TouchableOpacity onPress={() => navigation.navigate("Shop")}>
+              <Text className="text-3xl text-white"> Shop </Text>
+            </TouchableOpacity>
+          </LinearGradient>
+          <LinearGradient
+            colors={["#FF7A00", "#E85A2B"]}
+            style={{
+              padding: 10,
+              marginTop: 16,
+              borderRadius: 8,
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5,
+              paddingHorizontal: 35,
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Avatar Customisation")}
+            >
+              <Text className="text-3xl text-white"> Avatar </Text>
+            </TouchableOpacity>
+          </LinearGradient>
         </View>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Avatar Customisation")}
-          className="bg-white rounded-xl p-4 flex-1 shadow-md"
-        >
-          <Text className="text-black text-base font-medium">
-            Customise Avatar
-          </Text>
-        </TouchableOpacity>
       </LinearGradient>
 
       <View>
