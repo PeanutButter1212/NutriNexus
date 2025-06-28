@@ -61,6 +61,7 @@ export default function LoginScreen({ navigation }) {
 
       {/* Username Input */}
       <TextInput
+        value={email}
         onChangeText = {(text) => setEmail(text)}
         placeholder="Email"
         autoCapitalize="none"

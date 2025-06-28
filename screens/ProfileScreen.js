@@ -21,8 +21,6 @@ import * as d3 from "d3";
 import BarPath from "../components/BarPath";
 import XAxisText from "../components/XAxisText";
 import DropdownComponent from "../components/Dropper";
-import { supabase } from "../lib/supabase";
-import { useFocusEffect } from "@react-navigation/native";
 import useProfileData from "../hooks/useProfileData";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -153,7 +151,7 @@ export default function Profile() {
             <View className="bg-white rounded-xl p-4 flex-1 shadow-md mr-2">
               <View className="flex-row items-center">
                 <Ionicons name="footsteps" size={20} color="black" />
-                <Text className="text-stone-500 text-sm text-xl font-bold">
+                <Text testID="steps-label" className="text-stone-500 text-sm text-xl font-bold">
                   Steps
                 </Text>
               </View>

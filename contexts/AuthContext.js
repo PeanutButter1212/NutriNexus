@@ -4,8 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { supabase } from "../lib/supabase";
 import { CommonActions } from '@react-navigation/native'; 
 import {
-  GoogleSignin,
-  statusCodes,
+  GoogleSignin
 } from "@react-native-google-signin/google-signin";
 import { generateUniqueUsername } from "../utils/generateUniqueUsername";
 const AuthContext = createContext();
@@ -262,7 +261,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = async (authMethod, navigation) => {
+const logout = async (authMethod, navigation) => {
     try {
       setIsOtpVerified(false); 
       setIsAuthenticated(false);
