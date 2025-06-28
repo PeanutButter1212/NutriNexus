@@ -71,7 +71,7 @@ export default function MapScreen() {
   return (
     //Since cannot use pedometer we use estimate to determine steps(0.75 is average stride)
     <View className="flex-1">
-      <View className="z-10 top-10 left-5  bg-white items-center rounded-xl">
+      <View className="z-10 top-10 left-0 right-0 mx-auto w-72 max-w-ws bg-white items-center rounded-xl">
         <Text className="text-base font-bold text-black">
           Steps: {(distance / 0.75).toFixed(0)}
         </Text>
