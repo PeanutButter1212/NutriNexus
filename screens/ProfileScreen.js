@@ -12,7 +12,7 @@ import {
   Settings,
   Dimensions,
 } from "react-native";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { LinearGradient } from "expo-linear-gradient";
 import CircularProgress from "react-native-circular-progress-indicator";
@@ -25,7 +25,9 @@ import useProfileData from "../hooks/useProfileData";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useDistance } from "../contexts/DistanceTrackingContext";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import avatarImage from "../assets/MaleCharacter.png";
+import { fetchEquippedItems } from "../services/avatarService";
 
 export default function Profile() {
   const navigation = useNavigation();
@@ -38,6 +40,25 @@ export default function Profile() {
   const handleLogout = () => {
     logout(authMethod, navigation);
   };
+
+  //avatar accessories
+  const [equipped, setEquipped] = useState({
+    head: null,
+    body: null,
+    hand: null,
+  });
+
+  useFocusEffect(
+    useCallback(() => {
+      const loadEquipped = async () => {
+        if (!session?.user?.id) return;
+        const fresh = await fetchEquippedItems(session.user.id);
+        setEquipped(fresh);
+      };
+
+      loadEquipped();
+    }, [session?.user?.id])
+  );
 
   const { totalCalories, calorieGoal, caloriesData, points } = useProfileData();
 
@@ -98,34 +119,47 @@ export default function Profile() {
           padding: 20,
         }}
       >
-        <Text className="text-3xl font-bold text-white p-16 text-center">
+        <Text className="text-3xl font-bold text-white mb-4 mt-8 text-center">
           Welcome Back, {profile ? profile.username : "User"}!
         </Text>
-        <View className="flex-1 justify-center items-center mb-24">
+        <View className="flex-1 justify-center items-center mb-16">
           <View className="relative items-center">
-            <View className="absolute left-6 -top-16">
-              <CircularProgress
-                value={Math.floor(progressPercentage)}
-                valueSuffix={"%"}
-                radius={60}
-                progressValueColor={"blue"}
-                titleFontSize={10}
-                title={"Calories Limit"}
-                titleColor={"white"}
-                titleStyle={{ fontWeight: "bold" }}
-                activeStrokeColor={"#2465FD"}
-                activeStrokeSecondaryColor={"#C3305D"}
-                inActiveStrokeColor={"white"}
-              />
-            </View>
+            <CircularProgress
+              value={Math.floor(progressPercentage)}
+              valueSuffix={"%"}
+              radius={70}
+              progressValueColor={"blue"}
+              titleFontSize={10}
+              title={"Calories Limit"}
+              titleColor={"white"}
+              titleStyle={{ fontWeight: "bold" }}
+              activeStrokeColor={"#2465FD"}
+              activeStrokeSecondaryColor={"#C3305D"}
+              inActiveStrokeColor={"white"}
+            />
 
-            {/* image */}
-            <View className="mt-8">
-              <Image
-                source={require("../assets/AvatarResized.png")}
-                className="w-80 h-80"
-                resizeMode="contain"
-              />
+            {/* Avatar view*/}
+            <View className="w-56 h-96 relative items-center justify-center">
+              <Image source={avatarImage} className="w-full h-full absolute" />
+              {/* for each equppied item we render image onto avatar*/}
+              {Object.values(equipped).map((item, index) =>
+                item ? (
+                  <Image
+                    key={index}
+                    source={{ uri: item.image_url }}
+                    className="w-full h-full absolute"
+                    resizeMode="contain"
+                    style={{
+                      //i converted position to percenatges and store in backend so it will not be misaligned for different device sizes
+                      position: "absolute",
+                      top: item.position?.topPct * 384,
+                      left: item.position?.leftPct * 224,
+                      width: item.position?.widthPct * 224,
+                      height: item.position?.heightPct * 384,
+                    }}
+                  />
+                ) : null
+              )}
             </View>
           </View>
 
@@ -151,7 +185,10 @@ export default function Profile() {
             <View className="bg-white rounded-xl p-4 flex-1 shadow-md mr-2">
               <View className="flex-row items-center">
                 <Ionicons name="footsteps" size={20} color="black" />
-                <Text testID="steps-label" className="text-stone-500 text-sm text-xl font-bold">
+                <Text
+                  testID="steps-label"
+                  className="text-stone-500 text-sm text-xl font-bold"
+                >
                   Steps
                 </Text>
               </View>
