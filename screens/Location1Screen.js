@@ -55,25 +55,37 @@ export default function Location1Screen() {
     {
       name: "Roasted Delights",
       foods: [
-        "Vegetarain Char Siew Rice",
-        "Steamed Chicken Rice",
-        "Wonton Noodles",
+        "Vegetarain Char Siew Rice (500kcal)",
+        "Steamed Chicken Rice (650kcal)",
+        "Wonton Noodles (450kcal)",
       ],
       pic: roastedDelightImg,
     },
     {
       name: "Japanese Korean",
-      foods: ["Beef Bibimbap", "Vegetarian Bibimbap", "Chicken Bibimbap "],
+      foods: [
+        "Beef Bibimbap (700kcal)",
+        "Vegetarian Bibimbap (550kcal)",
+        "Chicken Bibimbap (650kcal)",
+      ],
       pic: japaneseKoreanImg,
     },
     {
       name: "Fish Noodles",
-      foods: ["Sliced Fish Noodle ", "Bittergourd Soup", "Vegetarian Soup"],
+      foods: [
+        "Sliced Fish Noodle (400kcal)",
+        "Bittergourd Soup (250kcal)",
+        "Vegetarian Soup (300kcal)",
+      ],
       pic: fishNoodlesImg,
     },
     {
       name: "FishBall Noodles",
-      foods: ["Dry FishBall Noodles", "Bak Kut Teh", "Soup FishBall Noodles"],
+      foods: [
+        "Dry FishBall Noodles (450kcal) ",
+        "Bak Kut Teh (400kcal)",
+        "Soup FishBall Noodles (350kcal)",
+      ],
       pic: fishBallNoodlesImg,
     },
   ];
