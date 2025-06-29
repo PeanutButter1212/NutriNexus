@@ -2,10 +2,8 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { Alert, Platform } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { supabase } from "../lib/supabase";
-import { CommonActions } from '@react-navigation/native'; 
-import {
-  GoogleSignin
-} from "@react-native-google-signin/google-signin";
+import { CommonActions } from "@react-navigation/native";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { generateUniqueUsername } from "../utils/generateUniqueUsername";
 const AuthContext = createContext();
 
@@ -34,9 +32,8 @@ export const AuthProvider = ({ children }) => {
       iosClientId:
         "960982903167-krh2o19m7vtkcrsao5kspkor8qlfu9af.apps.googleusercontent.com",
       offlineAccess: true,
-      behavior: 'web',
+      behavior: "web",
     });
-
 
     // added
     supabase.auth.getSession().then(({ data }) => {
@@ -87,21 +84,20 @@ export const AuthProvider = ({ children }) => {
       Alert.alert("Error", err.message || "An unknown error occurred");
     }
   };
-  */ 
+  */
 
   const signInWithOTP = async (email, navigation) => {
     try {
       const { error } = await supabase.auth.signInWithOtp({
-        email
+        email,
       });
-  
+
       if (error) {
         if (error.message.includes("Email not confirmed")) {
           throw new Error("Please verify your email before logging in.");
         }
         throw error;
       }
-  
 
       navigation.navigate("OTP", { email });
     } catch (err) {
@@ -118,57 +114,56 @@ export const AuthProvider = ({ children }) => {
         token: otp,
         type: "email",
       });
-  
+
       if (error) {
         console.log(error);
         throw new Error("OTP verification failed. Please try again.");
       }
-  
+
       const session = data.session;
       const userId = data?.user?.id;
-  
+
       let { data: profileData, error: profileError } = await supabase
         .from("profiles")
         .select("*")
         .eq("id", userId)
         .maybeSingle();
-  
+
       if (profileError) throw profileError;
-  
+
       if (!profileData) {
         const base = email.split("@")[0];
         const username = await generateUniqueUsername(base);
-  
+
         const { error: insertError } = await supabase.from("profiles").insert({
           id: userId,
           email,
           username,
           is_first_time: true,
         });
-  
-        if (insertError) throw insertError;
-  
-    
+
+        if (insertError) {
+          console.error("Profile insertion error:", insertError);
+          throw insertError;
+        }
+
         await supabase.auth.updateUser({ data: { username } });
-  
+
         const { data: profileReload, error: reloadError } = await supabase
           .from("profiles")
           .select("*")
           .eq("id", userId)
           .single();
-  
+
         if (reloadError) throw reloadError;
         profileData = profileReload;
       }
-  
-    
+
       setSession(session);
       setProfile(profileData);
       setAuthMethod("email");
       setIsAuthenticated(true);
       setUser(profileData);
-  
-  
     } catch (err) {
       throw err;
     }
@@ -176,14 +171,14 @@ export const AuthProvider = ({ children }) => {
 
   const googleSignIn = async (navigation) => {
     try {
-      console.log("Google SIgn In")
+      console.log("Google SIgn In");
       try {
         const userInfo = await GoogleSignin.signIn();
         console.log(userInfo);
       } catch (error) {
         console.log(JSON.stringify(error, null, 2)); // show full error details
       }
-      
+
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       console.log("console info: " + JSON.stringify(userInfo, null, 2));
@@ -206,7 +201,11 @@ export const AuthProvider = ({ children }) => {
           .from("profiles")
           .select("id")
           .eq("id", userId)
-          .single();
+          .maybeSingle();
+
+        console.log("verifyOtp data:", JSON.stringify(data, null, 2));
+        console.log("verifyOtp error:", error);
+        console.log("userId:", userId);
 
         if (profileError) {
           const username = email ? email.split("@")[0] : "Anonymous";
@@ -218,6 +217,9 @@ export const AuthProvider = ({ children }) => {
               username: username,
               email: email,
               is_first_time: true,
+              height: 165,
+              weight: 60,
+              age: 25,
             });
 
           if (insertError) {
@@ -232,8 +234,6 @@ export const AuthProvider = ({ children }) => {
           .single();
 
         const profile = profileData2;
-
-
 
         if (profile.is_first_time) {
           setSession(session);
@@ -261,9 +261,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-const logout = async (authMethod, navigation) => {
+  const logout = async (authMethod, navigation) => {
     try {
-      setIsOtpVerified(false); 
+      setIsOtpVerified(false);
       setIsAuthenticated(false);
       setSession(null);
       setProfile(null);
@@ -275,19 +275,17 @@ const logout = async (authMethod, navigation) => {
       }
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-
-   
     } catch (err) {
       throw err;
     }
   };
 
   const value = {
-    session, 
+    session,
     profile,
     authMethod,
-    isOtpVerified,  
-    isAuthenticated, 
+    isOtpVerified,
+    isAuthenticated,
     signInWithOTP,
     verifyOtp,
     googleSignIn,
@@ -296,7 +294,6 @@ const logout = async (authMethod, navigation) => {
     refreshFlag,
     user,
   };
-  
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
