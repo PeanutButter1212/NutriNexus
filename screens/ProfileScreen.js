@@ -11,6 +11,7 @@ import {
   useWindowDimensions,
   Settings,
   Dimensions,
+  ImageBackground
 } from "react-native";
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useAuth } from "../contexts/AuthContext";
@@ -28,6 +29,7 @@ import { useDistance } from "../contexts/DistanceTrackingContext";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import avatarImage from "../assets/MaleCharacter.png";
 import { fetchEquippedItems } from "../services/avatarService";
+import stoneImage from "../assets/stone_texture.png"
 
 export default function Profile() {
   const navigation = useNavigation();
@@ -119,9 +121,28 @@ export default function Profile() {
           padding: 20,
         }}
       >
-        <Text className="text-3xl font-bold text-white mb-4 mt-8 text-center">
-          Welcome Back, {profile ? profile.username : "User"}!
-        </Text>
+        
+
+       
+
+        <TouchableOpacity 
+        className="absolute top-10 left-6  rounded-lg z-10 mt-6"
+        onPress={() => navigation.navigate("Setting")}
+        >
+            <ImageBackground
+            source={stoneImage}
+            className="px-2 py-2"
+            resizeMode="cover"
+            >
+              <Ionicons name="settings" size={36} color="white" />
+            </ImageBackground>
+          </TouchableOpacity>
+
+
+            <Text className="text-3xl font-bold text-white text-center mt-12 mb-4">
+            Welcome Back, {profile ? profile.username : "User"}!
+            </Text>
+        
         <View className="flex-1 justify-center items-center mb-16">
           <View className="relative items-center">
             <CircularProgress
@@ -291,14 +312,7 @@ export default function Profile() {
           ))}
         </Canvas>
       </View>
-      <View className="justify-center items-center">
-        <TouchableOpacity
-          onPress={handleLogout}
-          className="items-center justify-center bg-red-500 w-3/4 rounded-xl mt-6 py-3 mt-3"
-        >
-          <Text className="text-white text-base font-medium">Log Out</Text>
-        </TouchableOpacity>
-      </View>
+      
     </ScrollView>
   );
 }

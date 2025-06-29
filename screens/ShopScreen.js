@@ -5,13 +5,15 @@ import woodenSquare from '../assets/backgrounds/woodenSquare.png'
 import { useAuth } from '../contexts/AuthContext'
 import ShopRow from '../components/ShopRow'
 import ShopOrder from '../components/ShopOrder'
-
+import useItemBank from '../hooks/useItemBank'
 export default function ShopScreen({navigation}) {
 
     const [showPopup, setShowPopup] = useState(false)
     const [selectedItem, setSelectedItem] = useState(null)
 
     const { session, profile } = useAuth();
+
+    const itemBank = useItemBank() 
 
     const mockItemBank = [
         {
@@ -52,7 +54,7 @@ export default function ShopScreen({navigation}) {
 
     const renderShopItemRows = () => {
         const columns = [];
-        const filteredItemBank = mockItemBank.filter(item => item.type === currentTab)
+        const filteredItemBank = itemBank.filter(item => item.type === currentTab)
 
         if (filteredItemBank.length == 0) {
           return [];
@@ -99,8 +101,9 @@ export default function ShopScreen({navigation}) {
             />
           );
       
-        return columns;
       };
+
+      return columns;
     }
 
     const TABS = ["Decor", "Accessory"]

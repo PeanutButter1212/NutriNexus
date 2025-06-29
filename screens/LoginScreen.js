@@ -82,7 +82,7 @@ export default function LoginScreen({ navigation }) {
       ) : null}
 
       {/* Google Login Button */}
-      <TouchableOpacity
+      {/*  <TouchableOpacity
         onPress={handleGoogleLogIn}
         className="flex-row items-center justify-center w-full bg-red-500 rounded-xl mt-6 py-3"
       >
@@ -90,7 +90,8 @@ export default function LoginScreen({ navigation }) {
         <Text className="text-white text-base font-medium">
           Continue with Google
         </Text>
-      </TouchableOpacity>
+      </TouchableOpacity>*/}
+   
       {/* Login Button */}
       <TouchableOpacity
         onPress={handleLogin}

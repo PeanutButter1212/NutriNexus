@@ -37,10 +37,28 @@ export async function updateProfileDetails(session, profile, details) {
 
     return true;
   } catch (err) {
+    console.log(err.message)
     return false;
   }
 }
 
+
+export async function fetchUserInfo(userId) {
+  const { data, error } = await supabase
+    .from("profile_page")
+    .select("weight, height, age, gender")
+    .eq("id", userId)
+    .single();
+
+  
+  if (error) {
+    console.error("fetchUserInfo error", error);
+    throw error;
+  }
+
+
+  return data;
+}
 //retrieve calorie info
 
 export async function fetchProfileCalories(userId) {
@@ -49,6 +67,14 @@ export async function fetchProfileCalories(userId) {
     .select("calories_consumed, calorie_goal")
     .eq("id", userId)
     .single();
+    
+    console.log(data)
+
+    if (error) {
+      console.error("fetchProfileCalories error", error);
+      throw error;
+    }
+  
 
   return data;
 }
@@ -89,11 +115,7 @@ export async function fetchWeeklyCalories(userId) {
     .select("calories, date")
     .eq("user_id", userId);
 
-  if (data.length === 0) {
-    setCaloriesData([]);
-    setReferenceData([]);
-    return;
-  }
+
 
   const dailyTotals = {
     MON: 0,
@@ -104,6 +126,10 @@ export async function fetchWeeklyCalories(userId) {
     SAT: 0,
     SUN: 0,
   };
+
+  if (data.length === 0) {
+    return;
+  }
 
   data.forEach((entry) => {
     const date = new Date(entry.date);
@@ -150,8 +176,8 @@ export async function fetchWeeklyCalories(userId) {
   return output;
 }
 
-//update calories when scanned and submitted
 
+//update calories when scanned and submitted
 export async function updateCaloriesConsumed(userId) {
   try {
     const { data, error } = await supabase
@@ -253,4 +279,56 @@ export default async function handleCheckboxes(userId, checkBoxKey) {
     return { success: false };
   }
   return { success: true };
+}
+
+
+export async function insertDefaultInventoryItems(userId) {
+  const { data: itemDetails, error: itemError } = await supabase
+    .from("item")
+    .select("id, name")
+    .in("id", ["bff1403f-7c39-4d09-ac07-4cc7b51019fe", "87c30106-bb4c-4796-a61a-6a1fd31be753"]);
+  const defaultDecorItemIds = [
+    "bff1403f-7c39-4d09-ac07-4cc7b51019fe", 
+    "87c30106-bb4c-4796-a61a-6a1fd31be753", 
+  ];
+
+  const decorInventoryEntries = defaultDecorItemIds.map((itemId) => ({
+    user_id: userId,
+    item_id: itemId,
+    count: 5,
+  }));
+
+  console.log("mapped decor inventory entries")
+
+  const { data, error } = await supabase
+    .from("inventory")
+    .insert(decorInventoryEntries);
+
+  if (error) {
+    console.error("Error inserting default decor inventory items:", error);
+    return false;
+  }
+
+  const defaultAccessoryItemIds = [
+    "514422f1-b31d-41e9-b114-8d5e6cd719e9",
+    "8e519ad9-fffc-475e-8e91-f4f347dc62c5",
+    "bb3e0eb1-e03b-4d7f-8f24-c28dbb1e0a48",
+    "8f0ad901-0c1c-4bbb-81e9-a9a87bc84b02"
+  ]
+
+  const accessoryInventoryEntries = defaultAccessoryItemIds.map((itemId) => ({
+    user_id: userId,
+    item_id: itemId,
+  }));
+
+  console.log("mapped accessory stuff")
+
+  const { data: accessoryDataInsertion, error: accessoryDataInsertionError } = await supabase
+    .from("accessory_inventory")
+    .insert(accessoryInventoryEntries);
+
+  if (accessoryDataInsertionError) {
+    console.error("Error inserting default accessory inventory items: " + accessoryDataInsertionError.message)
+  }
+  return true;
 }

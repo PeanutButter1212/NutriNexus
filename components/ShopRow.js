@@ -33,7 +33,7 @@ const ShopRow = ({topItem, bottomItem, onGetPress}) => {
                       
                       <View className="bg-gray-800 border-2 border-yellow-500 rounded-xl px-4 py-2 mb-4">
                       
-                            <View className="justify-center items-center flex-row">
+                            <View className="justify-center items-center flex-row min-w-16">
                                  <Image
                                  source={pointLogo}
                                  className="h-8 w-8"
@@ -83,7 +83,7 @@ const ShopRow = ({topItem, bottomItem, onGetPress}) => {
                         </Text>
                     <View className="bg-gray-800 border-2 border-yellow-500 rounded-xl px-4 py-2 mb-4">
                     
-                        <View className="justify-center items-center flex-row">
+                        <View className="justify-center items-center flex-row min-w-16">
                             <Image
                             source={pointLogo}
                             className="h-8 w-8"

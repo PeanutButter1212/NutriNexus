@@ -5,6 +5,7 @@ import { supabase } from "../lib/supabase";
 import { CommonActions } from "@react-navigation/native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { generateUniqueUsername } from "../utils/generateUniqueUsername";
+import { insertDefaultInventoryItems, updateProfileDetails } from "../services/profileService";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -120,7 +121,7 @@ export const AuthProvider = ({ children }) => {
         throw new Error("OTP verification failed. Please try again.");
       }
 
-      const session = data.session;
+      const session1 = data.session;
       const userId = data?.user?.id;
 
       let { data: profileData, error: profileError } = await supabase
@@ -131,15 +132,24 @@ export const AuthProvider = ({ children }) => {
 
       if (profileError) throw profileError;
 
+      setSession(session1)
+
       if (!profileData) {
         const base = email.split("@")[0];
         const username = await generateUniqueUsername(base);
 
+        console.log("username: " + username)
+
         const { error: insertError } = await supabase.from("profiles").insert({
           id: userId,
-          email,
-          username,
+          username: username,
+          email: email,
           is_first_time: true,
+          height: 173,
+          weight: 70,
+          calories: 2200,
+          age: 36,
+          gender: "male"
         });
 
         if (insertError) {
@@ -147,19 +157,37 @@ export const AuthProvider = ({ children }) => {
           throw insertError;
         }
 
-        await supabase.auth.updateUser({ data: { username } });
+        console.log("attempting to insert items: ")
+        const inventorySuccess = await insertDefaultInventoryItems(userId);
+        if (!inventorySuccess) {
+          console.warn("Failed to insert default inventory items for new user.");
+        }
 
-        const { data: profileReload, error: reloadError } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", userId)
-          .single();
 
-        if (reloadError) throw reloadError;
-        profileData = profileReload;
+        const { data: profileReload2, error: reloadError2 } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
+        if (reloadError2) throw reloadError2;
+
+        setProfile(profileReload2)
+    
+    
+        const success = await updateProfileDetails(session, profile, {
+          weight: parseInt(weight),
+          height: parseInt(height),
+          age: parseInt(gender),
+          calories: parseInt(calories),
+          gender, 
+        });
+
+        if (success) {
+          navigation.navigate("MainTabs");
+        } else {
+          Alert.alert("Error", "error lol")
+        }
       }
-
-      setSession(session);
       setProfile(profileData);
       setAuthMethod("email");
       setIsAuthenticated(true);
@@ -217,9 +245,11 @@ export const AuthProvider = ({ children }) => {
               username: username,
               email: email,
               is_first_time: true,
-              height: 165,
-              weight: 60,
-              age: 25,
+              height: 173,
+              weight: 70,
+              calories: 2200,
+              age: 36,
+              gender: "male"
             });
 
           if (insertError) {

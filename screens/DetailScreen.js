@@ -15,8 +15,12 @@ import Slider from "@react-native-community/slider";
 import { useRoute } from "@react-navigation/native";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../contexts/AuthContext";
-
-export default function DetailScreen({ navigation }) {
+import useProfileData from "../hooks/useProfileData"; 
+import { useNavigation } from "@react-navigation/native";
+import { updateProfileDetails } from "../services/profileService";
+import { fetchUserInfo } from "../services/profileService";
+export default function DetailScreen() {
+  const navigation = useNavigation()
   const { session, profile } = useAuth();
   const [weight, setWeight] = useState(80);
   const [height, setHeight] = useState(150);
@@ -24,22 +28,66 @@ export default function DetailScreen({ navigation }) {
   const [calories, setCalories] = useState(70);
   const [gender, setGender] = useState("male");
 
+  const { calorieGoal, userDemographics } = useProfileData() 
+  
+  useEffect(() => {
+    console.log("=== FORM UPDATE EFFECT ===");
+    console.log("userDemographics:", userDemographics);
+    console.log("calorieGoal:", calorieGoal);
+    
+    if (userDemographics && Object.keys(userDemographics).length > 0) {
+      console.log("=== UPDATING FORM VALUES ===");
+      
+      if (userDemographics.weight !== undefined) {
+        console.log("Setting weight:", userDemographics.weight);
+        setWeight(userDemographics.weight);
+      }
+      
+      if (userDemographics.height !== undefined) {
+        console.log("Setting height:", userDemographics.height);
+        setHeight(userDemographics.height);
+      }
+      
+      if (userDemographics.age !== undefined) {
+        console.log("Setting age:", userDemographics.age);
+        setAge(userDemographics.age);
+      }
+      
+      if (userDemographics.gender !== undefined) {
+        console.log("Setting gender:", userDemographics.gender);
+        setGender(userDemographics.gender);
+      }
+    }
+  
+    if (calorieGoal !== undefined && calorieGoal !== null) {
+      console.log("Setting calories:", calorieGoal);
+      setCalories(calorieGoal);
+    }
+  
+  }, [userDemographics, calorieGoal]); 
+
   const handleSubmit = async () => {
     if (!weight || !height || !age || !calories || !gender) {
       Alert.alert("Missing info", "Please fill in all fields.");
       return;
     }
 
+    console.log("running profile details")
+    console.log("Session: " + session)
+    console.log("Profile: " + profile)
     const success = await updateProfileDetails(session, profile, {
       weight: parseInt(weight),
       height: parseInt(height),
-      age: parseInt(gender),
+      age: parseInt(age),
       calories: parseInt(calories),
       gender, 
     });
 
+    console.log("end of running profile details")
+
     if (success) {
-      navigation.navigate("MainTabs");
+      console.log("Navigator called")
+      navigation.replace("MainTabs");
     } else {
       Alert.alert("Error", "error lol")
     }
