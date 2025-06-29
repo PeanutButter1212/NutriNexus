@@ -11,7 +11,7 @@ import {
   useWindowDimensions,
   Settings,
   Dimensions,
-  ImageBackground
+  ImageBackground,
 } from "react-native";
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useAuth } from "../contexts/AuthContext";
@@ -29,7 +29,7 @@ import { useDistance } from "../contexts/DistanceTrackingContext";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import avatarImage from "../assets/MaleCharacter.png";
 import { fetchEquippedItems } from "../services/avatarService";
-import stoneImage from "../assets/stone_texture.png"
+import stoneImage from "../assets/stone_texture.png";
 
 export default function Profile() {
   const navigation = useNavigation();
@@ -121,28 +121,23 @@ export default function Profile() {
           padding: 20,
         }}
       >
-        
-
-       
-
-        <TouchableOpacity 
-        className="absolute top-10 left-6  rounded-lg z-10 mt-6"
-        onPress={() => navigation.navigate("Setting")}
+        <TouchableOpacity
+          className="absolute top-28 left-6  rounded-lg z-10 mt-6"
+          onPress={() => navigation.navigate("Setting")}
         >
-            <ImageBackground
+          <ImageBackground
             source={stoneImage}
             className="px-2 py-2"
             resizeMode="cover"
-            >
-              <Ionicons name="settings" size={36} color="white" />
-            </ImageBackground>
-          </TouchableOpacity>
+          >
+            <Ionicons name="settings" size={36} color="white" />
+          </ImageBackground>
+        </TouchableOpacity>
 
+        <Text className="text-3xl font-bold text-white text-center mt-12 mb-4">
+          Welcome Back, {profile ? profile.username : "User"}!
+        </Text>
 
-            <Text className="text-3xl font-bold text-white text-center mt-12 mb-4">
-            Welcome Back, {profile ? profile.username : "User"}!
-            </Text>
-        
         <View className="flex-1 justify-center items-center mb-16">
           <View className="relative items-center">
             <CircularProgress
@@ -312,7 +307,6 @@ export default function Profile() {
           ))}
         </Canvas>
       </View>
-      
     </ScrollView>
   );
 }
