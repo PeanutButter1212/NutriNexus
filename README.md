@@ -143,91 +143,74 @@ npx e
 ```
 
 
-## Android Dev Build (For Android Devices only) 
+## Android Preview Build (For Android Devices only) 
 ### 1. Scan the QR Code below
 
-<img width="138" src="https://github.com/user-attachments/assets/f4ffd175-25a4-4d41-9b48-73dd30b87c97" /> 
+<img width="138" src=" "/> 
 
 ### 2. Click install on the site that the QR code has redirected you to (ensure you allow download from unknown sources) 
 ![photo_6188278396241429890_y](https://github.com/user-attachments/assets/05e45b61-5bc9-42bc-8189-0fa86a3df8c8)
 
-### 3. You should see this screen below
-![photo_6188278396241429893_y](https://github.com/user-attachments/assets/bad832d1-6fab-4d02-92d4-746d53529006)
-
-### 4. Open VS Code and run the following command in your terminal 
-```zsh
-git clone https://github.com/PeanutButter1212/NutriNexus.git
-```
-
-### 5. Search for the NutriNexus folder in your downloads folder (or whichever location you set your default download location as) and open it in VS code (or whichever IDE you use) 
-
-### 6. Run the following lines in your terminal below (ensure your phone and laptop connects to same wifi or your app will fail to start
-```zsh
-npm i
-```
-
-```zsh
-npx expo start
-```
-
-### 7. You should see a QR code in your terminal. Scan it and check the application on your phone again, you should see the login page now 
-
-![Screenshot 2025-06-02 at 12 45 42 AM](https://github.com/user-attachments/assets/f7959ef4-0e2b-421a-90b3-cd027dd4d071)
-
-## Note that when our application runs on some Android devices, the placeholders in the login page may be white (a bug that was caught by one of our testers, please take note the first field is for username and second field is for password. Thank you :)
 
 # How to use NutriNexus
 
-### 1. Sign Up (If you already an account, you can skip this step) 
-- Click on the sign up button
-- Enter your username, email and password (please make sure your email is a valid one and your password is at least 6 digits)
-- You will be redirected to the login page
+### 1. Sign Up 
+- Enter your email address and click on login
+- You will be redirected to a OTP page
+- Be sure to allow location access when prompted
 
-### 2. Verification of Email (If you already have an account, you can skip this step)  
-- A magic link will be sent to your email account
-- Click on it to verfify your account 
-- Note:
-  1. If the link is not pressed, you will not be allowed to log in as your credentials are not yet verified)
-  2. The link will bring you to a page that shows "This site can't be reached" error but it is fine, Supabase Auth will verify your identity once you press on the link
- 
-### 3. Log In 
-- Enter your email and password
-- It will redirect you to the OTP page
-- Check your email where a 6 digit OTP will be sent to your email account
+### 2. Enter OTP
+- A 6 digit OTP will be sent to your email address, enter the pin and you will be brought to the profile page
+- The next time you enter the application, you will not need to login anymore
 
-### 4. OTP Verification 
-- Enter your OTP code and you will be successfully redirected to your profile
-
-### 5. Key in Details (Not applicable if you are not a first time user, will be redirected back to Profile Page) 
-- You will be prompted to update your weight, height, age, calories limit and gender
-- Upon clicking on submit, you will be redirected to the profile page 
   
 ## Guide to using our application 
 ### Profile Page
 On here you will see the personal dashboard, where you can:
-  1. Click on "Calories Burnt" where you can view the activity log of meals eaten, alongside their corresponding calories count
-  2. View calories consumed every day over the current week on the bar graph
-  3. A circular visual indicator to dynamically render how close the user is to exceeding the calories limit for the day (as set in the details page) 
-  4. View steps taken every day over the current week on the bar graph (to be implemented) 
-  5. Change Character where you can edit your avatar (to be implemented)
-  6. View number of points earned in the account (at this point, points have no usage, but we will implement uses for them in future milestones)
-  7. View number of steps taken on the current day, as well as calories burnt on the day itself (to be implemented) from steps taken
-  8. Click on settings to logout (we will also add an additional feature to update details again here for future milestones)
+- Click on "Calories Burnt" where you can view the activity log of meals eaten, alongside their corresponding calories count
+- View calories consumed every day over the current week on the bar graph
+- A circular visual indicator to dynamically render how close the user is to exceeding the calories limit for the day (as set in the details page)
+- View steps taken every day over the current week on the bar graph (not yet implemented)
+- Change Character where you can edit your avatar
+- View number of points earned in the account 
+- View number of steps taken on the current day, as well as calories burnt on the day itself from steps taken
+- Click on settings to logout and edit your details (calorie goal, age, weight, height, gender)
 
 ### Scanner Page
-- Grant camera permssion when prompted
+- Grant camera permssion when prompted 
 - Point the picture at your food (at the moment, our system can detect prata, chicken rice and nasi lemak) and click on "Upload" button
 - After approximately 3 minutes (we will be working on hosting our model on faster servers for future milestones), the food and its corresponding calories will be updated in their corresponding fields
 - Click on submit to add the meal entry into your account's activity log. You will notice this will update your activity log which can be accessed in the profile page
+- If camera screen is black refresh app again
 
 ### Garden Page
-- To be implemented
+- Drag and drop items from your inventory onto the tile map above
+- Once your done the layout will be automatically saved
+- You will be given 5 of 2 different plants for testing purposes
 
 ### Map Page
-- To be implemented
+- A location marker will spawn near you such that you are able to interact (for testing purpose)
+- On click you will be brought to a screen with the details of the food place
+- Scroll through stalls to view all stalls available
+- Clicking a stall will show a popup with the list of healthy food
+- Checking the box will grant you points and disable it
+
+### Shop Page
+- Toggle between decor and accessories to view the purchase options
+- Click on item to purchase it which will show a confirmation popup
+- Once confirmed points will be deducted and item added to invenotry (not implemented)
+
+### Customise Avatar
+- As of now you will not have any accessories to equip but if you want we can give you a account that have
+- Click on the accessory to see it on the avatar
+- Once done click save to see the updated avatar on the profile page
 
 ### Social Page
 - To be implemented
+
+### Challenges Page
+- To be implemented
+
 
 --- 
 ## Timeline and Development Plan
