@@ -89,7 +89,7 @@ Similarly for the assets such as accessories and decor, we will limit to 8 each 
 
 
 #### **Accessories:**  
-Chou Chou, Oversized Uniqlo Shirt, Admin Shirt, Scrunchie, Mahjong Tile, Airpods,  
+Chou Chou, Oversized Uniqlo Shirt, Admin Shirt, Mahjong Tile, Airpods,  
 Starbucks Drink, Sunglasses
 
 ---
