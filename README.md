@@ -175,6 +175,7 @@ On here you will see the personal dashboard, where you can:
 - View number of points earned in the account 
 - View number of steps taken on the current day, as well as calories burnt on the day itself from steps taken
 - Click on settings to logout and edit your details (calorie goal, age, weight, height, gender)
+- Every account will be give 1000 points at the start, refresh to obtain them
 
 ### Scanner Page
 - Grant camera permssion when prompted 
