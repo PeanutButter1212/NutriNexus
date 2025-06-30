@@ -146,7 +146,7 @@ npx e
 ## Android Preview Build (For Android Devices only) 
 ### 1. Scan the QR Code below
 
-<img width="138" src=" "/> 
+<img width="138" src=""/> 
 
 ### 2. Click install on the site that the QR code has redirected you to (ensure you allow download from unknown sources) 
 ![photo_6188278396241429890_y](https://github.com/user-attachments/assets/05e45b61-5bc9-42bc-8189-0fa86a3df8c8)
@@ -170,6 +170,7 @@ On here you will see the personal dashboard, where you can:
 - Click on "Calories Burnt" where you can view the activity log of meals eaten, alongside their corresponding calories count
 - View calories consumed every day over the current week on the bar graph
 - A circular visual indicator to dynamically render how close the user is to exceeding the calories limit for the day (as set in the details page)
+<img width="277" alt="Screenshot 2025-06-30 at 11 11 46 AM" src="https://github.com/user-attachments/assets/54a2b24c-ced1-4ace-91d6-094ab22eed11" />
 - View steps taken every day over the current week on the bar graph (not yet implemented)
 - Change Character where you can edit your avatar
 - View number of points earned in the account 
