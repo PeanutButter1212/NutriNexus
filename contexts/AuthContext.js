@@ -59,29 +59,26 @@ export const AuthProvider = ({ children }) => {
       }
     };
   
-    // Get initial session
+
     supabase.auth.getSession().then(({ data }) => {
       const session = data.session;
       console.log("Initial session:", session ? "exists" : "null");
       setSession(session);
-      
-      // If there's a session, fetch the profile
+
       if (session?.user?.id) {
         fetchProfile(session.user.id);
       }
     });
   
-    // Set up SINGLE auth listener
+
     const { data: listener } = supabase.auth.onAuthStateChange(
       async (_event, newSession) => {
-        console.log("Auth state changed:", _event, newSession ? "session exists" : "no session");
         setSession(newSession);
         
         if (newSession?.user?.id) {
-      
           await fetchProfile(newSession.user.id);
         } else {
-          // User is logged out, clear profile data
+    
           console.log("Clearing profile data");
           setProfile(null);
           setUser(null);
@@ -96,9 +93,6 @@ export const AuthProvider = ({ children }) => {
       listener?.subscription?.unsubscribe();
     };
   }, []);
-
-  
-
   /*
   const signUp = async (username, email, password, navigation) => {
     try {

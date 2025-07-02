@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  Modal
 } from "react-native";
 import backgroundImage from "../assets/CustomisationBackground.png";
 import avatarImage from "../assets/MaleCharacter.png";
@@ -18,6 +19,7 @@ import useEquippedItems from "../hooks/useEquippedItems";
 import { useNavigation } from "@react-navigation/native";
 import SimpleInventorySlot from "../components/SimpleInventorySlot";
 import { Ionicons } from "@expo/vector-icons";
+import AccessoryPopUp from "../components/AccessoryPopup";
 
 export default function AvatarCustomisationScreen() {
   //const [accessories, setAccessories] = useState([]);
@@ -25,6 +27,7 @@ export default function AvatarCustomisationScreen() {
   const { session } = useAuth();
   const userId = session?.user?.id;
   const navigation = useNavigation();
+  const [showPopup, setShowPopup] = useState(false)
 
   //3 different kinda accessories
   const [equipped, setEquipped] = useState({
@@ -46,6 +49,13 @@ export default function AvatarCustomisationScreen() {
 
   const equippedFromDB = useEquippedItems();
 
+  const handleSave = async () => {
+    const success = await saveEquippedItems(userId, equipped)
+    if (success) {
+      setShowPopup(true)
+    }
+    
+  }
   useEffect(() => {
     setEquipped(equippedFromDB);
   }, [equippedFromDB]);
@@ -108,13 +118,20 @@ export default function AvatarCustomisationScreen() {
               key={index}
               selected={equipped[item.slot]?.item_id === item.item_id}
               onPress={() => {
-                const slot = item.slot; //store position(head,hand) etc)
-
+                console.log("Item pressed:", item);
+                const slot = item.slot;
+              
+                if (!slot) {
+                  console.error("Slot is missing for item:", item);
+                  return; // prevent further execution if slot is invalid
+                }
+              
                 setEquipped((prev) => ({
                   ...prev,
-                  [slot]: prev[slot]?.item_id === item.item_id ? null : item, //if same item alr equip set to null so basically remove else equip
+                  [slot]: prev[slot]?.item_id === item.item_id ? null : item,
                 }));
               }}
+              
             >
               <Image
                 source={{ uri: item.image_url }}
@@ -127,12 +144,7 @@ export default function AvatarCustomisationScreen() {
         {/* Save Button */}
         <TouchableOpacity
           className="bg-white rounded-xl px-8 shadow-md mt-8 py-4"
-          onPress={async () => {
-            const success = await saveEquippedItems(userId, equipped);
-            if (success) {
-              Alert.alert("Avatar has been saved");
-            }
-          }}
+          onPress={handleSave}
         >
           <Text className="text-black text-base font-medium">Save</Text>
         </TouchableOpacity>
@@ -144,6 +156,21 @@ export default function AvatarCustomisationScreen() {
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
       </ImageBackground>
+      
+          <Modal
+          visible={showPopup}
+          transparent={true}
+          animationType="none"
+          onRequestClose={() => setShowPopup(false)}
+      >
+        <View 
+        className="flex-1 bg-black/50"
+        >
+          <AccessoryPopUp onContinue={() => setShowPopup(false)}/> 
+        </View>
+      </Modal>
     </View>
+
+    
   );
 }

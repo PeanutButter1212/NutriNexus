@@ -316,12 +316,39 @@ export async function insertDefaultInventoryItems(userId) {
     "8f0ad901-0c1c-4bbb-81e9-a9a87bc84b02"
   ]
 
-  const accessoryInventoryEntries = defaultAccessoryItemIds.map((itemId) => ({
-    user_id: userId,
-    item_id: itemId,
-  }));
-
   console.log("mapped accessory stuff")
+
+  const { data: itemInfoDetail, error: itemInfoError } = await supabase
+  .from("item")
+  .select("id, name, slot, image_url, position")
+  .in("id", defaultAccessoryItemIds);
+
+  if (itemInfoError) {
+    console.error("Error fetching item details:", itemError);
+    return;
+  }
+  const accessoryInventoryEntries = itemInfoDetail.map((item) => {
+    let positionPct = null;
+
+    if (item.position) {
+      positionPct = {
+        topPct: typeof item.position.top === "number" ? item.position.top / 384 : 0,
+        leftPct: typeof item.position.left === "number" ? item.position.left / 224 : 0,
+        widthPct: typeof item.position.width === "number" ? item.position.width / 224 : 0,
+        heightPct: typeof item.position.height === "number" ? item.position.height / 384 : 0,
+      };
+    }
+
+    return {
+      user_id: userId,
+      item_id: item.id,
+      item_name: item.name,
+      slot: item.slot,
+      image_url: item.image_url,
+      position: positionPct,
+    };
+  });
+
 
   const { data: accessoryDataInsertion, error: accessoryDataInsertionError } = await supabase
     .from("accessory_inventory")
