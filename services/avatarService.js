@@ -48,7 +48,7 @@ export async function saveEquippedItems(userId, equippedItems) {
 export async function fetchEquippedItems(userId) {
   const { data, error } = await supabase
     .from("accessory_layout")
-    //gets full item object from item table
+    //use a foreign key for user_id and item_id to ensure that item exists from inventory
     .select(
       "slot,accessory_inventory(item_id,item_name,image_url,slot,position)"
     )
