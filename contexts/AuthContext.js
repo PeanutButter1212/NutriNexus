@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }) => {
       }
     );
   
- \\
+
     return () => {
       console.log("Cleaning up auth listener");
       listener?.subscription?.unsubscribe();
