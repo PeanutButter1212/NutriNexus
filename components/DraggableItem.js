@@ -86,3 +86,7 @@ const panResponder = useRef(
 }; 
 
 export default DraggableItem
+
+
+             
+        

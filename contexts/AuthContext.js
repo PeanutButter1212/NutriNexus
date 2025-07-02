@@ -35,19 +35,69 @@ export const AuthProvider = ({ children }) => {
       offlineAccess: true,
       behavior: "web",
     });
-
-    // added
+  
+    const fetchProfile = async (userId) => {
+      try {
+        console.log("Fetching profile for userId:", userId);
+        const { data: profileData, error } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", userId)
+          .single();
+  
+        if (error) {
+          console.error("Error fetching profile:", error);
+          return;
+        }
+  
+        console.log("Profile fetched successfully:", profileData?.username);
+        setProfile(profileData);
+        setUser(profileData);
+        setIsAuthenticated(true);
+      } catch (err) {
+        console.error("Error in fetchProfile:", err);
+      }
+    };
+  
+    // Get initial session
     supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
+      const session = data.session;
+      console.log("Initial session:", session ? "exists" : "null");
+      setSession(session);
+      
+      // If there's a session, fetch the profile
+      if (session?.user?.id) {
+        fetchProfile(session.user.id);
+      }
     });
-
-    // added
+  
+    // Set up SINGLE auth listener
     const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, newSession) => {
+      async (_event, newSession) => {
+        console.log("Auth state changed:", _event, newSession ? "session exists" : "no session");
         setSession(newSession);
+        
+        if (newSession?.user?.id) {
+      
+          await fetchProfile(newSession.user.id);
+        } else {
+          // User is logged out, clear profile data
+          console.log("Clearing profile data");
+          setProfile(null);
+          setUser(null);
+          setIsAuthenticated(false);
+        }
       }
     );
+  
+ \\
+    return () => {
+      console.log("Cleaning up auth listener");
+      listener?.subscription?.unsubscribe();
+    };
   }, []);
+
+  
 
   /*
   const signUp = async (username, email, password, navigation) => {

@@ -53,6 +53,7 @@ export default function Profile() {
   useFocusEffect(
     useCallback(() => {
       const loadEquipped = async () => {
+        console.log("profile: " + profile)
         if (!session?.user?.id) return;
         const fresh = await fetchEquippedItems(session.user.id);
         setEquipped(fresh);
