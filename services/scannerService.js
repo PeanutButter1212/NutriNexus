@@ -16,7 +16,9 @@ export async function predictFoodFromImage(photo) {
 
   const response = await fetch(
     //render backend we used
-    "https://nutrinexus-image-backend.onrender.com/predict",
+    //"https://nutrinexus-image-backend.onrender.com/predict",
+    //trying railway backend now
+    "https://nutrinexus-image-backend-production.up.railway.app/predict",
     {
       method: "POST",
       body: formData,
