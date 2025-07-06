@@ -1,4 +1,4 @@
-import { Text, View, ImageBackground, Image, TouchableOpacity, ScrollView , Modal} from 'react-native'
+import { Text, View, ImageBackground, Image, TouchableOpacity, ScrollView , Modal, Alert} from 'react-native'
 import React, { Component, useState, useCallback, useMemo } from 'react'
 import woodenBackground from '../assets/backgrounds/shopBackground.png'
 import woodenSquare from '../assets/backgrounds/woodenSquare.png'
@@ -6,6 +6,12 @@ import { useAuth } from '../contexts/AuthContext'
 import ShopRow from '../components/ShopRow'
 import ShopOrder from '../components/ShopOrder'
 import useItemBank from '../hooks/useItemBank'
+import useProfileData from '../hooks/useProfileData'
+import ShopService from '../services/shopService'
+import { useEffect } from 'react'
+import { useFocusEffect } from '@react-navigation/native'
+import AccessoryPopUp from '../components/AccessoryPopup'
+
 export default function ShopScreen({navigation}) {
 
     const [showPopup, setShowPopup] = useState(false)
@@ -15,23 +21,53 @@ export default function ShopScreen({navigation}) {
 
     const itemBank = useItemBank() 
 
-    const mockItemBank = [
-        {
-           id: "87c30106-bb4c-4796-a61a-6a1fd31be753",
-           name: "bougainvilla",
-           image_url: "https://rkrdnsnujizdskzbdwlp.supabase.co/storage/v1/object/public/item-images//bougainvilla.png",
-           type: "Decor",
-           cost: "1000"
-        }, 
-        {
-            id: "87c30106-bb4c-4796-a61a-6a1fd31be753",
-            name: "durian",
-            image_url: "https://rkrdnsnujizdskzbdwlp.supabase.co/storage/v1/object/public/item-images//durian.png",
-            type: "Decor",
-            cost: "1800"
-        }
+    const { points } = useProfileData() 
 
-    ]
+    const [ownedAccessories, setOwnedAccessories] = useState([])
+
+    const [localPoints, setLocalPoints] = useState(0)
+
+    const [showSuccessfulPurchasePopup, setShowSuccessfulPurchasePopup] = useState(false)
+
+    const [showUnsuccessfulPurchasePopup, setShowUnsuccessfulPurchasePopup] = useState(false)
+
+
+
+
+
+    useEffect( () => {
+        setLocalPoints(points) }
+    , [points])
+
+    useFocusEffect(
+        useCallback(() => {
+            const fetchOwnedAccessories = async () => {
+                try {
+                    if (!session?.user?.id) {
+                        console.log("No user ID available");
+                        return;
+                    }
+                    
+                    const listOfAccessoriesOwned = await ShopService.fetchUserAccessories(session.user.id);
+                    
+                    console.log("output from listOfAccessoriesOwned: " + JSON.stringify(listOfAccessoriesOwned, null, 2));
+                    
+
+                    setOwnedAccessories(listOfAccessoriesOwned)
+                } catch (error) {
+                    console.log(error.message)
+                    setOwnedAccessories([]);
+                }
+            }
+            fetchOwnedAccessories()
+        }, [session?.user?.id])
+    )
+
+    const isAccessoryOwned = useCallback((item) => {
+        return item.type === "Accessory" && ownedAccessories.includes(item.id);
+    }, [ownedAccessories]);
+    
+
 
     const handleGet = useCallback((item) => {
         setSelectedItem(item)
@@ -43,8 +79,18 @@ export default function ShopScreen({navigation}) {
         setSelectedItem(null)
     }, [])
 
-    const handlePurchaseConfirm = useCallback(() => {
-        handleClosePopup()
+    const handlePurchaseConfirm = useCallback(async () => {
+        const purchaseResult = await ShopService.purchaseItem(session.user.id, selectedItem)
+        handleClosePopup() 
+        if (purchaseResult.success) {
+            setLocalPoints(localPoints -  selectedItem.cost)
+            if (selectedItem.type == "Accessory") {
+                setOwnedAccessories(prev => [...prev, selectedItem.id])
+            }
+            setShowSuccessfulPurchasePopup(true)
+        } else {
+            setShowUnsuccessfulPurchasePopup(true)
+        }
     }, [selectedItem, handleClosePopup])
 
     const handlePurchaseCancel = useCallback(() => {
@@ -53,6 +99,9 @@ export default function ShopScreen({navigation}) {
 
 
     const renderShopItemRows = () => {
+
+        console.log("ownedAccessories: ", ownedAccessories);
+
         const columns = [];
         const filteredItemBank = itemBank.filter(item => item.type === currentTab)
 
@@ -65,13 +114,16 @@ export default function ShopScreen({navigation}) {
         for (let i = 0; i < filteredItemBank.length; i += 2) {
           const leftItemInfo = filteredItemBank[i];
           const rightItemInfo = filteredItemBank[i + 1];
+
+          const isLeftOwned = isAccessoryOwned(leftItemInfo);
+          const isRightOwned = rightItemInfo ? isAccessoryOwned(rightItemInfo) : false;
     
 
           columns.push(
             <ShopRow
               key={`row-${leftItemInfo.id}-${rightItemInfo?.id || 'empty'}`} 
               onGetPress={handleGet}
-              topItem={{
+              leftItem={{
                 children: (
                     <Image
                     source={{ uri: leftItemInfo?.image_url }}
@@ -80,10 +132,11 @@ export default function ShopScreen({navigation}) {
                 ),
                 cost: leftItemInfo.cost,
                 name: leftItemInfo.name,
-                item: leftItemInfo
+                item: leftItemInfo,
+                isOwned: isLeftOwned,
 
               }}
-              bottomItem={
+              rightItem={
                 rightItemInfo
                   ? {
                       children: (
@@ -94,7 +147,8 @@ export default function ShopScreen({navigation}) {
                       ),
                       cost: rightItemInfo.cost,
                       name: rightItemInfo.name,
-                      item: rightItemInfo
+                      item: rightItemInfo,
+                      isOwned: isRightOwned, 
                     }
                   : undefined
               }
@@ -134,7 +188,7 @@ export default function ShopScreen({navigation}) {
                         />
                         <Text
                         className="text-white font-nunito-bold text-xl"
-                        > 7000 
+                        > {localPoints}
                         </Text>
                     </View>
               
@@ -213,7 +267,8 @@ export default function ShopScreen({navigation}) {
                 resizeMode='stretch'
                 className="flex-1 p-6"
                 >
-                <ScrollView> 
+                <ScrollView
+                > 
                     {renderShopItemRows()}
                 </ScrollView>
 
@@ -222,7 +277,7 @@ export default function ShopScreen({navigation}) {
             </View>
 
             <TouchableOpacity
-                onPress={() => navigation.navigate("MainTabs")}
+                onPress={() => navigation.goBack()}
                 className="self-center items-center justify-center bg-red-600 rounded-xl mt-6 py-3 px-16 mb-6"
             >
                 <Text className="text-white text-base font-medium font-bold">Back</Text>
@@ -238,7 +293,7 @@ export default function ShopScreen({navigation}) {
       <Modal
             visible={showPopup}
             transparent={true}
-            animationType="none"
+            animationType="fade"
             onRequestClose={handleClosePopup}
         >
            <View className="flex-1 bg-black/50">
@@ -249,6 +304,41 @@ export default function ShopScreen({navigation}) {
                     />
                 </View>
         </Modal>
+
+        <Modal
+            visible={showSuccessfulPurchasePopup}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={() => setShowSuccessfulPurchasePopup(false)}
+        >
+            <View 
+            className="flex-1 bg-black/50"
+            >
+            <AccessoryPopUp 
+            success={true}
+            messageHeading={"Item purchased!"}
+            messageDescription={"This has been successfully added into your inventory"}
+            onContinue={() => setShowSuccessfulPurchasePopup(false)}/> 
+            </View>
+        </Modal>
+
+        <Modal
+            visible={showUnsuccessfulPurchasePopup}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={() => setShowUnsuccessfulPurchasePopup(false)}
+        >
+            <View 
+            className="flex-1 bg-black/50"
+            >
+            <AccessoryPopUp 
+            success={false}
+            messageHeading={"Failed to Purchase Item!"}
+            messageDescription={"You do not have enough points to purchase this!"}
+            onContinue={() => setShowUnsuccessfulPurchasePopup(false)}/> 
+            </View>
+        </Modal>
+
 
 
         </View>

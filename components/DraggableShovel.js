@@ -1,15 +1,13 @@
 import { PanResponder, Animated, View, Text, Image } from 'react-native';
 import { useRef, useState } from 'react';
-const DraggableItem = ({
+const DraggableShovel = ({
     item,
     itemInfo, 
     itemData, 
     draggedItemData, 
     onDragStart, 
     onDragMove, 
-    onDragEnd,
-    size,
-    className=''
+    onDragEnd
 }) => {
     
     const [isDraggingThis, setIsDraggingThis] = useState(false);
@@ -34,7 +32,6 @@ const panResponder = useRef(
             return true;
         }, 
         onPanResponderGrant: (evt, gestureState) => {
-            
             itemRef.current?.measure((fx, fy, width, height, px, py) => {
                 setIsDraggingThis(true);
                 onDragStart(currentItemId, currentItem, { uri: itemInfo.image_url }, { x: px, y: py });
@@ -74,11 +71,11 @@ const panResponder = useRef(
                 style={{
                     opacity: isThisItemBeingDragged ? 0.3 : 1
                 }}
-                className={`${className}`}
+                className="mr-2 mt-2"
             > 
                 <Image
                     source={{ uri: itemInfo?.image_url }}
-                    style={{ width: size, height: size }}
+                    style={{ width: 50, height: 50 }}
                 />
             </View>
 
@@ -88,8 +85,7 @@ const panResponder = useRef(
         
 }; 
 
-export default DraggableItem
-
+export default DraggableShovel
 
              
         

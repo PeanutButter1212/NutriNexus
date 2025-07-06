@@ -1,5 +1,5 @@
-import { View, Text, Image, Dimensions, ImageBackground, Animated, ScrollView, UIManager, Pressable, findNodeHandle, TouchableWithoutFeedback} from 'react-native';
-import React,  { useRef, useState, useEffect, useMemo } from 'react'
+import { View, Text, Image, Dimensions, ImageBackground, TouchableOpacity, Animated, ScrollView, UIManager, Pressable, findNodeHandle, TouchableWithoutFeedback} from 'react-native';
+import React,  { useRef, useState, useEffect, useMemo, useCallback } from 'react'
 import gardenImage from '../assets/garden/garden.png'
 import woodenBackground from '../assets/backgrounds/inventoryBackground.png'
 import { useImage, Canvas, Path, Skia, Image as SkiaImage } from "@shopify/react-native-skia";
@@ -7,7 +7,7 @@ import { getCustomFonts } from '../utils/loadFonts'
 import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 import InventoryColumn from '../components/InventoryColumn'
 import DraggableItem from '../components/DraggableItem'
-import { fetchPlants, handleAssetConsumption, insertToGarden, retrieveDecorInventory } from '../services/gardenService';
+import { fetchPlants, handleAssetConsumption, insertToGarden, retrieveDecorInventory, removeFromGarden, returnToInventory, fetchDecorIdOnTile, addtoDecorInventory } from '../services/gardenService';
 import { useAuth } from "../contexts/AuthContext";
 import useDecorInventory from '../hooks/useDecorInventory';
 import useSkiaImageMap from '../hooks/useSkiaImageMap';
@@ -15,6 +15,9 @@ import { drag } from 'd3';
 import useItemBank from '../hooks/useItemBank';
 import SkiaImageItem from '../components/skiaImageItem';
 import useLayoutData from '../hooks/useLayoutData';
+import ShovelComponent from '../components/ShovelComponent';
+import DraggableShovel from '../components/DraggableShovel';
+import { useFocusEffect } from '@react-navigation/native';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height; 
@@ -88,20 +91,33 @@ export default function GardenScreen() {
   const gardenAreaRef = useRef(null);
   const [hoverTile, setHoverTile] = useState(null);
 
-  let shouldShowHoverTile = false;
-  
+  const [isDraggingShovel, setIsDraggingShovel] = useState(false)
+  const [showPlantTiles, setShowPlantTiles] = useState(false)
+
+   
   const isTileOccupied = (col, row) => {
     return placedPlantsRef.current.some(decor => decor.row === row && decor.col === col);
   };
   
 
+  let shouldShowHoverTile = false;
+  let shouldShowHoverTileForRemoval = false; 
+  
+ 
+
   if (hoverTile) {
-    const occupied = isTileOccupied(hoverTile.col, hoverTile.row)
-    if (!occupied) {
-      shouldShowHoverTile = true;
+    const occupied = isTileOccupied(hoverTile.col, hoverTile.row);
+    
+    if (isDraggingShovel) {
+      if (occupied) {
+        shouldShowHoverTileForRemoval = true;
+      }
+    } else {
+      if (!occupied) {
+        shouldShowHoverTile = true;
+      }
     }
   }
-
   const floatingDragRef = useRef(null);
   const draggedItemRef = useRef(null);
   const [renderTrigger, setRenderTrigger] = useState(0);
@@ -109,9 +125,21 @@ export default function GardenScreen() {
 
 
 
-  useEffect(() => {
-    setLocalInventory(decorInventory); 
-  }, [decorInventory])
+  const fetchAndSetDecorInventory = useCallback(async () => {
+    try {
+      const data = await retrieveDecorInventory(session.user.id);
+      setLocalInventory(data);
+    } catch (error) {
+      console.error("Error fetching decor inventory:", error);
+    }
+  }, []);
+  
+  useFocusEffect(
+    useCallback(() => {
+      fetchAndSetDecorInventory(); 
+    }, [])
+  );
+  
 
   useEffect(() => {
     placedPlantsRef.current = placedPlants;
@@ -142,7 +170,7 @@ export default function GardenScreen() {
   const renderInventoryColumns = () => {
     const columns = [];
 
-    if (localInventory.length == 0) {
+    if (localInventory.length == 0 || !itemBank || itemBank.length === 0) {
       return [];
     } 
 
@@ -167,6 +195,7 @@ export default function GardenScreen() {
                 onDragStart={handleDragStart}
                 onDragMove={handleDragMove}
                 onDragEnd={handleDragEnd}
+                size = {80}
               />
             ),
           }}
@@ -176,25 +205,81 @@ export default function GardenScreen() {
     
   };
   return columns;
-}
+  }
 
-//we have a local copy of inventory from what was received from our hook so that UI can render count changes quickly
-  const decrementInventory = (plantId) => {
-    setLocalInventory(prev => 
-      prev 
-      .map(
-        item =>
-          item.item_id === plantId 
-          ? {...item, count: item.count - 1}
-          : item
-      )
-      .filter(item => item.count > 0)
+  const renderShovel = () => {
+    const shovelItem = {
+      item_id: 'shovel',
+      count: 1, 
+      type: 'tool'
+    }
 
+    const shovelItemInfo = {
+      id: 'shovel',
+      name: 'Shovel',
+      image_url: "https://rkrdnsnujizdskzbdwlp.supabase.co/storage/v1/object/public/item-images//Shovel.png",
+      type: 'tool'
+    }
+
+    return (
+      <View
+      className="ml-8 mb-6"
+      >
+      <ShovelComponent
+      topItem={{
+        children: (
+          <DraggableItem
+              item={shovelItem}
+              itemInfo={shovelItemInfo}
+              index={shovelItem}
+              draggedItemData={draggedItemRef.current}
+              onDragStart={handleShovelStart}
+              onDragMove={handleShovelMove}
+              onDragEnd={handleShovelEnd}
+              size={50}
+              className="mt-2 mr-2"
+          />
+      ),
+
+      }}
+      />
+    </View>
     )
 
-
   }
-  
+
+
+//we have a local copy of inventory from what was received from our hook so that UI can render count changes quickly
+const decrementInventory = (plantId) => {
+  setLocalInventory(prev => 
+    prev 
+    .map(
+      item =>
+        item.item_id === plantId 
+        ? {...item, count: item.count - 1}
+        : item
+    )
+    .filter(item => item.count > 0)
+
+  )
+
+}
+
+const incrementInventory = (plantId) => {
+  setLocalInventory(prev => {
+  console.log("plantId: " + plantId)
+  const itemExists = prev.find(item => item.item_id === plantId)
+  if (itemExists) {
+    return prev.map(item =>
+          item.item_id === plantId 
+          ? {...item, count: item.count + 1}
+          : item
+      )
+  } else {
+    return ([...prev, { item_id: plantId, count: 1 }])
+  }
+})}
+
 
 // 5 x 5 grid so run the loop 25 times to generate 25 diamond tiles that have consistent spacing throughout the garden 
   const tileArray = () => {
@@ -223,7 +308,7 @@ export default function GardenScreen() {
 
 
 const handleDebug = () => {
-  console.log(JSON.stringify(placedPlants, null, 2))
+  console.log(localInventory, null, 2) 
 }
 
 // run through gridview array, on any location help us determine which tile of the garden the location is closest to, if nearest tile
@@ -250,6 +335,84 @@ const handleDebug = () => {
     return tile; 
   }
 
+  const handleShovelStart = (plantId, itemData, image, startPosition) => {
+    const dragData = { 
+      plantId, 
+      image, 
+      itemData 
+  };
+      setIsDraggingShovel(true);
+      const floatingItem = {
+          ...dragData,
+          x: startPosition.x,
+          y: startPosition.y,
+          itemInfo:  { image_url: image.uri }
+      };
+      floatingDragRef.current = floatingItem;
+      draggedItemRef.current = dragData;
+      setRenderTrigger(prev => prev + 1);
+      return;
+  }
+
+  const handleShovelMove = ({ x, y }) => {
+    setShowPlantTiles(true)
+    setHoverTile(getClosestTile(x, y))
+    if (floatingDragRef.current) {
+      floatingDragRef.current = {
+          ...floatingDragRef.current,
+          x: x - 40,
+          y: y - 40
+      };
+      setRenderTrigger(prev => prev + 1);
+  }
+
+  }
+
+  const handleShovelEnd = async ({ dropX, dropY, dragData }) => {
+    const tile = getClosestTile(dropX, dropY)
+    if (tile && isTileOccupied(tile.col, tile.row)) {
+      console.log("fetching decor id")
+      const retrievePlantResult = await fetchDecorIdOnTile(session.user.id, tile.col, tile.row) 
+      if (retrievePlantResult.error) {
+        console.log("Error retrieving decor id for tile: " + retrievePlantResult.error)
+      }
+
+      console.log("retrievePlantResult: " + JSON.stringify(retrievePlantResult, null, 2))
+
+      const decor_id = retrievePlantResult.item_id
+
+      console.log("deleting from garden")
+
+      const deletionResult = await removeFromGarden(session.user.id, tile.col, tile.row)
+      if (deletionResult.error) {
+        console.log("Deletion Error: " + deletionResult.error)
+      }
+
+      console.log("returning to inventory")
+      const inventoryReturnResult = await addtoDecorInventory(session.user.id, decor_id)
+
+      if (inventoryReturnResult.error) {
+        console.log("Error returning plant to inventory: " + JSON.stringify(inventoryReturnResult.error, null, 2))
+      }
+
+      setPlacedPlants(prev => 
+        prev.filter(
+        item => !(item.row == tile.row && item.col == tile.col) 
+      ));
+
+      incrementInventory(decor_id)
+
+    }
+
+    setIsDraggingShovel(false)
+    setHoverTile(null)
+    floatingDragRef.current = null;  
+    draggedItemRef.current = null;   
+    setRenderTrigger(prev => prev + 1 )
+    setShowPlantTiles(false)
+  }
+
+
   const handleDragStart = (plantId, itemData, image, startPosition) => {
    
     const dragData = { 
@@ -271,6 +434,8 @@ const handleDebug = () => {
     setRenderTrigger(prev => prev + 1);
     
 };
+
+
 
     
 //during movement of the drag, we use getClosestTile to determine which tile the location is closest to, that tile will be set
@@ -297,6 +462,7 @@ const handleDragMove = ({ x, y }) => {
     
   
     const currentDragData = dragData 
+
     if (tile && currentDragData?.plantId) {
       if (isTileOccupied(tile.col, tile.row)) {
         console.log("Tile is already occupied. Skipping placement.");
@@ -333,7 +499,7 @@ const handleDragMove = ({ x, y }) => {
           col: tile.col, 
         },
       ]);
-      console.log("🌱 Added plant:", item.name, "at", tile.row, tile.col);
+
 
       decrementInventory(currentDragData.plantId)
 
@@ -377,7 +543,7 @@ const handleDragMove = ({ x, y }) => {
         height: SCREEN_HEIGHT,
        }}
        > 
-      {draggedItemRef.current && gridView.map(({ path, col, row }) => {
+      {draggedItemRef.current && !isDraggingShovel && gridView.map(({ path, col, row }) => {
         if (isTileOccupied(col, row)) return null;
         return (
           <Path
@@ -408,15 +574,44 @@ const handleDragMove = ({ x, y }) => {
       
       
 
-      {shouldShowHoverTile && (
+      {shouldShowHoverTileForRemoval && (
         <Path
           path={diamondView(hoverTile.x, hoverTile.y, DIAMOND_SIZE)}
           style="fill"
-          color="rgba(255, 255, 255, 0.3)" // semi-transparent
+          color="rgba(255, 100, 100, 0.4)"
           strokeWidth={2}
           strokeColor="#ffffff"
         />
       )}
+
+      {showPlantTiles && placedPlantsRef.current.map((plant, idx) => {
+        const {x, y} = getIsometricPosition(plant.col, plant.row)
+        path = diamondView(x, y, DIAMOND_SIZE)
+        return (
+        <Path
+        key={`plant-path-${plant.row}-${plant.col}`}
+        path={path}
+        style="fill"
+        color="rgba(255, 100, 100, 0.2)"
+        strokeWidth={1}
+        strokeColor="#ffffff"
+        />
+      )
+      })
+
+      }
+
+
+      {shouldShowHoverTile && (
+        <Path
+          path={diamondView(hoverTile.x, hoverTile.y, DIAMOND_SIZE)}
+          style="fill"
+          color="rgba(255, 255, 255, 0.3)" 
+          strokeWidth={2}
+          strokeColor="#ffffff"
+        />
+      )}
+
 
 
 
@@ -454,9 +649,19 @@ const handleDragMove = ({ x, y }) => {
           </SafeAreaView>
 
         </SafeAreaProvider>
-        
 
-  
+        <View>
+          {renderShovel()}
+        </View>
+
+        <TouchableOpacity
+        onPress={handleDebug}
+        className="bg-red-200"
+        >
+          <Text>
+            Button
+          </Text>
+        </TouchableOpacity>
 
         </ImageBackground>
 
@@ -487,11 +692,17 @@ const handleDragMove = ({ x, y }) => {
                 shadowRadius: 8,
             }}
         />
-    </View></>
+    </View>
+    
+    </>
     
   
 )}
-    </View>
+
+
+      
+      </View>
+
 
 );
 }

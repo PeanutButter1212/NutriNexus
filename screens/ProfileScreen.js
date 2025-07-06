@@ -29,6 +29,7 @@ import { useDistance } from "../contexts/DistanceTrackingContext";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import avatarImage from "../assets/MaleCharacter.png";
 import { fetchEquippedItems } from "../services/avatarService";
+import { fetchPoints } from "../services/profileService";
 import stoneImage from "../assets/stone_texture.png";
 
 export default function Profile() {
@@ -38,6 +39,10 @@ export default function Profile() {
   const SCREEN_HEIGHT = Dimensions.get("window").height;
 
   const { distance } = useDistance();
+
+  const [localPoints, setLocalPoints] = useState(0)
+
+  
 
   const handleLogout = () => {
     logout(authMethod, navigation);
@@ -52,18 +57,22 @@ export default function Profile() {
 
   useFocusEffect(
     useCallback(() => {
-      const loadEquipped = async () => {
+      const loadData = async () => {
         console.log("profile: " + profile)
         if (!session?.user?.id) return;
         const fresh = await fetchEquippedItems(session.user.id);
         setEquipped(fresh);
+
+        const userPoints = await fetchPoints(session.user.id);
+        setLocalPoints(userPoints);
       };
 
-      loadEquipped();
+      loadData();
     }, [session?.user?.id])
   );
 
-  const { totalCalories, calorieGoal, caloriesData, points } = useProfileData();
+  const { totalCalories, calorieGoal, caloriesData} = useProfileData();
+
 
   const [referenceData, setReferenceData] = useState([]);
   const [selectedDataType, setSelectedDataType] = useState("Steps");
@@ -194,7 +203,7 @@ export default function Profile() {
               </View>
               <View>
                 <Text className="text-black text-3xl font-extrabold">
-                  {points}
+                  {localPoints}
                 </Text>
               </View>
             </View>

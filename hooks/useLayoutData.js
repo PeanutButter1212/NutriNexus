@@ -21,8 +21,6 @@ export default function useLayoutData() {
             try {       
                 if (!session?.user?.id || itemBank.length === 0) return;
                 const layoutData = await retrieveGardenLayout(userId)
-                console.log("layoutdata: " + JSON.stringify(layoutData, null, 2))
-                console.log("itembank from uselayoutdata: " + itemBank)
               
                 const mapped = layoutData.map(({ id, user_id, row, col, decor_id }) => {
                     const item = itemBank.find(decor => decor.id === decor_id)

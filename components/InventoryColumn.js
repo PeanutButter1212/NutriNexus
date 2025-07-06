@@ -15,7 +15,10 @@ const InventoryColumn = ({topItem, className}) => {
                     {topItem.children}
                 </View>
                 <View
-                className="bg-emerald-500 w-6 h-5 rounded-l justify-center bottom-0 right-0 absolute"
+                className="bg-emerald-500 absolute right-0 bottom-0 p-1"
+                style={{
+                    borderTopLeftRadius: 10,
+                }}
                 >
                     <Text 
                     className="text-white text-center font-bold"

@@ -157,7 +157,7 @@ export default function AvatarCustomisationScreen() {
         </TouchableOpacity>
       </ImageBackground>
       
-          <Modal
+      <Modal
           visible={showPopup}
           transparent={true}
           animationType="none"
@@ -166,7 +166,11 @@ export default function AvatarCustomisationScreen() {
         <View 
         className="flex-1 bg-black/50"
         >
-          <AccessoryPopUp onContinue={() => setShowPopup(false)}/> 
+          <AccessoryPopUp 
+          success={true}
+          messageHeading={"Avatar Saved!"}
+          messageDescription={"Your chtaracter has been updated"}
+          onContinue={() => setShowPopup(false)}/> 
         </View>
       </Modal>
     </View>

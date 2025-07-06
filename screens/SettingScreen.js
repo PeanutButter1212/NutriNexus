@@ -36,7 +36,7 @@ export default function SettingScreen({ navigation }) {
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate("MainTabs")}
+        onPress={() => navigation.goBack()}
         className="items-center justify-center bg-red-500 w-3/4 rounded-xl mt-6
         py-3 mt-3"
       >

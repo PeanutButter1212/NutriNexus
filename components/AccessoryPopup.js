@@ -5,7 +5,7 @@ import pointLogo from '../assets/Points.png'
 import { Ionicons } from '@expo/vector-icons';
 import stripePattern from '../assets/backgrounds/AvatarPopup.png'
 import woodBackground from '../assets/backgrounds/shopBackground.png'
-export default function AccessoryPopUp({ onContinue }) {
+export default function AccessoryPopUp({ success, messageHeading, messageDescription, onContinue }) {
     return (
         <View
         className="flex-1 items-center justify-center"
@@ -45,8 +45,8 @@ export default function AccessoryPopUp({ onContinue }) {
           <View
           className="border-[#FFFFFF]/80 border-2 rounded-full"
           > 
-    
-        <LinearGradient
+        {success ?
+        (<LinearGradient
             colors={['#76F593', '#35D74F', '#1E9E3A']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
@@ -60,7 +60,22 @@ export default function AccessoryPopUp({ onContinue }) {
             }}
           >
           <Ionicons name="checkmark" size={32} color="black" />
-        </LinearGradient>
+        </LinearGradient>) : (<LinearGradient
+              colors={['#FF6B6B', '#FF4757', '#FF3742']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={{
+                width: 80,
+                height: 80,
+                borderRadius: 9999,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Ionicons name="close" size={36} color="white" />
+            </LinearGradient>)
+
+          }
     
           </View>
           
@@ -73,19 +88,20 @@ export default function AccessoryPopUp({ onContinue }) {
               padding: 15, 
               justifyContent: 'center',  // Centers vertically
               alignItems: 'center',   
-              borderRadius: 12
+              borderRadius: 12,
+              maxWidth: 250
             }}
           >
             <Text
-            className="text-orange-800 font-bold text-2xl"
+            className="text-orange-800 font-bold text-2xl text-center"
             > 
-              Avatar Saved!
+              {messageHeading}
             </Text>
     
             <Text
-            className="text-orange-900"
+            className="text-orange-900 text-center"
             >
-              Your character has been updated
+              {messageDescription}
             </Text>
             </LinearGradient>
     
