@@ -80,6 +80,7 @@ export default function Profile() {
     caloriesData,
     setTotalCalories,
     stepsData,
+    setCalorieGoal,
   } = useProfileData();
 
   const [referenceData, setReferenceData] = useState([]);
@@ -101,11 +102,17 @@ export default function Profile() {
 
   useEffect(() => {
     if (isFocused && userId) {
-      updateCaloriesConsumed(userId).then((newCalories) => {
-        setTotalCalories(newCalories); // your local hook
+      updateCaloriesConsumed(userId).then((profileRow) => {
+        console.log("profileRow:", profileRow); // sanity check
+        setTotalCalories(profileRow.calories_consumed);
+        setCalorieGoal(profileRow.calorie_goal);
       });
     }
   }, [isFocused, userId]);
+
+  //console.log("totalCalories:", totalCalories);
+  //console.log("calorieGoal:", calorieGoal);
+  //console.log("progressPercentage:", progressPercentage);
 
   const progressPercentage =
     calorieGoal > 0 ? Math.min((totalCalories / calorieGoal) * 100, 100) : 0;

@@ -106,10 +106,19 @@ export async function fetchVisited1(userId) {
 //retrieve weekly calorie data for bar graph
 
 export async function fetchWeeklyCalories(userId) {
+  const startOfWeek = new Date();
+  startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay() + 1); //this makes sure we get the monday of that week
+  startOfWeek.setHours(0, 0, 0, 0);
+
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6); //this makes sure is sunday of the current week
+  endOfWeek.setHours(23, 59, 59, 999);
   const { data, error } = await supabase
     .from("activity_log")
     .select("calories, date")
-    .eq("user_id", userId);
+    .eq("user_id", userId)
+    .gte("date", startOfWeek.toISOString().split("T")[0]) //set the range of dates to retrieve from
+    .lte("date", endOfWeek.toISOString().split("T")[0]);
 
   const dailyTotals = {
     MON: 0,
@@ -121,9 +130,12 @@ export async function fetchWeeklyCalories(userId) {
     SUN: 0,
   };
 
-  if (data.length === 0) {
-    return;
-  }
+  if (!data || data.length === 0) {
+    return Object.entries(dailyTotals).map(([day, value]) => ({
+      day,
+      value,
+    }));
+  } //return dates if nth
 
   data.forEach((entry) => {
     const date = new Date(entry.date);
@@ -186,7 +198,7 @@ export async function fetchWeeklySteps(userId) {
     .select("steps, date")
     .eq("user_id", userId)
     .gte("date", startOfWeek.toISOString().split("T")[0]) //set the range of dates to retrieve from
-    .lte("date", endOfWeek.toISOString.split("T"[0]));
+    .lte("date", endOfWeek.toISOString().split("T")[0]);
 
   const dailyTotals = {
     MON: 0,
@@ -198,9 +210,12 @@ export async function fetchWeeklySteps(userId) {
     SUN: 0,
   };
 
-  if (data.length === 0) {
-    return;
-  }
+  if (!data || data.length === 0) {
+    return Object.entries(dailyTotals).map(([day, value]) => ({
+      day,
+      value,
+    }));
+  } //return dates if nth
 
   data.forEach((entry) => {
     const date = new Date(entry.date);
@@ -275,14 +290,15 @@ export async function updateCaloriesConsumed(userId) {
       .update({ calories_consumed: totalCalories })
       .eq("id", userId);
 
-    if (updateError) {
-      console.log("Error updating calories:", updateError);
-      return;
-    }
+    const { data: profileRow, error: fetchError } = await supabase
+      .from("profile_page")
+      .select("calorie_goal, calories_consumed")
+      .eq("id", userId)
+      .single();
 
-    console.log("Updated calories_consumed in profiles:", totalCalories);
+    console.log("✅ Final profileRow:", profileRow);
 
-    return totalCalories;
+    return profileRow;
   } catch (err) {
     console.log("Unexpected error:", err);
   }

@@ -54,5 +54,6 @@ export default function useProfileData() {
     userDemographics,
     stepsData,
     setTotalCalories,
+    setCalorieGoal,
   };
 }
