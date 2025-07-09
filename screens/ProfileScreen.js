@@ -58,7 +58,7 @@ export default function Profile() {
   useFocusEffect(
     useCallback(() => {
       const loadData = async () => {
-        console.log("profile: " + profile)
+        console.log("profile upon load of screen: " + JSON.stringify(profile, null, 2))
         if (!session?.user?.id) return;
         const fresh = await fetchEquippedItems(session.user.id);
         setEquipped(fresh);
@@ -119,6 +119,10 @@ export default function Profile() {
   const y = d3.scaleLinear().domain(yDomain).range(yRange);
 
   const barWidth = 35;
+
+  const handleDebug = () => {
+    console.log(profile)
+  }
 
   return (
     <ScrollView className="flex-1 bg-white">
@@ -203,7 +207,10 @@ export default function Profile() {
               </View>
               <View>
                 <Text className="text-black text-3xl font-extrabold">
-                  {localPoints}
+                  {localPoints === undefined ? (profile 
+                  ? profile.points
+                  : 0)
+                  : localPoints}
                 </Text>
               </View>
             </View>

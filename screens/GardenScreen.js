@@ -653,8 +653,7 @@ const handleDragMove = ({ x, y }) => {
         <View>
           {renderShovel()}
         </View>
-
-        <TouchableOpacity
+{/**   <TouchableOpacity
         onPress={handleDebug}
         className="bg-red-200"
         >
@@ -663,8 +662,9 @@ const handleDragMove = ({ x, y }) => {
           </Text>
         </TouchableOpacity>
 
-        </ImageBackground>
-
+        
+*/}
+      </ImageBackground>
       
 
     </View>

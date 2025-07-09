@@ -19,6 +19,7 @@ import useProfileData from "../hooks/useProfileData";
 import { useNavigation } from "@react-navigation/native";
 import { updateProfileDetails } from "../services/profileService";
 import { fetchUserInfo } from "../services/profileService";
+import { calculateRecommendedCalories } from "../utils/calculateRecommendedCalories";
 export default function DetailScreen() {
   const navigation = useNavigation()
   const { session, profile } = useAuth();
@@ -26,45 +27,48 @@ export default function DetailScreen() {
   const [height, setHeight] = useState(150);
   const [age, setAge] = useState(70);
   const [calories, setCalories] = useState(70);
-  const [gender, setGender] = useState("male");
+  const [gender, setGender] = useState("Male");
+  const TABS = ["Male", "Female"]
 
   const { calorieGoal, userDemographics } = useProfileData() 
   
   useEffect(() => {
-    console.log("=== FORM UPDATE EFFECT ===");
-    console.log("userDemographics:", userDemographics);
-    console.log("calorieGoal:", calorieGoal);
     
     if (userDemographics && Object.keys(userDemographics).length > 0) {
-      console.log("=== UPDATING FORM VALUES ===");
       
       if (userDemographics.weight !== undefined) {
-        console.log("Setting weight:", userDemographics.weight);
         setWeight(userDemographics.weight);
       }
       
       if (userDemographics.height !== undefined) {
-        console.log("Setting height:", userDemographics.height);
         setHeight(userDemographics.height);
       }
       
       if (userDemographics.age !== undefined) {
-        console.log("Setting age:", userDemographics.age);
         setAge(userDemographics.age);
       }
       
       if (userDemographics.gender !== undefined) {
-        console.log("Setting gender:", userDemographics.gender);
         setGender(userDemographics.gender);
-      }
-    }
-  
-    if (calorieGoal !== undefined && calorieGoal !== null) {
-      console.log("Setting calories:", calorieGoal);
+      } 
+      
+      if (calorieGoal !== undefined && calorieGoal !== null) {
       setCalories(calorieGoal);
     }
+
+    }
   
-  }, [userDemographics, calorieGoal]); 
+  
+  }, [userDemographics]); 
+
+  useEffect(() => {
+    const calculatedCalories = calculateRecommendedCalories(weight, height, age, gender);
+    console.log("Weight: " + weight) 
+
+    console.log("Calculated Calories: " + calculatedCalories);
+    setCalories(calculatedCalories);
+  }, [weight, height, age, gender]);
+  
 
   const handleSubmit = async () => {
     if (!weight || !height || !age || !calories || !gender) {
@@ -75,7 +79,7 @@ export default function DetailScreen() {
     console.log("running profile details")
     console.log("Session: " + session)
     console.log("Profile: " + profile)
-    const success = await updateProfileDetails(session, profile, {
+    const success = await updateProfileDetails(session, {
       weight: parseInt(weight),
       height: parseInt(height),
       age: parseInt(age),
@@ -113,8 +117,8 @@ export default function DetailScreen() {
           <Slider
             value={weight}
             onValueChange={setWeight}
-            minimumValue={0.0}
-            maximumValue={200.0}
+            minimumValue={50.0}
+            maximumValue={250.0}
             step={1}
             minimumTrackTintColor="#10b981"
             maximumTrackTintColor="#4b5563"
@@ -129,8 +133,8 @@ export default function DetailScreen() {
               marginTop: 8,
             }}
           >
-            <Text className="text-sm  text-gray-500">0 kg</Text>
-            <Text className="text-sm text-gray-500">200 kg</Text>
+            <Text className="text-sm  text-gray-500">50 kg</Text>
+            <Text className="text-sm text-gray-500">250 kg</Text>
           </View>
         </View>
 
@@ -144,7 +148,7 @@ export default function DetailScreen() {
             value={height}
             onValueChange={setHeight}
             minimumValue={50}
-            maximumValue={200}
+            maximumValue={250}
             step={1}
             minimumTrackTintColor="#10b981"
             maximumTrackTintColor="#4b5563"
@@ -160,7 +164,7 @@ export default function DetailScreen() {
             }}
           >
             <Text className="text-sm  text-gray-500">50 cm</Text>
-            <Text className="text-sm text-gray-500">200 cm</Text>
+            <Text className="text-sm text-gray-500">250 cm</Text>
           </View>
         </View>
 
@@ -173,7 +177,7 @@ export default function DetailScreen() {
           <Slider
             value={age}
             onValueChange={setAge}
-            minimumValue={0}
+            minimumValue={18}
             maximumValue={100}
             step={1}
             minimumTrackTintColor="#10b981"
@@ -189,13 +193,53 @@ export default function DetailScreen() {
               marginTop: 8,
             }}
           >
-            <Text className="text-sm  text-gray-500">0</Text>
+            <Text className="text-sm  text-gray-500">18</Text>
             <Text className="text-sm text-gray-500">100</Text>
           </View>
         </View>
 
+        <View className="w-full">
+          <Text className="text-2xl font-semibold mb-4 text-black text-center pt-12">
+            Gender
+          </Text>
+
+          <View className="px-6 mt-4">
+                <View
+                className="bg-black flex-row rounded-lg overflow-hidden">
+                    {TABS.map((tab) => (
+                        <TouchableOpacity
+                        key={tab}
+                        className="flex-1 py-3"
+                        onPress={() => setGender(tab)}
+                        style={{
+                            backgroundColor: gender == tab ? "#419e34" : "transparent"
+                        }}
+                        > 
+                            <Text
+                            className="text-center text-white text-xl"
+                            style={{
+                                fontFamily: gender == tab ? 'Nunito-ExtraBold' : 'Nunito-Bold'
+                            }}
+                            > 
+                            {tab}
+                            </Text>
+
+                        </TouchableOpacity>
+                    ))
+                    
+                    }
+
+                </View>
+            </View>
+        </View>
+
+        <View
+        className="w-full bg-black h-px my-12"
+      />
+
+
         {/* Slider Calories*/}
-        <Text className="text-2xl font-semibold mb-4 text-black text-center pt-12">
+        <Text className="text-2xl font-semibold mb-4 text-black text-center">
           Calorie Goal: {calories} kcal
         </Text>
 
@@ -224,39 +268,7 @@ export default function DetailScreen() {
           </View>
         </View>
 
-        {/* Select Gender */}
-
-        <View className="w-full items-center mt-8">
-          <Text className="text-2xl font-semibold mb-4 text-black pt-12">
-            Gender
-          </Text>
-
-          <View style={{ flexDirection: "row", gap: 32, marginTop: 24 }}>
-            {/* Male Option */}
-            <TouchableOpacity
-              onPress={() => setGender("male")}
-              className={`px-6 py-3 rounded-xl border ${
-                gender === "male"
-                  ? "bg-white border-black"
-                  : "bg-white border-gray-300"
-              }`}
-            >
-              <Text className={`text-base font-medium text-black`}>Male</Text>
-            </TouchableOpacity>
-
-            {/* Female Option */}
-            <TouchableOpacity
-              onPress={() => setGender("female")}
-              className={`px-6 py-3 rounded-xl border ${
-                gender === "female"
-                  ? "bg-white border-black"
-                  : "bg-white border-gray-300"
-              }`}
-            >
-              <Text className={"text-base font-medium text-black"}>Female</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+     
 
         <TouchableOpacity
           onPress={handleSubmit}

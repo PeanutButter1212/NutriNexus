@@ -9,9 +9,9 @@ export const generateUniqueUsername = async (baseName) => {
         .from("profiles")
         .select("id")
         .eq("username", username)
-        .maybeSingle();
   
-      if (!data) break;
+      if (!data || data.length === 0) break;
+      
       username = `${baseName}${suffix++}`;
     }
   

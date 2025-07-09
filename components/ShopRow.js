@@ -8,7 +8,7 @@ const ShopRow = ({leftItem, rightItem, onGetPress}) => {
 
     const renderItemBox = (item) => (
      <View
-     className="bg-amber-900 mt-2 justify-center items-center border-[0.75vw] border-amber-500 p-4 rounded-2xl"
+     className="bg-amber-900 justify-center items-center border-[0.75vw] border-amber-500 p-4 rounded-2xl"
      style= {{
        width: outerBoxWidth,
        minHeight: outerBoxWidth,
@@ -73,13 +73,13 @@ const ShopRow = ({leftItem, rightItem, onGetPress}) => {
         )
     return (
         <View className="flex-row justify-between">
-            <View className="ml-5">
+            <View className="ml-3">
                 {renderItemBox(leftItem)}
             </View>
             
             {/* Right item with consistent spacing */}
             {rightItem && (
-                <View className="mr-5">
+                <View className="mr-3">
                     {renderItemBox(rightItem)}
                 </View>
             )}

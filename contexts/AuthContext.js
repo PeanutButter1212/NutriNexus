@@ -28,19 +28,14 @@ export const AuthProvider = ({ children }) => {
     console.log("Configuring Google Sign-In");
     GoogleSignin.configure({
       scopes: ["https://www.googleapis.com/auth/userinfo.email"],
-      webClientId:
-        "960982903167-8s5ucem4rqhƒqlbe68f1mml1ngf4b725h.apps.googleusercontent.com",
-      iosClientId:
-        "960982903167-krh2o19m7vtkcrsao5kspkor8qlfu9af.apps.googleusercontent.com",
-      offlineAccess: true,
-      behavior: "web",
+      iosClientId: "40873347659-vecf58o4qml6t89rirffpsitnvnddqru.apps.googleusercontent.com", 
     });
   
     const fetchProfile = async (userId) => {
       try {
         console.log("Fetching profile for userId:", userId);
         const { data: profileData, error } = await supabase
-          .from("profiles")
+          .from("profile_page")
           .select("*")
           .eq("id", userId)
           .single();
@@ -151,40 +146,170 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const verifyOtp = async (email, otp, navigation) => {
-    try {
-      console.log(email);
-      const { data, error } = await supabase.auth.verifyOtp({
-        email,
-        token: otp,
-        type: "email",
-      });
+  
+const verifyOtp = async (email, otp, navigation) => {
+  try {
+    console.log(email);
+    const { data, error } = await supabase.auth.verifyOtp({
+      email,
+      token: otp,
+      type: "email",
+    });
 
-      if (error) {
-        console.log(error);
-        throw new Error("OTP verification failed. Please try again.");
+    if (error) {
+      console.log(error);
+      throw new Error("OTP verification failed. Please try again.");
+    }
+
+    const session1 = data.session;
+    const userId = data?.user?.id;
+
+    let { data: profileData, error: profileError } = await supabase
+      .from("profile_page")
+      .select("*")
+      .eq("id", userId)
+      .maybeSingle();
+
+    if (profileError) throw profileError;
+
+    setSession(session1);
+
+    if (!profileData) {
+      // New user flow
+      const base = email.split("@")[0];
+      const username = await generateUniqueUsername(base);
+
+
+      const { error: insertError } = await supabase.from("profiles").upsert({
+        id: userId,
+        username: username,
+        email: email,
+        is_first_time: true,
+        height: 173,
+        weight: 70,
+        calories: 2200,
+        age: 36,
+        gender: "Male"
+      }, 
+      { onConflict: 'id' }
+    );
+
+      if (insertError) {
+        console.error("Profile insertion error:", insertError);
+        throw insertError;
       }
 
-      const session1 = data.session;
-      const userId = data?.user?.id;
+      console.log("attempting to insert items: ");
+      const inventorySuccess = await insertDefaultInventoryItems(userId);
+      if (!inventorySuccess) {
+        console.warn("Failed to insert default inventory items for new user.");
+      }
 
-      let { data: profileData, error: profileError } = await supabase
-        .from("profiles")
+
+
+      const { data: extendedProfileData, error: extendedProfileDataError } = await supabase
+      .from("profile_page")
+      .upsert({
+        id: userId,
+        username: username,
+        email: email,
+        height: 173,
+        weight: 70,
+        calorie_goal: 2200,
+        age: 36,
+        gender: "Male",
+        points: 1000
+      }, 
+      { onConflict: 'id' })
+
+      console.log("Insertion data:", JSON.stringify(extendedProfileData, null, 2));
+
+      if (extendedProfileDataError) {
+        throw extendedProfileDataError;
+      }
+
+      console.log("✅ Profile page data inserted successfully");
+
+      const { data: newProfileData, error: reloadError } = await supabase
+        .from("profile_page")
         .select("*")
         .eq("id", userId)
-        .maybeSingle();
+        .single();
+      
+      if (reloadError) throw reloadError;
+      
+      
+      setProfile(newProfileData);
+      setAuthMethod("email");
+      setIsAuthenticated(true);
+      setUser(newProfileData);
+      
 
-      if (profileError) throw profileError;
+      navigation.navigate("MainTabs");
+      
+    } else {
+    
+      setProfile(profileData);
+      setAuthMethod("email");
+      setIsAuthenticated(true);
+      setUser(profileData);
+      navigation.navigate("MainTabs");
+    }
+  } catch (err) {
+    console.error("verifyOtp error:", err);
+    throw err;
+  }
+};
 
-      setSession(session1)
 
-      if (!profileData) {
-        const base = email.split("@")[0];
-        const username = await generateUniqueUsername(base);
+const googleSignIn = async () => {
+  try {
+    if (Platform.OS === "android") {
+      await GoogleSignin.hasPlayServices();
+    }
 
-        console.log("username: " + username)
+    const userInfo = await GoogleSignin.signIn();
+    console.log("Full userInfo object:", JSON.stringify(userInfo, null, 2));
 
-        const { error: insertError } = await supabase.from("profiles").insert({
+    if (!userInfo.data?.idToken) {
+      throw new Error("No ID token returned by Google");
+    }
+
+    // Sign in to Supabase using the ID token
+    const { data, error } = await supabase.auth.signInWithIdToken({
+      provider: "google",
+      token: userInfo.data.idToken,
+    });
+
+    if (error) {
+      console.error("Supabase Sign-In Error:", error.message);
+      throw error;
+    }
+
+    const session1 = data.session;
+    const userId = data.user?.id;
+    const email = data.user?.email;
+
+    // Check if profile_page exists
+    let { data: profileData, error: profileError } = await supabase
+      .from("profile_page")
+      .select("*")
+      .eq("id", userId)
+      .maybeSingle();
+
+    if (profileError) throw profileError;
+
+    setSession(session1);
+
+    if (!profileData) {
+      // New Google user flow
+      const base = email.split("@")[0];
+      const username = await generateUniqueUsername(base);
+
+      // Insert into profiles table
+      const { error: insertError } = await supabase
+        .from("profiles")
+        .upsert({
           id: userId,
           username: username,
           email: email,
@@ -193,147 +318,73 @@ export const AuthProvider = ({ children }) => {
           weight: 70,
           calories: 2200,
           age: 36,
-          gender: "male"
-        });
+          gender: "Male"
+        }, { onConflict: 'id' });
 
-        if (insertError) {
-          console.error("Profile insertion error:", insertError);
-          throw insertError;
-        }
+      if (insertError) {
+        console.error("Profile insertion error:", insertError);
+        throw insertError;
+      }
 
-        console.log("attempting to insert items: ")
-        const inventorySuccess = await insertDefaultInventoryItems(userId);
-        if (!inventorySuccess) {
-          console.warn("Failed to insert default inventory items for new user.");
-        }
+      // Insert default inventory items
+      console.log("Inserting default inventory items for Google user");
+      const inventorySuccess = await insertDefaultInventoryItems(userId);
+      if (!inventorySuccess) {
+        console.warn("Failed to insert default inventory items for Google user.");
+      }
 
+      // Insert into profile_page table
+      const { error: profilePageInsertError } = await supabase
+        .from("profile_page")
+        .upsert({
+          id: userId,
+          username: username,
+          email: email,
+          height: 173,
+          weight: 70,
+          calorie_goal: 2200,
+          age: 36,
+          gender: "Male",
+          points: 1000,
+        }, { onConflict: 'id' });
 
-        const { data: profileReload2, error: reloadError2 } = await supabase
-        .from("profiles")
+      if (profilePageInsertError) {
+        console.error("Profile page insertion error:", profilePageInsertError);
+        throw profilePageInsertError;
+      }
+
+      console.log("✅ Google profile and profile_page inserted successfully");
+
+      // Fetch inserted profile data
+      const { data: newProfileData, error: reloadError } = await supabase
+        .from("profile_page")
         .select("*")
         .eq("id", userId)
         .single();
-        if (reloadError2) throw reloadError2;
 
-        setProfile(profileReload2)
-    
-    
-        const success = await updateProfileDetails(session, profile, {
-          weight: parseInt(weight),
-          height: parseInt(height),
-          age: parseInt(gender),
-          calories: parseInt(calories),
-          gender, 
-        });
+      if (reloadError) throw reloadError;
 
-        if (success) {
-          navigation.navigate("MainTabs");
-        } else {
-          Alert.alert("Error", "error lol")
-        }
-      }
+  
+      setProfile(newProfileData);
+      setAuthMethod("google");
+      setIsAuthenticated(true);
+      setUser(newProfileData);
+    } else {
+    
       setProfile(profileData);
-      setAuthMethod("email");
+      setAuthMethod("google");
       setIsAuthenticated(true);
       setUser(profileData);
-    } catch (err) {
-      throw err;
+      navigation.navigate("MainTabs");
     }
-  };
 
-  const googleSignIn = async (navigation) => {
-    try {
-      console.log("Google SIgn In");
-      try {
-        const userInfo = await GoogleSignin.signIn();
-        console.log(userInfo);
-      } catch (error) {
-        console.log(JSON.stringify(error, null, 2)); // show full error details
-      }
-
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      console.log("console info: " + JSON.stringify(userInfo, null, 2));
-
-      if (userInfo.data.idToken) {
-        const { data, error } = await supabase.auth.signInWithIdToken({
-          provider: "google",
-          token: userInfo.data.idToken,
-        });
-
-        if (error) {
-          throw error;
-        }
-
-        const session = data.session;
-        const userId = data.user?.id;
-        const email = data.user?.email;
-
-        const { data: profileData, error: profileError } = await supabase
-          .from("profiles")
-          .select("id")
-          .eq("id", userId)
-          .maybeSingle();
-
-        console.log("verifyOtp data:", JSON.stringify(data, null, 2));
-        console.log("verifyOtp error:", error);
-        console.log("userId:", userId);
-
-        if (profileError) {
-          const username = email ? email.split("@")[0] : "Anonymous";
-
-          const { error: insertError } = await supabase
-            .from("profiles")
-            .insert({
-              id: userId,
-              username: username,
-              email: email,
-              is_first_time: true,
-              height: 173,
-              weight: 70,
-              calories: 2200,
-              age: 36,
-              gender: "male"
-            });
-
-          if (insertError) {
-            throw insertError;
-          }
-        }
-
-        const { data: profileData2, error: profileError2 } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", userId)
-          .single();
-
-        const profile = profileData2;
-
-        if (profile.is_first_time) {
-          setSession(session);
-          setProfile(profile);
-          setAuthMethod(authMethod);
-          navigation.reset({
-            index: 0,
-            routes: [{ name: "Detail" }],
-          });
-        } else {
-          setSession(session);
-          setProfile(profile);
-          setAuthMethod("email");
-          navigation.reset({
-            index: 0,
-            routes: [{ name: "MainTabs" }],
-          });
-        }
-        return data.user;
-      } else {
-        throw new Error("No ID token returned by Google");
-      }
-    } catch (error) {
-      throw error;
-    }
-  };
+    Alert.alert("Success", "You are now signed in with Google");
+    return data.user;
+  } catch (error) {
+    console.error("Google Sign-In Error:", error.message);
+    Alert.alert("Error", error.message || "An unknown error occurred");
+  }
+};
 
   const logout = async (authMethod, navigation) => {
     try {
