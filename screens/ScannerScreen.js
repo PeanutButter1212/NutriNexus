@@ -38,6 +38,7 @@ export default function ScannerScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const userId = session?.user?.id;
 
   //load suggestions
   useEffect(() => {
@@ -265,7 +266,10 @@ export default function ScannerScreen({ navigation }) {
               <View className="items-center">
                 <TouchableOpacity
                   className="w-32 bg-green-600 rounded-xl py-4 items-center"
-                  onPress={handleSubmit}
+                  onPress={() => {
+                    handleSubmit();
+                    //updateCaloriesConsumed(userId);
+                  }}
                 >
                   <Text className="text-white text-base font-semibold">
                     Submit

@@ -43,6 +43,7 @@ export async function insertFoodEntry({ userId, food, calories }) {
   ]);
   return { error };
 }
+
 export async function fetchCaloriesByFood(food) {
   const { data, error } = await supabase
     .from("food")
