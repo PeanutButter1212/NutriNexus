@@ -20,23 +20,14 @@ export default function MapScreen() {
 
   //const [loc1InRadius, setLoc1InRadius] = useState(false);
 
-  const { visited } = useProfileData();
+  const { visited, setVisited } = useProfileData();
 
   const { coords, loading } = useCoordsdata();
 
   const { session } = useAuth();
   const userId = session?.user?.id;
-  /*useEffect(() => {
-    if (location && !loc1Coords) {
-      setLoc1Coords({
-        latitude: location.latitude + 0.00002,
-        longitude: location.longitude + 0.00002,
-      });
-    }
-  }, [location]); */
 
   //camera tracking
-  //console.log(location);
 
   React.useEffect(() => {
     if (mapRef.current) {
@@ -51,15 +42,6 @@ export default function MapScreen() {
       );
     }
   }, [location]);
-
-  /*useEffect(() => {
-    if (!location) return;
-
-    const distanceToLoc1 = haversineDistance(location,loc1Coords);
-
-    setLoc1InRadius(distanceToLoc1 < 50); // 50 meters radius
-  }, [location]);
-  */
 
   if (!location) {
     return (
@@ -135,7 +117,9 @@ export default function MapScreen() {
                 }}
                 onPress={() => {
                   if (inRadius) {
-                    handleFirstVisit(userId, locationrow.id);
+                    handleFirstVisit(userId, locationrow.id).then(() => {
+                      setVisited((prev) => [...prev, locationrow.id]);
+                    });
                     navigation.navigate("Location Details", { locationrow });
                   } else {
                     Alert.alert("Too far please move closer to interact");

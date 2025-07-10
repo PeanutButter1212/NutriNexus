@@ -262,7 +262,7 @@ export default function LocationScreen({ route }) {
 
           <TouchableOpacity
             className="flex-row items-center justify-center rounded-xl mt-6 py-3"
-            onPress={handleFirstVisit}
+            onPress={() => navigation.goBack()}
           >
             <Text className="text-black text-lg font-bold mb-16">Back</Text>
           </TouchableOpacity>

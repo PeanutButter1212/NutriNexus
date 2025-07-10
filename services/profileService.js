@@ -120,6 +120,12 @@ export async function handleFirstVisit(userId, placeId) {
   const currentVisited = data?.visited || [];
   const currentPoints = data?.points || 0;
 
+  const alreadyVisited = currentVisited.includes(placeId);
+
+  if (alreadyVisited) {
+    return;
+  }
+
   //add to the array once we visit new loc
   const updatedVisited = currentVisited.includes(placeId)
     ? currentVisited
