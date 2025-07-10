@@ -128,14 +128,30 @@ export async function handleFirstVisit(userId, placeId) {
   const { error: updateError } = await supabase
     .from("profile_page")
     .update({
-      points: points + 200,
+      points: currentPoints + 200,
       visited: updatedVisited,
     })
     .eq("id", userId);
 
-  if (updatePointsError) {
-    console.error("Failed to update points or visited1:", updatePointsError);
+  if (updateError) {
+    console.error("Failed to update points or visited1:", updateError);
     return;
+  }
+
+  const { data: insertData, error: insertError } = await supabase
+    .from("user_stall_visits")
+    .insert([
+      {
+        user_id: userId,
+        centre_id: placeId,
+        stall_ids: [],
+      },
+    ]);
+
+  if (insertError) {
+    console.error("Insert failed:", insertError);
+  } else {
+    console.log("Inserted row:", insertData);
   }
 }
 
