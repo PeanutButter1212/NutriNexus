@@ -26,15 +26,15 @@ import useProfileData from "../hooks/useProfileData";
 import handleCheckboxes from "../services/profileService";
 import { retrieveCoords } from "../services/hawkerService";
 import { handleFirstVisit } from "../services/profileService";
-
+import handleCheckboxes from "../services/stallVisitedServiceService";
 //to center the horizontal scroll
 const screenWidth = Dimensions.get("window").width;
 const cardWidth = 256;
 const margin = 12;
 const totalAlign = cardWidth - (screenWidth - cardWidth) / 2 - margin;
 
-export default function LocationScreen() {
-  const { centre } = route.params; 
+export default function LocationScreen({ route }) {
+  const { locationrow } = route.params;
   const { visited1, points } = useProfileData();
   const { session } = useAuth();
   const userId = session?.user?.id;
@@ -43,16 +43,23 @@ export default function LocationScreen() {
   const [selectedStall, setSelectedStall] = useState(null);
   const [claimedStalls, setClaimedStalls] = useState({});
   const [showPopup, setShowPopup] = useState(false);
-  const [stalls, setStalls] = useState([])
+  const [stalls, setStalls] = useState([]);
 
   //checks which alr claimed so cannot claim again
   useEffect(() => {
-    const claimed = checkBoxes.reduce((acc, key) => {
-      acc[key] = true;
-      return acc;
-    }, {});
-    setClaimedStalls(claimed);
-  }, [checkBoxes]);
+    const fetchVisited = async () => {
+      const visitedStalls = await fetchVisitedStalls(userId, centreId);
+      console.log("Visited stalls: ", visitedStalls);
+
+      const claimed = {};
+      visited.forEach(stallId => claimed[stallId] = true);
+      setClaimedStalls(claimed);
+    
+    };
+  
+    fetchVisited();
+  
+  }, [userId, locationrow]);
 
   //save this to database?
   /*
@@ -94,42 +101,42 @@ export default function LocationScreen() {
       pic: fishBallNoodlesImg,
     },
   ];
-  */ 
+  */
 
   useEffect(() => {
     const fetchStalls = async () => {
-
-      const {data, error} = await supabase
-      .from("hawker_stall")
-      .select("*")
-      .eq("location_id", centre.id)
+      const { data, error } = await supabase
+        .from("hawker_stall")
+        .select("*")
+        .eq("location_id", locationrow.id);
 
       if (error) {
-        console.error("Error retrieving hawker stalls from location's id: " + error) 
+        console.error(
+          "Error retrieving hawker stalls from location's id: " + error
+        );
       }
 
       if (!data) {
-        const {data: defaultStallsData, error: defaultStallsError } = await supabase
-        .from("hawker_stall")
-        .select("*")
-        .eq("location_id", "6aacf124-0e46-4966-ada0-f9aa028e8fc0")
-        setStalls(defaultStallsData)
+        const { data: defaultStallsData, error: defaultStallsError } =
+          await supabase
+            .from("hawker_stall")
+            .select("*")
+            .eq("location_id", "6aacf124-0e46-4966-ada0-f9aa028e8fc0");
+        setStalls(defaultStallsData);
 
         if (defaultStallsError) {
-          console.error("Error retrieving default stalls; " + defaultStallsError)
-          return
+          console.error(
+            "Error retrieving default stalls; " + defaultStallsError
+          );
+          return;
         }
         return;
       }
 
-
-
-      setStalls(data)
-
+      setStalls(data);
     };
-    fetchStalls()
-
-  }, [centre.id])
+    fetchStalls();
+  }, [locationrow.id]);
 
   console.log("MODAL STATE:", modalVisible);
   return (
@@ -156,13 +163,12 @@ export default function LocationScreen() {
                 )}
                 <TouchableOpacity
                   onPress={async () => {
-                    const key = selectedStall.name;
                     //console.log("Clicked checkbox for:", key);
-                    const result = await handleCheckboxes(userId, key);
+                    const result = await handleCheckboxes(userId, locationrow.id, selectedStall.id);
                     console.log("Result from handleCheckboxes:", result);
 
                     if (result?.success || result?.alreadyClaimed) {
-                      setClaimedStalls((prev) => ({ ...prev, [key]: true }));
+                      setClaimedStalls((prev) => ({ ...prev, [stallId]: true }));
 
                       if (result.success) {
                         setShowPopup(true);
@@ -205,28 +211,28 @@ export default function LocationScreen() {
       <ScrollView className="bg-[#f6fdf4]">
         <View className="items-center justify-start pt-16 px-6 space-y-10">
           <Text className="text-4xl font-extrabold text-green-800 mb-8">
-            {location.name}
+            {locationrow.name}
           </Text>
           <View className="bg-white p-4 rounded-2xl shadow-md w-full mb-8">
             <Text className="text-xl font-semibold text-green-700 mb-1">
               📍 Address
             </Text>
             <Text className="text-base text-grey-700">
-              {location.address}
+              {locationrow.address}
             </Text>
           </View>
-          {location.image_url ?  (
+          {locationrow.image_url ? (
             <Image
-            source={{ uri: centre.image_url }}
-            className="w-full h-64 rounded-2xl object-cover mb-8"
+              source={{ uri: locationrow.image_url }}
+              className="w-full h-64 rounded-2xl object-cover mb-8"
             />
           ) : (
             <Image
-            source={require("../assets/happyHawker.jpg")}
-            className="w-full h-64 rounded-2xl object-cover mb-8"
-          />
+              source={require("../assets/happyHawker.jpg")}
+              className="w-full h-64 rounded-2xl object-cover mb-8"
+            />
           )}
-        
+
           <Text className="text-xl font-bold mb-2 text-green-800">
             Food Options:
           </Text>

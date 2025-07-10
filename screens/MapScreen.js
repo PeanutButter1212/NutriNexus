@@ -6,6 +6,8 @@ import haversineDistance from "haversine-distance";
 import { useNavigation } from "@react-navigation/native";
 import useProfileData from "../hooks/useProfileData";
 import useCoordsdata from "../hooks/useCoords";
+import { handleFirstVisit } from "../services/profileService";
+import { useAuth } from "../contexts/AuthContext";
 
 //to expand more markers i can create an array for markers and usestate to see which is selected then display that instead of creating multiple
 
@@ -22,6 +24,8 @@ export default function MapScreen() {
 
   const { coords, loading } = useCoordsdata();
 
+  const { session } = useAuth();
+  const userId = session?.user?.id;
   /*useEffect(() => {
     if (location && !loc1Coords) {
       setLoc1Coords({
@@ -32,6 +36,7 @@ export default function MapScreen() {
   }, [location]); */
 
   //camera tracking
+  //console.log(location);
 
   React.useEffect(() => {
     if (mapRef.current) {
@@ -104,33 +109,34 @@ export default function MapScreen() {
 
         {coords
           .filter(
-            (coord) =>
-              coord.latitude !== null &&
-              coord.latitude !== undefined &&
-              coord.longitude !== null &&
-              coord.longitude !== undefined
+            (locationrow) =>
+              locationrow.latitude !== null &&
+              locationrow.latitude !== undefined &&
+              locationrow.longitude !== null &&
+              locationrow.longitude !== undefined
           )
-          .map((coord, index) => {
+          .map((locationrow, index) => {
             //console.log("coord.id:", coord.id);
             //console.log("visited array:", visited);
-            const distanceToMarker = haversineDistance(location, {
-              latitude: coord.latitude,
-              longitude: coord.longitude,
+            const distanceToMarker = haversineDistance(locationrow, {
+              latitude: locationrow.latitude,
+              longitude: locationrow.longitude,
             });
 
             const inRadius = distanceToMarker < 50;
-            const isVisited = visited.includes(coord.id);
+            const isVisited = visited.includes(locationrow.id);
 
             return (
               <Marker
-                key={`${index}-${coord.latitude}-${coord.longitude}`} //need use key to force it cause rn it only changes when refreshed and make it unique also
+                key={`${index}-${locationrow.latitude}-${locationrow.longitude}`} //need use key to force it cause rn it only changes when refreshed and make it unique also
                 coordinate={{
-                  latitude: coord.latitude,
-                  longitude: coord.longitude,
+                  latitude: locationrow.latitude,
+                  longitude: locationrow.longitude,
                 }}
                 onPress={() => {
                   if (inRadius) {
-                    navigation.navigate("Location1");
+                    handleFirstVisit(userId, locationrow.id);
+                    navigation.navigate("Location Details", { locationrow });
                   } else {
                     Alert.alert("Too far please move closer to interact");
                   }
