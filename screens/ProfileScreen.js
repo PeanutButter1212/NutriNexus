@@ -17,7 +17,7 @@ import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { LinearGradient } from "expo-linear-gradient";
 import CircularProgress from "react-native-circular-progress-indicator";
-import { Canvas, Group } from "@shopify/react-native-skia";
+import { add, Canvas, Group } from "@shopify/react-native-skia";
 import * as d3 from "d3";
 import BarPath from "../components/BarPath";
 import XAxisText from "../components/XAxisText";
@@ -33,7 +33,7 @@ import { fetchPoints } from "../services/profileService";
 import stoneImage from "../assets/stone_texture.png";
 import { updateCaloriesConsumed } from "../services/profileService";
 import { useIsFocused } from "@react-navigation/native";
-import useStepsData from "../hooks/useActivityData";
+import { addGoalPoints } from "../services/profileService";
 
 export default function Profile() {
   const navigation = useNavigation();
@@ -116,6 +116,10 @@ export default function Profile() {
 
   const progressPercentage =
     calorieGoal > 0 ? Math.min((totalCalories / calorieGoal) * 100, 100) : 0;
+
+  if (progressPercentage < 100) {
+    addGoalPoints(userId);
+  }
 
   const canvasWidth = width;
   const canvasHeight = 350;

@@ -600,3 +600,21 @@ export async function fetchAccessoryInventory(userId) {
     };
   }
 }
+
+export async function addGoalPoints(userId) {
+  const { data, error } = await supabase
+    .from("profile_page")
+    .select("points")
+    .eq("id", userId)
+    .single();
+
+  const currentPoints = data.points;
+  const updatedPoints = currentPoints + 200;
+
+  const { error: updateError } = await supabase
+    .from("profile_page")
+    .update({
+      points: updatedPoints,
+    })
+    .eq("id", userId);
+}
