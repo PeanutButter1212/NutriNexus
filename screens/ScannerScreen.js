@@ -27,6 +27,7 @@ import {
   insertFoodEntry,
   fetchFoodSuggestions,
 } from "../services/scannerService";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function ScannerScreen({ navigation }) {
   const [facing, setFacing] = useState("back");
@@ -39,6 +40,7 @@ export default function ScannerScreen({ navigation }) {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const userId = session?.user?.id;
+  const isFocused = useIsFocused(); //to make camera remount when come back to screen
 
   //load suggestions
   useEffect(() => {
@@ -166,7 +168,9 @@ export default function ScannerScreen({ navigation }) {
               }}
             >
               {/* Camera */}
-              <CameraView style={{ flex: 1 }} type={facing} ref={cameraRef} />
+              {isFocused && (
+                <CameraView style={{ flex: 1 }} type={facing} ref={cameraRef} />
+              )}
 
               {/* Overlay button */}
               <View className="absolute top-4 right-4 z-10">
