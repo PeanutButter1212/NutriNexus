@@ -32,6 +32,7 @@ export default function MapScreen() {
   }, [location]); */
 
   //camera tracking
+  console.log(location);
 
   React.useEffect(() => {
     if (mapRef.current) {
