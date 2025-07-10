@@ -18,6 +18,10 @@ import useLayoutData from '../hooks/useLayoutData';
 import ShovelComponent from '../components/ShovelComponent';
 import DraggableShovel from '../components/DraggableShovel';
 import { useFocusEffect } from '@react-navigation/native';
+import { Platform } from 'react-native';
+
+
+
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height; 

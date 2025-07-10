@@ -8,7 +8,7 @@ import SettingScreen from "../screens/SettingScreen";
 import ActivityLogScreen from "../screens/ActivityLogScreen";
 import AvatarCustomisationScreen from "../screens/AvatarCustomisationScreen";
 import OTPScreen from "../screens/OTPScreen";
-import Location1Screen from "../screens/Location1Screen";
+import LocationDetailsScreen from "../screens/LocationDetailsScreen";
 import ShopScreen from "../screens/ShopScreen";
 const Stack = createNativeStackNavigator();
 
@@ -43,8 +43,8 @@ export default function RootStack() {
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="Location1"
-            component={Location1Screen}
+            name="Location Details"
+            component={LocationDetailsScreen}
             options={{ headerShown: false }}
           />
           <Stack.Screen
