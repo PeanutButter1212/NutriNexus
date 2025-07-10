@@ -26,7 +26,7 @@ import useProfileData from "../hooks/useProfileData";
 import handleCheckboxes from "../services/profileService";
 import { retrieveCoords } from "../services/hawkerService";
 import { handleFirstVisit } from "../services/profileService";
-
+import handleCheckboxes from "../services/stallVisitedServiceService";
 //to center the horizontal scroll
 const screenWidth = Dimensions.get("window").width;
 const cardWidth = 256;
@@ -35,7 +35,7 @@ const totalAlign = cardWidth - (screenWidth - cardWidth) / 2 - margin;
 
 export default function LocationScreen({ route }) {
   const { locationrow } = route.params;
-  const { visited1, points, checkBoxes } = useProfileData();
+  const { visited1, points } = useProfileData();
   const { session } = useAuth();
   const userId = session?.user?.id;
   const navigation = useNavigation();
@@ -47,12 +47,19 @@ export default function LocationScreen({ route }) {
 
   //checks which alr claimed so cannot claim again
   useEffect(() => {
-    const claimed = checkBoxes.reduce((acc, key) => {
-      acc[key] = true;
-      return acc;
-    }, {});
-    setClaimedStalls(claimed);
-  }, [checkBoxes]);
+    const fetchVisited = async () => {
+      const visitedStalls = await fetchVisitedStalls(userId, centreId);
+      console.log("Visited stalls: ", visitedStalls);
+
+      const claimed = {};
+      visited.forEach(stallId => claimed[stallId] = true);
+      setClaimedStalls(claimed);
+    
+    };
+  
+    fetchVisited();
+  
+  }, [userId, locationrow]);
 
   //save this to database?
   /*
@@ -156,13 +163,12 @@ export default function LocationScreen({ route }) {
                 )}
                 <TouchableOpacity
                   onPress={async () => {
-                    const key = selectedStall.name;
                     //console.log("Clicked checkbox for:", key);
-                    const result = await handleCheckboxes(userId, key);
+                    const result = await handleCheckboxes(userId, locationrow.id, selectedStall.id);
                     console.log("Result from handleCheckboxes:", result);
 
                     if (result?.success || result?.alreadyClaimed) {
-                      setClaimedStalls((prev) => ({ ...prev, [key]: true }));
+                      setClaimedStalls((prev) => ({ ...prev, [stallId]: true }));
 
                       if (result.success) {
                         setShowPopup(true);
