@@ -2,7 +2,7 @@
 import { supabase } from "../lib/supabase";
 
 //retrieve profile details
-export async function updateProfileDetails(session, profile, details) {
+export async function updateProfileDetails(session, details) {
   const userId = session?.user?.id;
   try {
     const { weight, height, age, calories, gender } = details;
@@ -13,7 +13,7 @@ export async function updateProfileDetails(session, profile, details) {
       height: height,
       age: age,
       calories: calories,
-      gender: gender,
+      gender: gender
     };
 
     const { error: profileError } = await supabase
@@ -27,7 +27,7 @@ export async function updateProfileDetails(session, profile, details) {
       height: height,
       age: age,
       calories: calories,
-      gender: gender,
+      gender: gender
     };
 
     const { error: profilePageError } = await supabase
@@ -63,7 +63,9 @@ export async function fetchProfileCalories(userId) {
     .from("profile_page")
     .select("calories_consumed, calorie_goal")
     .eq("id", userId)
-    .single();
+    .maybeSingle()
+    
+
 
   console.log(data);
 
@@ -135,7 +137,8 @@ export async function fetchWeeklyCalories(userId) {
       day,
       value,
     }));
-  } //return dates if nth
+
+  } 
 
   data.forEach((entry) => {
     const date = new Date(entry.date);

@@ -117,9 +117,15 @@ export default function ShopScreen({navigation}) {
 
           const isLeftOwned = isAccessoryOwned(leftItemInfo);
           const isRightOwned = rightItemInfo ? isAccessoryOwned(rightItemInfo) : false;
-    
+
+          const isFirstRow = i === 0;
 
           columns.push(
+            <View
+            style={{
+                marginTop: isFirstRow ? 0 : 10
+              }}
+            > 
             <ShopRow
               key={`row-${leftItemInfo.id}-${rightItemInfo?.id || 'empty'}`} 
               onGetPress={handleGet}
@@ -153,6 +159,7 @@ export default function ShopScreen({navigation}) {
                   : undefined
               }
             />
+            </View> 
           );
       
       };
@@ -261,14 +268,17 @@ export default function ShopScreen({navigation}) {
 
             <View
             className="h-[512px] border-2 mx-[22px]" 
+            style={{ overflow: 'hidden' }}
             >
                 <ImageBackground
                 source={woodenSquare}
                 resizeMode='stretch'
-                className="flex-1 p-6"
+                className="flex-1 p-[28px]"
                 >
-                <ScrollView
-                > 
+                 <ScrollView
+                    style={{ flex: 1 }}
+                    showsVerticalScrollIndicator={false}
+                    > 
                     {renderShopItemRows()}
                 </ScrollView>
 
