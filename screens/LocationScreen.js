@@ -25,6 +25,7 @@ import fishNoodlesImg from "../assets/FishNoodle_Stall.jpg";
 import useProfileData from "../hooks/useProfileData";
 import handleCheckboxes from "../services/profileService";
 import { retrieveCoords } from "../services/hawkerService";
+import { handleFirstVisit } from "../services/profileService";
 
 //to center the horizontal scroll
 const screenWidth = Dimensions.get("window").width;
@@ -34,7 +35,7 @@ const totalAlign = cardWidth - (screenWidth - cardWidth) / 2 - margin;
 
 export default function LocationScreen() {
   const { centre } = route.params; 
-  const { visited1, points, checkBoxes } = useProfileData();
+  const { visited1, points } = useProfileData();
   const { session } = useAuth();
   const userId = session?.user?.id;
   const navigation = useNavigation();

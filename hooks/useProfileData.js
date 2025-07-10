@@ -27,7 +27,6 @@ export default function useProfileData() {
       const profileInfo = await fetchProfileCalories(userId);
       const weeklyCalories = await fetchWeeklyCalories(userId);
       const userPoints = await fetchPoints(userId);
-      const claimed = await fetchClaimedCheckboxes(userId);
       const userInfo = await fetchUserInfo(userId);
       const weeklySteps = await fetchWeeklySteps(userId);
       const visitedList = await fetchVisited(userId);
@@ -50,7 +49,6 @@ export default function useProfileData() {
     caloriesData,
     points,
     visited,
-    checkBoxes,
     userDemographics,
     stepsData,
     setTotalCalories,
