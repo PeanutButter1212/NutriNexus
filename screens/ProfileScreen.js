@@ -17,7 +17,7 @@ import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { LinearGradient } from "expo-linear-gradient";
 import CircularProgress from "react-native-circular-progress-indicator";
-import { Canvas, Group } from "@shopify/react-native-skia";
+import { add, Canvas, Group } from "@shopify/react-native-skia";
 import * as d3 from "d3";
 import BarPath from "../components/BarPath";
 import XAxisText from "../components/XAxisText";
@@ -31,18 +31,21 @@ import avatarImage from "../assets/MaleCharacter.png";
 import { fetchEquippedItems } from "../services/avatarService";
 import { fetchPoints } from "../services/profileService";
 import stoneImage from "../assets/stone_texture.png";
+import { updateCaloriesConsumed } from "../services/profileService";
+import { useIsFocused } from "@react-navigation/native";
+import { addGoalPoints } from "../services/profileService";
 
 export default function Profile() {
   const navigation = useNavigation();
   const { session, profile, authMethod, logout } = useAuth();
 
+  const userId = session?.user?.id;
+
   const SCREEN_HEIGHT = Dimensions.get("window").height;
 
   const { distance } = useDistance();
 
-  const [localPoints, setLocalPoints] = useState(0)
-
-  
+  const [localPoints, setLocalPoints] = useState(0);
 
   const handleLogout = () => {
     logout(authMethod, navigation);
@@ -58,7 +61,6 @@ export default function Profile() {
   useFocusEffect(
     useCallback(() => {
       const loadData = async () => {
-        console.log("profile upon load of screen: " + JSON.stringify(profile, null, 2))
         if (!session?.user?.id) return;
         const fresh = await fetchEquippedItems(session.user.id);
         setEquipped(fresh);
@@ -71,34 +73,52 @@ export default function Profile() {
     }, [session?.user?.id])
   );
 
-  const { totalCalories, calorieGoal, caloriesData} = useProfileData();
-
+  const {
+    totalCalories,
+    calorieGoal,
+    caloriesData,
+    setTotalCalories,
+    stepsData,
+    setCalorieGoal,
+  } = useProfileData();
 
   const [referenceData, setReferenceData] = useState([]);
   const [selectedDataType, setSelectedDataType] = useState("Steps");
 
   const { width } = useWindowDimensions();
 
-  const weeklyStepsData = [
-    { day: "MON", value: 3000 },
-    { day: "TUES", value: 5500 },
-    { day: "WED", value: 10000 },
-    { day: "THURS", value: 8000 },
-    { day: "FRI", value: 9000 },
-    { day: "SAT", value: 4000 },
-    { day: "SUN", value: 3500 },
-  ];
-
   useEffect(() => {
     if (selectedDataType === "Steps") {
-      setReferenceData(weeklyStepsData);
+      setReferenceData(stepsData);
     } else if (selectedDataType === "Calories") {
       setReferenceData(caloriesData);
     }
   }, [selectedDataType, caloriesData]);
 
+  //fetch calories daily which refreshes whenever enter page
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused && userId) {
+      updateCaloriesConsumed(userId).then((profileRow) => {
+        console.log("profileRow:", profileRow); // sanity check
+        setTotalCalories(profileRow.calories_consumed);
+        setCalorieGoal(profileRow.calorie_goal);
+      });
+    }
+  }, [isFocused, userId]);
+
+  //console.log("totalCalories:", totalCalories);
+  //console.log("calorieGoal:", calorieGoal);
+  //console.log("progressPercentage:", progressPercentage);
+
   const progressPercentage =
     calorieGoal > 0 ? Math.min((totalCalories / calorieGoal) * 100, 100) : 0;
+
+  if (progressPercentage < 100) {
+    addGoalPoints(userId);
+  }
 
   const canvasWidth = width;
   const canvasHeight = 350;

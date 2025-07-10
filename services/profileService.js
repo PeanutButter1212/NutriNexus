@@ -37,11 +37,10 @@ export async function updateProfileDetails(session, details) {
 
     return true;
   } catch (err) {
-    console.log(err.message)
+    console.log(err.message);
     return false;
   }
 }
-
 
 export async function fetchUserInfo(userId) {
   const { data, error } = await supabase
@@ -50,12 +49,10 @@ export async function fetchUserInfo(userId) {
     .eq("id", userId)
     .single();
 
-  
   if (error) {
     console.error("fetchUserInfo error", error);
     throw error;
   }
-
 
   return data;
 }
@@ -68,13 +65,14 @@ export async function fetchProfileCalories(userId) {
     .eq("id", userId)
     .maybeSingle()
     
-    console.log(data)
 
-    if (error) {
-      console.error("fetchProfileCalories error", error);
-      throw error;
-    }
-  
+
+  console.log(data);
+
+  if (error) {
+    console.error("fetchProfileCalories error", error);
+    throw error;
+  }
 
   return data;
 }
@@ -110,12 +108,19 @@ export async function fetchVisited1(userId) {
 //retrieve weekly calorie data for bar graph
 
 export async function fetchWeeklyCalories(userId) {
+  const startOfWeek = new Date();
+  startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay() + 1); //this makes sure we get the monday of that week
+  startOfWeek.setHours(0, 0, 0, 0);
+
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6); //this makes sure is sunday of the current week
+  endOfWeek.setHours(23, 59, 59, 999);
   const { data, error } = await supabase
     .from("activity_log")
     .select("calories, date")
-    .eq("user_id", userId);
-
-
+    .eq("user_id", userId)
+    .gte("date", startOfWeek.toISOString().split("T")[0]) //set the range of dates to retrieve from
+    .lte("date", endOfWeek.toISOString().split("T")[0]);
 
   const dailyTotals = {
     MON: 0,
@@ -132,7 +137,8 @@ export async function fetchWeeklyCalories(userId) {
       day,
       value,
     }));
-  }
+
+  } 
 
   data.forEach((entry) => {
     const date = new Date(entry.date);
@@ -179,35 +185,123 @@ export async function fetchWeeklyCalories(userId) {
   return output;
 }
 
+//retrieve weekly step data for bar graph
 
+export async function fetchWeeklySteps(userId) {
+  const startOfWeek = new Date();
+  startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay() + 1); //this makes sure we get the monday of that week
+  startOfWeek.setHours(0, 0, 0, 0);
+
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6); //this makes sure is sunday of the current week
+  endOfWeek.setHours(23, 59, 59, 999);
+
+  const { data, error } = await supabase
+    .from("step_log")
+    .select("steps, date")
+    .eq("user_id", userId)
+    .gte("date", startOfWeek.toISOString().split("T")[0]) //set the range of dates to retrieve from
+    .lte("date", endOfWeek.toISOString().split("T")[0]);
+
+  const dailyTotals = {
+    MON: 0,
+    TUES: 0,
+    WED: 0,
+    THURS: 0,
+    FRI: 0,
+    SAT: 0,
+    SUN: 0,
+  };
+
+  if (!data || data.length === 0) {
+    return Object.entries(dailyTotals).map(([day, value]) => ({
+      day,
+      value,
+    }));
+  } //return dates if nth
+
+  data.forEach((entry) => {
+    const date = new Date(entry.date);
+    const dayOfTheWeek = date
+      .toLocaleDateString("en-US", { weekday: "short" })
+      .toUpperCase();
+
+    let key;
+    switch (dayOfTheWeek) {
+      case "MON":
+        key = "MON";
+        break;
+      case "TUE":
+        key = "TUES";
+        break;
+      case "WED":
+        key = "WED";
+        break;
+      case "THU":
+        key = "THURS";
+        break;
+      case "FRI":
+        key = "FRI";
+        break;
+      case "SAT":
+        key = "SAT";
+        break;
+      case "SUN":
+        key = "SUN";
+        break;
+      default:
+        break;
+    }
+    if (key) {
+      dailyTotals[key] += entry.steps;
+    }
+  });
+
+  const output = Object.entries(dailyTotals).map(([day, value]) => ({
+    day,
+    value,
+  }));
+
+  return output;
+}
 //update calories when scanned and submitted
 export async function updateCaloriesConsumed(userId) {
   try {
     const { data, error } = await supabase
       .from("activity_log")
       .select("calories")
-      .eq("user_id", userId);
+      .eq("user_id", userId)
+      .eq("date", new Date().toISOString().split("T")[0]); //this is yyyy-mm-dd format same as our table
 
     if (error) {
       console.log("Error fetching entries:", error);
       return;
     }
 
-    const totalCalories = data.reduce((sum, entry) => sum + entry.calories, 0);
+    let totalCalories = data.reduce((sum, entry) => sum + entry.calories, 0);
+
+    //reset daily to 0 if no entries yet
+    if (!totalCalories) {
+      totalCalories = 0;
+    }
+
+    console.log("Today’s date:", new Date().toISOString().split("T")[0]);
+    console.log("Queried entries:", data);
 
     const { error: updateError } = await supabase
       .from("profile_page")
       .update({ calories_consumed: totalCalories })
       .eq("id", userId);
 
-    if (updateError) {
-      console.log("Error updating calories:", updateError);
-      return;
-    }
+    const { data: profileRow, error: fetchError } = await supabase
+      .from("profile_page")
+      .select("calorie_goal, calories_consumed")
+      .eq("id", userId)
+      .single();
 
-    console.log("Updated calories_consumed in profiles:", totalCalories);
+    console.log("✅ Final profileRow:", profileRow);
 
-    return totalCalories;
+    return profileRow;
   } catch (err) {
     console.log("Unexpected error:", err);
   }
@@ -284,16 +378,18 @@ export default async function handleCheckboxes(userId, checkBoxKey) {
   return { success: true };
 }
 
-
 export async function insertDefaultInventoryItems(userId) {
   const { data: itemDetails, error: itemError } = await supabase
     .from("item")
     .select("id, name")
-    .in("id", ["bff1403f-7c39-4d09-ac07-4cc7b51019fe", "87c30106-bb4c-4796-a61a-6a1fd31be753"]);
+    .in("id", [
+      "bff1403f-7c39-4d09-ac07-4cc7b51019fe",
+      "87c30106-bb4c-4796-a61a-6a1fd31be753",
+    ]);
 
   const defaultDecorItemIds = [
-    "bff1403f-7c39-4d09-ac07-4cc7b51019fe", 
-    "87c30106-bb4c-4796-a61a-6a1fd31be753", 
+    "bff1403f-7c39-4d09-ac07-4cc7b51019fe",
+    "87c30106-bb4c-4796-a61a-6a1fd31be753",
   ];
 
   const decorInventoryEntries = defaultDecorItemIds.map((itemId) => ({
@@ -302,7 +398,7 @@ export async function insertDefaultInventoryItems(userId) {
     count: 5,
   }));
 
-  console.log("mapped decor inventory entries")
+  console.log("mapped decor inventory entries");
 
   const { data, error } = await supabase
     .from("inventory")
@@ -317,15 +413,15 @@ export async function insertDefaultInventoryItems(userId) {
     "514422f1-b31d-41e9-b114-8d5e6cd719e9",
     "8e519ad9-fffc-475e-8e91-f4f347dc62c5",
     "bb3e0eb1-e03b-4d7f-8f24-c28dbb1e0a48",
-    "8f0ad901-0c1c-4bbb-81e9-a9a87bc84b02"
-  ]
+    "8f0ad901-0c1c-4bbb-81e9-a9a87bc84b02",
+  ];
 
-  console.log("mapped accessory stuff")
+  console.log("mapped accessory stuff");
 
   const { data: itemInfoDetail, error: itemInfoError } = await supabase
-  .from("item")
-  .select("id, name, slot, image_url, position")
-  .in("id", defaultAccessoryItemIds);
+    .from("item")
+    .select("id, name, slot, image_url, position")
+    .in("id", defaultAccessoryItemIds);
 
   if (itemInfoError) {
     console.error("Error fetching item details:", itemError);
@@ -336,10 +432,18 @@ export async function insertDefaultInventoryItems(userId) {
 
     if (item.position) {
       positionPct = {
-        topPct: typeof item.position.top === "number" ? item.position.top / 384 : 0,
-        leftPct: typeof item.position.left === "number" ? item.position.left / 224 : 0,
-        widthPct: typeof item.position.width === "number" ? item.position.width / 224 : 0,
-        heightPct: typeof item.position.height === "number" ? item.position.height / 384 : 0,
+        topPct:
+          typeof item.position.top === "number" ? item.position.top / 384 : 0,
+        leftPct:
+          typeof item.position.left === "number" ? item.position.left / 224 : 0,
+        widthPct:
+          typeof item.position.width === "number"
+            ? item.position.width / 224
+            : 0,
+        heightPct:
+          typeof item.position.height === "number"
+            ? item.position.height / 384
+            : 0,
       };
     }
 
@@ -353,142 +457,167 @@ export async function insertDefaultInventoryItems(userId) {
     };
   });
 
-
-  const { data: accessoryDataInsertion, error: accessoryDataInsertionError } = await supabase
-    .from("accessory_inventory")
-    .insert(accessoryInventoryEntries);
+  const { data: accessoryDataInsertion, error: accessoryDataInsertionError } =
+    await supabase
+      .from("accessory_inventory")
+      .insert(accessoryInventoryEntries);
 
   if (accessoryDataInsertionError) {
-    console.error("Error inserting default accessory inventory items: " + accessoryDataInsertionError.message)
+    console.error(
+      "Error inserting default accessory inventory items: " +
+        accessoryDataInsertionError.message
+    );
   }
   return true;
 }
 
 export async function addToAccessoryInventory(userId, itemId) {
-
-
   const { data: itemInfoDetail, error: itemInfoError } = await supabase
-  .from("item")
-  .select("id, name, slot, image_url, position")
-  .eq("id", itemId)
-  .single() 
+    .from("item")
+    .select("id, name, slot, image_url, position")
+    .eq("id", itemId)
+    .single();
 
-  let positionPct = null 
+  let positionPct = null;
 
   if (itemInfoDetail.position) {
     positionPct = {
-      topPct: typeof itemInfoDetail.position.top === "number" ? itemInfoDetail.position.top / 384 : 0,
-      leftPct: typeof itemInfoDetail.position.left === "number" ? itemInfoDetail.position.left / 224 : 0,
-      widthPct: typeof itemInfoDetail.position.width === "number" ? itemInfoDetail.position.width / 224 : 0,
-      heightPct: typeof itemInfoDetail.position.height === "number" ? itemInfoDetail.position.height / 384 : 0,
+      topPct:
+        typeof itemInfoDetail.position.top === "number"
+          ? itemInfoDetail.position.top / 384
+          : 0,
+      leftPct:
+        typeof itemInfoDetail.position.left === "number"
+          ? itemInfoDetail.position.left / 224
+          : 0,
+      widthPct:
+        typeof itemInfoDetail.position.width === "number"
+          ? itemInfoDetail.position.width / 224
+          : 0,
+      heightPct:
+        typeof itemInfoDetail.position.height === "number"
+          ? itemInfoDetail.position.height / 384
+          : 0,
     };
   }
 
   const { data: insertData, error: insertError } = await supabase
-  .from("accessory_inventory")
-  .insert({
-    user_id: userId,
-    item_id: itemInfoDetail.id,
-    item_name: itemInfoDetail.name,
-    slot: itemInfoDetail.slot,
-    image_url: itemInfoDetail.image_url,
-    position: positionPct,
-  })
-  
+    .from("accessory_inventory")
+    .insert({
+      user_id: userId,
+      item_id: itemInfoDetail.id,
+      item_name: itemInfoDetail.name,
+      slot: itemInfoDetail.slot,
+      image_url: itemInfoDetail.image_url,
+      position: positionPct,
+    });
+
   if (insertError) {
-    console.error("Error inserting into accessory_inventory:", insertError.message);
+    console.error(
+      "Error inserting into accessory_inventory:",
+      insertError.message
+    );
     throw insertError;
   }
 
-  return insertData; 
-
-
-
-
-
-
+  return insertData;
 }
 
 export async function deductUserPoints(userId, pointsToBeDeducted) {
-
-  const { data: getProfilePoints, error: getProfilePointsError } = await supabase
-  .from("profile_page")
-  .select('points')
-  .eq('id', userId)
-  .single()
+  const { data: getProfilePoints, error: getProfilePointsError } =
+    await supabase
+      .from("profile_page")
+      .select("points")
+      .eq("id", userId)
+      .single();
 
   if (getProfilePointsError) {
     return { success: false, error: getProfilePointsError };
   }
 
-  const userPointAmount =  getProfilePoints.points 
-
-
+  const userPointAmount = getProfilePoints.points;
 
   const { error: updateError } = await supabase
-  .from("profile_page")
-  .update({
-    points: userPointAmount - pointsToBeDeducted
-  })
-  .eq("id", userId)
+    .from("profile_page")
+    .update({
+      points: userPointAmount - pointsToBeDeducted,
+    })
+    .eq("id", userId);
 
   if (updateError) {
-    return { success: false, error: updateError }
+    return { success: false, error: updateError };
   }
 
   return { success: true };
 }
 
-export async function checkUserHasAccessory(userId, itemId){
+export async function checkUserHasAccessory(userId, itemId) {
   const { data: checkItemData, error: checkItemDataError } = await supabase
-  .from("accessory_inventory")
-  .select("user_id, item_id")
-  .eq("user_id", userId)
-  .eq("item_id", itemId)
-
+    .from("accessory_inventory")
+    .select("user_id, item_id")
+    .eq("user_id", userId)
+    .eq("item_id", itemId);
 
   if (checkItemDataError) {
-    return { success: false, error: checkItemDataError}
-  } 
-
-  if (!checkItemData || checkItemData.length === 0) {
-    return { success: true, hasAccessory: false }
-  } else {
-    return { success: true, hasAccessory: true }
+    return { success: false, error: checkItemDataError };
   }
 
+  if (!checkItemData || checkItemData.length === 0) {
+    return { success: true, hasAccessory: false };
+  } else {
+    return { success: true, hasAccessory: true };
+  }
 }
 
 export async function fetchAccessoryInventory(userId) {
   try {
-      const { data, error } = await supabase
+    const { data, error } = await supabase
       .from("accessory_inventory")
       .select("item_id")
-      .eq("user_id", userId)
+      .eq("user_id", userId);
 
-      if (error) {
-          console.log(error.message)
-          return {
-              success: false,
-              error: error,
-              accessories: []
-          }
-      }
-
-      console.log("data from fetchinvrntory from fetchaccessoryinventory: " + JSON.stringify(data, null, 2))
-
+    if (error) {
+      console.log(error.message);
       return {
-          success: true,
-          accessories: data || []
-      }
+        success: false,
+        error: error,
+        accessories: [],
+      };
+    }
 
+    console.log(
+      "data from fetchinvrntory from fetchaccessoryinventory: " +
+        JSON.stringify(data, null, 2)
+    );
+
+    return {
+      success: true,
+      accessories: data || [],
+    };
   } catch (error) {
-      console.log(error.message)
-      return {
-          success: false,
-          error: error,
-          accessories: []  
-      }
+    console.log(error.message);
+    return {
+      success: false,
+      error: error,
+      accessories: [],
+    };
   }
+}
 
+export async function addGoalPoints(userId) {
+  const { data, error } = await supabase
+    .from("profile_page")
+    .select("points")
+    .eq("id", userId)
+    .single();
+
+  const currentPoints = data.points;
+  const updatedPoints = currentPoints + 200;
+
+  const { error: updateError } = await supabase
+    .from("profile_page")
+    .update({
+      points: updatedPoints,
+    })
+    .eq("id", userId);
 }

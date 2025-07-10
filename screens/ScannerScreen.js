@@ -27,6 +27,7 @@ import {
   insertFoodEntry,
   fetchFoodSuggestions,
 } from "../services/scannerService";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function ScannerScreen({ navigation }) {
   const [facing, setFacing] = useState("back");
@@ -38,6 +39,8 @@ export default function ScannerScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const userId = session?.user?.id;
+  const isFocused = useIsFocused(); //to make camera remount when come back to screen
 
   //load suggestions
   useEffect(() => {
@@ -104,6 +107,7 @@ export default function ScannerScreen({ navigation }) {
       console.error(err.message);
     } finally {
       setLoading(false);
+      await cameraRef.current.resumePreview(); //reset camera to prevent black screen
     }
   };
 
@@ -164,7 +168,9 @@ export default function ScannerScreen({ navigation }) {
               }}
             >
               {/* Camera */}
-              <CameraView style={{ flex: 1 }} type={facing} ref={cameraRef} />
+              {isFocused && (
+                <CameraView style={{ flex: 1 }} type={facing} ref={cameraRef} />
+              )}
 
               {/* Overlay button */}
               <View className="absolute top-4 right-4 z-10">
@@ -265,7 +271,10 @@ export default function ScannerScreen({ navigation }) {
               <View className="items-center">
                 <TouchableOpacity
                   className="w-32 bg-green-600 rounded-xl py-4 items-center"
-                  onPress={handleSubmit}
+                  onPress={() => {
+                    handleSubmit();
+                    //updateCaloriesConsumed(userId);
+                  }}
                 >
                   <Text className="text-white text-base font-semibold">
                     Submit
