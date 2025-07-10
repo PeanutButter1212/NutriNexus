@@ -31,7 +31,7 @@ const cardWidth = 256;
 const margin = 12;
 const totalAlign = cardWidth - (screenWidth - cardWidth) / 2 - margin;
 
-export default function LocationDetailsScreen() {
+export default function LocationScreen() {
   const { centre } = route.params; 
   const { visited1, points, checkBoxes } = useProfileData();
   const { session } = useAuth();
