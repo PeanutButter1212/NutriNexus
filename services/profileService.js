@@ -13,7 +13,7 @@ export async function updateProfileDetails(session, details) {
       height: height,
       age: age,
       calories: calories,
-      gender: gender
+      gender: gender,
     };
 
     const { error: profileError } = await supabase
@@ -27,7 +27,7 @@ export async function updateProfileDetails(session, details) {
       height: height,
       age: age,
       calories: calories,
-      gender: gender
+      gender: gender,
     };
 
     const { error: profilePageError } = await supabase
@@ -63,9 +63,7 @@ export async function fetchProfileCalories(userId) {
     .from("profile_page")
     .select("calories_consumed, calorie_goal")
     .eq("id", userId)
-    .maybeSingle()
-    
-
+    .maybeSingle();
 
   console.log(data);
 
@@ -94,15 +92,51 @@ export async function fetchPoints(userId) {
 
 //retrieve info to check if visited location marker
 
-export async function fetchVisited1(userId) {
+export async function fetchVisited(userId) {
   console.log("userId passed to fetchPoints:", userId);
   const { data, error } = await supabase
     .from("profile_page")
-    .select("visited1")
+    .select("visited")
     .eq("id", userId)
     .single();
 
-  return data?.visited1;
+  if (error) {
+    console.error(error);
+    return [];
+  }
+
+  return data;
+}
+
+//add to array if already visited
+
+export async function handleFirstVisit(userId, placeId) {
+  const { data, error } = await supabase
+    .from("profile_page")
+    .select("visited, points")
+    .eq("id", userId)
+    .single();
+
+  const currentVisited = data?.visited || [];
+  const currentPoints = data?.points || 0;
+
+  //add to the array once we visit new loc
+  const updatedVisited = currentVisited.includes(placeId)
+    ? currentVisited
+    : [...currentVisited, placeId];
+
+  const { error: updateError } = await supabase
+    .from("profile_page")
+    .update({
+      points: points + 200,
+      visited: updatedVisited,
+    })
+    .eq("id", userId);
+
+  if (updatePointsError) {
+    console.error("Failed to update points or visited1:", updatePointsError);
+    return;
+  }
 }
 
 //retrieve weekly calorie data for bar graph
@@ -137,8 +171,7 @@ export async function fetchWeeklyCalories(userId) {
       day,
       value,
     }));
-
-  } 
+  }
 
   data.forEach((entry) => {
     const date = new Date(entry.date);

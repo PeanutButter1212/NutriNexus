@@ -24,6 +24,7 @@ import fishBallNoodlesImg from "../assets/FishBallNoodle_Stall.jpg";
 import fishNoodlesImg from "../assets/FishNoodle_Stall.jpg";
 import useProfileData from "../hooks/useProfileData";
 import handleCheckboxes from "../services/profileService";
+import { retrieveCoords } from "../services/hawkerService";
 
 //to center the horizontal scroll
 const screenWidth = Dimensions.get("window").width;
@@ -90,26 +91,6 @@ export default function Location1Screen() {
     },
   ];
 
-  const handleFirstVisit = async () => {
-    if (!visited1) {
-      const { error: updatePointsError } = await supabase
-        .from("profile_page")
-        .update({
-          points: points + 200,
-          visited1: true,
-        })
-        .eq("id", userId);
-
-      if (updatePointsError) {
-        console.error(
-          "Failed to update points or visited1:",
-          updatePointsError
-        );
-        return;
-      }
-    }
-    navigation.goBack();
-  };
   console.log("MODAL STATE:", modalVisible);
   return (
     <>
