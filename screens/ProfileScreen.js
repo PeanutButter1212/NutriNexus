@@ -116,9 +116,9 @@ export default function Profile() {
   const progressPercentage =
     calorieGoal > 0 ? Math.min((totalCalories / calorieGoal) * 100, 100) : 0;
 
-  if (progressPercentage < 100) {
+  /*if (progressPercentage < 100) {
     addGoalPoints(userId);
-  }
+  }*/
 
   const canvasWidth = width;
   const canvasHeight = 350;
@@ -141,8 +141,8 @@ export default function Profile() {
   const barWidth = 35;
 
   const handleDebug = () => {
-    console.log(profile)
-  }
+    console.log(profile);
+  };
 
   return (
     <ScrollView className="flex-1 bg-white">
@@ -227,10 +227,11 @@ export default function Profile() {
               </View>
               <View>
                 <Text className="text-black text-3xl font-extrabold">
-                  {localPoints === undefined ? (profile 
-                  ? profile.points
-                  : 0)
-                  : localPoints}
+                  {localPoints === undefined
+                    ? profile
+                      ? profile.points
+                      : 0
+                    : localPoints}
                 </Text>
               </View>
             </View>
