@@ -18,7 +18,6 @@ import { useAuth } from "../contexts/AuthContext";
 import useProfileData from "../hooks/useProfileData"; 
 import { useNavigation } from "@react-navigation/native";
 import { updateProfileDetails } from "../services/profileService";
-import { fetchUserInfo } from "../services/profileService";
 import { calculateRecommendedCalories } from "../utils/calculateRecommendedCalories";
 export default function DetailScreen() {
   const navigation = useNavigation()
@@ -29,10 +28,16 @@ export default function DetailScreen() {
   const [calories, setCalories] = useState(70);
   const [gender, setGender] = useState("Male");
   const TABS = ["Male", "Female"]
+  const [demographicAdjusted, setDemographicAdjusted] = useState(false);
+
 
   const { calorieGoal, userDemographics } = useProfileData() 
   
   useEffect(() => {
+
+    console.log("user demographics: " + JSON.stringify(userDemographics, null, 2))
+    console.log("calorie goal: " + calorieGoal)
+    
     
     if (userDemographics && Object.keys(userDemographics).length > 0) {
       
@@ -62,11 +67,11 @@ export default function DetailScreen() {
   }, [userDemographics]); 
 
   useEffect(() => {
-    const calculatedCalories = calculateRecommendedCalories(weight, height, age, gender);
-    console.log("Weight: " + weight) 
-
-    console.log("Calculated Calories: " + calculatedCalories);
-    setCalories(calculatedCalories);
+    if (demographicAdjusted) {
+      const calculatedCalories = calculateRecommendedCalories(weight, height, age, gender);
+      console.log("Calculated Calories: " + calculatedCalories);
+      setCalories(calculatedCalories);
+    }
   }, [weight, height, age, gender]);
   
 
@@ -116,7 +121,10 @@ export default function DetailScreen() {
         <View className="self-stretch px-6 mt-4">
           <Slider
             value={weight}
-            onValueChange={setWeight}
+            onValueChange={(value) => {
+              setWeight(value);
+              setDemographicAdjusted(true); 
+            }}
             minimumValue={50.0}
             maximumValue={250.0}
             step={1}
@@ -146,7 +154,10 @@ export default function DetailScreen() {
         <View className="self-stretch px-6 mt-4">
           <Slider
             value={height}
-            onValueChange={setHeight}
+            onValueChange={(value) => {
+              setHeight(value);
+              setDemographicAdjusted(true); 
+            }}
             minimumValue={50}
             maximumValue={250}
             step={1}
@@ -176,7 +187,10 @@ export default function DetailScreen() {
         <View className="self-stretch px-6 mt-4">
           <Slider
             value={age}
-            onValueChange={setAge}
+            onValueChange={(value) => {
+              setAge(value);
+              setDemographicAdjusted(true); 
+            }}
             minimumValue={18}
             maximumValue={100}
             step={1}
@@ -278,6 +292,15 @@ export default function DetailScreen() {
             Submit
           </Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        className="items-center justify-center bg-red-500 w-full rounded-xl mt-6
+        py-3 mt-3"
+      >
+        <Text className="text-white text-base font-medium">Back</Text>
+      </TouchableOpacity>
+
       </View>
     </ScrollView>
   );

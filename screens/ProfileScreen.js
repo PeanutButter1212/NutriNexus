@@ -29,7 +29,7 @@ import { useDistance } from "../contexts/DistanceTrackingContext";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import avatarImage from "../assets/MaleCharacter.png";
 import { fetchEquippedItems } from "../services/avatarService";
-import { fetchPoints } from "../services/profileService";
+import { fetchPoints, fetchUsername } from "../services/profileService";
 import stoneImage from "../assets/stone_texture.png";
 import { updateCaloriesConsumed } from "../services/profileService";
 import { useIsFocused } from "@react-navigation/native";
@@ -46,6 +46,8 @@ export default function Profile() {
   const { distance } = useDistance();
 
   const [localPoints, setLocalPoints] = useState(0);
+
+  const [username, setUsername] = useState("User")
 
   const handleLogout = () => {
     logout(authMethod, navigation);
@@ -67,6 +69,9 @@ export default function Profile() {
 
         const userPoints = await fetchPoints(session.user.id);
         setLocalPoints(userPoints);
+
+        const username = await fetchUsername(session.user.id)
+        setUsername(username)
       };
 
       loadData();
@@ -169,7 +174,7 @@ export default function Profile() {
         </TouchableOpacity>
 
         <Text className="text-3xl font-bold text-white text-center mt-12 mb-4">
-          Welcome Back, {profile ? profile.username : "User"}!
+          Welcome Back, {username}!
         </Text>
 
         <View className="flex-1 justify-center items-center mb-16">
@@ -298,7 +303,7 @@ export default function Profile() {
               shadowOpacity: 0.25,
               shadowRadius: 3.84,
               elevation: 5,
-              paddingHorizontal: 35,
+              paddingHorizontal: 28,
             }}
           >
             <TouchableOpacity

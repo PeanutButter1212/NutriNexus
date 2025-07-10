@@ -5,12 +5,21 @@ export const generateUniqueUsername = async (baseName) => {
     let suffix = 1;
   
     while (true) {
+      console.log("now checking: " + username)
       const { data, error } = await supabase
-        .from("profiles")
-        .select("id")
+        .from("username")
+        .select("username")
         .eq("username", username)
+        .maybeSingle()
+
+      if (error) {
+        console.error("Error checking username:", error);
+        throw error; 
+      }
   
-      if (!data || data.length === 0) break;
+      if (!data || data.length === 0) 
+        {break
+        };
       
       username = `${baseName}${suffix++}`;
     }

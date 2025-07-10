@@ -23,10 +23,9 @@ import roastedDelightImg from "../assets/Chicken_Rice_Stall.jpg";
 import fishBallNoodlesImg from "../assets/FishBallNoodle_Stall.jpg";
 import fishNoodlesImg from "../assets/FishNoodle_Stall.jpg";
 import useProfileData from "../hooks/useProfileData";
-import handleCheckboxes from "../services/profileService";
 import { retrieveCoords } from "../services/hawkerService";
 import { handleFirstVisit } from "../services/profileService";
-import handleCheckboxes from "../services/stallVisitedServiceService";
+import handleCheckboxes from "../services/stallVisitedService";
 //to center the horizontal scroll
 const screenWidth = Dimensions.get("window").width;
 const cardWidth = 256;

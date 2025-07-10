@@ -6,7 +6,7 @@ import requests
 dataset_id = "d_4a086da0a5553be1d89383cd90d07ecd"
 url = "https://api-open.data.gov.sg/v1/public/api/datasets/" + dataset_id + "/poll-download"
         
-print("🔄 Fetching download URL...")
+print("Fetching download URL...")
 response = requests.get(url)
 json_data = response.json()
 if json_data['code'] != 0:

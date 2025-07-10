@@ -9,6 +9,7 @@ import ActivityLogScreen from "../screens/ActivityLogScreen";
 import AvatarCustomisationScreen from "../screens/AvatarCustomisationScreen";
 import LocationScreen from "../screens/LocationScreen";
 import ShopScreen from "../screens/ShopScreen";
+import UsernameScreen from "../screens/UsernameScreen"
 const Stack = createNativeStackNavigator();
 
 export default function RootStack() {
@@ -50,9 +51,7 @@ export default function RootStack() {
             name="Setting"
             component={SettingScreen}
             options={{
-              headerShown: true,
-              title: "Settings",
-              headerBackTitle: "Back",
+              headerShown: false
             }}
           />
           <Stack.Screen
@@ -62,6 +61,13 @@ export default function RootStack() {
               headerShown: false,
               title: "Shop",
               headerBackTitle: "Back",
+            }}
+          />
+           <Stack.Screen
+            name="Username Settings"
+            component={UsernameScreen}
+            options={{
+              headerShown: false
             }}
           />
         </>

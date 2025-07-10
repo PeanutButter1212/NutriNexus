@@ -199,6 +199,18 @@ const verifyOtp = async (email, otp, navigation) => {
         throw insertError;
       }
 
+      const { error: usernameInsertError } = await supabase
+      .from("username") 
+      .insert({
+        username: username,
+        user_id: userId
+      });
+
+    if (usernameInsertError) {
+      console.error("Username table insertion error:", usernameInsertError);
+      throw usernameInsertError;
+    }
+
       console.log("attempting to insert items: ");
       const inventorySuccess = await insertDefaultInventoryItems(userId);
       if (!inventorySuccess) {
