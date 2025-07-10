@@ -105,6 +105,7 @@ export default function ScannerScreen({ navigation }) {
       console.error(err.message);
     } finally {
       setLoading(false);
+      await cameraRef.current.resumePreview(); //reset camera to prevent black screen
     }
   };
 
