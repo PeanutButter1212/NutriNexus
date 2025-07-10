@@ -31,7 +31,8 @@ const cardWidth = 256;
 const margin = 12;
 const totalAlign = cardWidth - (screenWidth - cardWidth) / 2 - margin;
 
-export default function Location1Screen() {
+export default function LocationDetailsScreen() {
+  const { centre } = route.params; 
   const { visited1, points, checkBoxes } = useProfileData();
   const { session } = useAuth();
   const userId = session?.user?.id;
@@ -40,6 +41,7 @@ export default function Location1Screen() {
   const [selectedStall, setSelectedStall] = useState(null);
   const [claimedStalls, setClaimedStalls] = useState({});
   const [showPopup, setShowPopup] = useState(false);
+  const [stalls, setStalls] = useState([])
 
   //checks which alr claimed so cannot claim again
   useEffect(() => {
@@ -51,6 +53,7 @@ export default function Location1Screen() {
   }, [checkBoxes]);
 
   //save this to database?
+  /*
   const stalls = [
     {
       name: "Roasted Delights",
@@ -89,6 +92,42 @@ export default function Location1Screen() {
       pic: fishBallNoodlesImg,
     },
   ];
+  */ 
+
+  useEffect(() => {
+    const fetchStalls = async () => {
+
+      const {data, error} = await supabase
+      .from("hawker_stall")
+      .select("*")
+      .eq("location_id", centre.id)
+
+      if (error) {
+        console.error("Error retrieving hawker stalls from location's id: " + error) 
+      }
+
+      if (!data) {
+        const {data: defaultStallsData, error: defaultStallsError } = await supabase
+        .from("hawker_stall")
+        .select("*")
+        .eq("location_id", "6aacf124-0e46-4966-ada0-f9aa028e8fc0")
+        setStalls(defaultStallsData)
+
+        if (defaultStallsError) {
+          console.error("Error retrieving default stalls; " + defaultStallsError)
+          return
+        }
+        return;
+      }
+
+
+
+      setStalls(data)
+
+    };
+    fetchStalls()
+
+  }, [centre.id])
 
   const handleFirstVisit = async () => {
     if (!visited1) {
@@ -184,20 +223,28 @@ export default function Location1Screen() {
       <ScrollView className="bg-[#f6fdf4]">
         <View className="items-center justify-start pt-16 px-6 space-y-10">
           <Text className="text-4xl font-extrabold text-green-800 mb-8">
-            Happy Hawker
+            {location.name}
           </Text>
           <View className="bg-white p-4 rounded-2xl shadow-md w-full mb-8">
             <Text className="text-xl font-semibold text-green-700 mb-1">
               📍 Address
             </Text>
             <Text className="text-base text-grey-700">
-              632 Bukit Batok Central, Singapore 650632
+              {location.address}
             </Text>
           </View>
-          <Image
+          {location.image_url ?  (
+            <Image
+            source={{ uri: centre.image_url }}
+            className="w-full h-64 rounded-2xl object-cover mb-8"
+            />
+          ) : (
+            <Image
             source={require("../assets/happyHawker.jpg")}
             className="w-full h-64 rounded-2xl object-cover mb-8"
           />
+          )}
+        
           <Text className="text-xl font-bold mb-2 text-green-800">
             Food Options:
           </Text>
