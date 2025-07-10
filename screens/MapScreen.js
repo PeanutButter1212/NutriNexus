@@ -4,8 +4,8 @@ import MapView, { Marker, Circle } from "react-native-maps";
 import { useDistance } from "../contexts/DistanceTrackingContext";
 import haversineDistance from "haversine-distance";
 import { useNavigation } from "@react-navigation/native";
-
 import useProfileData from "../hooks/useProfileData";
+import useCoordsdata from "../hooks/useCoords";
 
 //to expand more markers i can create an array for markers and usestate to see which is selected then display that instead of creating multiple
 
@@ -16,21 +16,20 @@ export default function MapScreen() {
 
   const navigation = useNavigation();
 
-  const [loc1InRadius, setLoc1InRadius] = useState(false);
+  //const [loc1InRadius, setLoc1InRadius] = useState(false);
 
-  const { visited1 } = useProfileData();
+  const { visited } = useProfileData();
 
-  //to load the marker next to user so all users can test it out
-  const [loc1Coords, setLoc1Coords] = useState(null);
+  const { coords, loading } = useCoordsdata();
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (location && !loc1Coords) {
       setLoc1Coords({
         latitude: location.latitude + 0.00002,
         longitude: location.longitude + 0.00002,
       });
     }
-  }, [location]);
+  }, [location]); */
 
   //camera tracking
 
@@ -48,21 +47,24 @@ export default function MapScreen() {
     }
   }, [location]);
 
-  useEffect(() => {
-    if (!location || !loc1Coords) return;
+  /*useEffect(() => {
+    if (!location) return;
 
-    const distanceToLoc1 = haversineDistance(location, loc1Coords);
+    const distanceToLoc1 = haversineDistance(location,loc1Coords);
 
     setLoc1InRadius(distanceToLoc1 < 50); // 50 meters radius
   }, [location]);
+  */
 
-  if (!location || !loc1Coords) {
+  if (!location) {
     return (
       <View className="flex-1 justify-center items-center">
         <Text>Getting location please wait...</Text>
       </View>
     );
   }
+
+  //console.log("Supabase coords:", coords);
 
   //check for location 1
 
@@ -79,6 +81,7 @@ export default function MapScreen() {
           Distance Travelled: {distance.toFixed(2)}
         </Text>
       </View>
+
       <MapView
         ref={mapRef}
         style={{ flex: 1 }} //bruh need use default styling
@@ -98,31 +101,57 @@ export default function MapScreen() {
           strokeColor="rgba(0,0,255,0.5)"
           fillColor="rgba(0,0,255,0.2)"
         />
-        {/*location 1*/}
 
-        <Marker
-          key={visited1 ? "visited" : loc1InRadius ? "nearby" : "far"} //need use key to force it cause rn it only changes when refreshed
-          coordinate={loc1Coords}
-          onPress={() => {
-            if (loc1InRadius) {
-              navigation.navigate("Location1");
-            } else {
-              Alert.alert("Too far please move closer to interact");
-            }
-          }}
-        >
-          <Image
-            source={
-              visited1 == true
-                ? require("../assets/GreyHawkerIcon.png")
-                : loc1InRadius
-                ? require("../assets/GreenHawkerIcon.png")
-                : require("../assets/RedHawkerIcon.png")
-            }
-            style={{ width: 40, height: 40 }}
-            resizeMode="contain"
-          />
-        </Marker>
+        {coords
+          .filter(
+            (coord) =>
+              coord.latitude !== null &&
+              coord.latitude !== undefined &&
+              coord.longitude !== null &&
+              coord.longitude !== undefined
+          )
+          .map((coord, index) => {
+            //console.log("coord.id:", coord.id);
+            //console.log("visited array:", visited);
+            const distanceToMarker = haversineDistance(location, {
+              latitude: coord.latitude,
+              longitude: coord.longitude,
+            });
+
+            const inRadius = distanceToMarker < 50;
+            const isVisited = visited.includes(coord.id);
+
+            return (
+              <Marker
+                key={`${index}-${coord.latitude}-${coord.longitude}`} //need use key to force it cause rn it only changes when refreshed and make it unique also
+                coordinate={{
+                  latitude: coord.latitude,
+                  longitude: coord.longitude,
+                }}
+                onPress={() => {
+                  if (inRadius) {
+                    navigation.navigate("Location1");
+                  } else {
+                    Alert.alert("Too far please move closer to interact");
+                  }
+                }}
+              >
+                {
+                  <Image
+                    source={
+                      isVisited
+                        ? require("../assets/GreyHawkerIcon.png")
+                        : inRadius
+                        ? require("../assets/GreenHawkerIcon.png")
+                        : require("../assets/RedHawkerIcon.png")
+                    }
+                    style={{ width: 40, height: 40 }}
+                    resizeMode="contain"
+                  />
+                }
+              </Marker>
+            );
+          })}
       </MapView>
     </View>
   );

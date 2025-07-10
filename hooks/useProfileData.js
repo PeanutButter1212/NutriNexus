@@ -17,29 +17,29 @@ export default function useProfileData() {
   const [caloriesData, setCaloriesData] = useState([]);
   const [stepsData, setStepData] = useState([]);
   const [points, setPoints] = useState(0);
-  const [visited1, setVisited] = useState(false);
   const [checkBoxes, setCheckBoxes] = useState([]);
   const [userDemographics, setUserDemographics] = useState({});
   const userId = session?.user?.id;
+  const [visited, setVisited] = useState([]);
 
   useEffect(() => {
     const fetchProfileData = async () => {
       const profileInfo = await fetchProfileCalories(userId);
       const weeklyCalories = await fetchWeeklyCalories(userId);
       const userPoints = await fetchPoints(userId);
-      const check1 = await fetchVisited1(userId);
       const claimed = await fetchClaimedCheckboxes(userId);
       const userInfo = await fetchUserInfo(userId);
       const weeklySteps = await fetchWeeklySteps(userId);
+      const visitedList = await fetchVisited(userId);
 
       setTotalCalories(profileInfo.calories_consumed);
       setCalorieGoal(profileInfo.calorie_goal);
       setCaloriesData(weeklyCalories);
       setPoints(userPoints);
-      setVisited(check1);
       setCheckBoxes(claimed);
       setUserDemographics(userInfo);
       setStepData(weeklySteps);
+      setVisited(visitedList);
     };
     fetchProfileData();
   }, [session]);
@@ -49,7 +49,7 @@ export default function useProfileData() {
     calorieGoal,
     caloriesData,
     points,
-    visited1,
+    visited,
     checkBoxes,
     userDemographics,
     stepsData,
