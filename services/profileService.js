@@ -49,8 +49,8 @@ export async function fetchUserInfo(userId) {
     .eq("id", userId)
     .maybeSingle();
 
-    console.log("fetchUserInfo called with: " + userId)
-    console.log("data: " + JSON.stringify(data, null, 2) )
+  //console.log("fetchUserInfo called with: " + userId);
+  //console.log("data: " + JSON.stringify(data, null, 2));
 
   if (error) {
     console.error("fetchUserInfo error", error);
@@ -85,7 +85,6 @@ export async function fetchUsername(userId) {
     .eq("user_id", userId)
     .single();
 
-
   if (error) {
     console.error("fetchUsername error", error);
     throw error;
@@ -93,7 +92,6 @@ export async function fetchUsername(userId) {
 
   return data.username;
 }
-
 
 //retrieve points info
 
@@ -125,7 +123,7 @@ export async function fetchVisited(userId) {
     return [];
   }
 
-  return data;
+  return data?.visited ?? []; //extract the array without visited header
 }
 
 //add to array if already visited
@@ -698,11 +696,10 @@ export async function addGoalPoints(userId) {
 }
 
 export async function updateUsername(userId, username) {
-
-  const oldUsername = await fetchUsername(userId)
+  const oldUsername = await fetchUsername(userId);
 
   if (username === oldUsername) {
-    throw new Error("This is your current username :D")
+    throw new Error("This is your current username :D");
   }
 
   const { data: existingUser, error: checkError } = await supabase
@@ -715,24 +712,20 @@ export async function updateUsername(userId, username) {
     throw new Error("This username is taken, choose another one!");
   }
 
-
-
   const { error: updateError } = await supabase
     .from("profiles")
     .update({ username })
     .eq("id", userId);
 
   const { error: updateProfileError } = await supabase
-  .from("profile_page")
-  .update({ username })
-  .eq("id", userId);
+    .from("profile_page")
+    .update({ username })
+    .eq("id", userId);
 
   const { error: updateExtendedProfileError } = await supabase
-  .from("username")
-  .update({ username })
-  .eq("user_id", userId);
+    .from("username")
+    .update({ username })
+    .eq("user_id", userId);
 
-  
   return true;
 }
-

@@ -51,6 +51,13 @@ export default function MapScreen() {
     );
   }
 
+  if (!visited) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <Text>Loading visited data...</Text>
+      </View>
+    );
+  }
   //console.log("Supabase coords:", coords);
 
   //check for location 1
