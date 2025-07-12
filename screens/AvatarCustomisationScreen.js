@@ -28,6 +28,9 @@ export default function AvatarCustomisationScreen() {
   const userId = session?.user?.id;
   const navigation = useNavigation();
   const [showPopup, setShowPopup] = useState(false)
+  const [currentTab, setCurrentTab] = useState("Head")
+
+  const TABS = ["Head", "Body", "Hand"]
 
   //3 different kinda accessories
   const [equipped, setEquipped] = useState({
@@ -38,6 +41,8 @@ export default function AvatarCustomisationScreen() {
   const [accessoryPosition, setAccessoryPosition] = useState(null);
 
   const accessories = useAccessoryInventory();
+
+ 
   /* accessories should look sth like this
   item_id: .....
   user_id
@@ -111,9 +116,46 @@ export default function AvatarCustomisationScreen() {
         resizeMode="cover"
         className="flex-1 justify-start items-center"
       >
+
+      <View
+        className="flex-row px-6 rounded-2xl mt-6"
+        >
+            <View
+            className="bg-[#C4A484] flex-row flex-1 rounded-2xl"
+            > 
+
+          {TABS.map((tab) => (
+              <TouchableOpacity
+              key={tab}
+              className="flex-1 py-3 rounded-2xl"
+              onPress={() => setCurrentTab(tab)}
+              style={{
+                  backgroundColor: currentTab == tab ? "#419e34" : "transparent"
+              }}
+              > 
+                  <Text
+                  className="text-center text-white text-xl"
+                  style={{
+                      fontFamily: currentTab == tab ? 'Nunito-ExtraBold' : 'Nunito-Bold',
+                      color: currentTab == tab ? 'black' : '#5C4033'
+                      
+                  }}
+                  > 
+                  {tab}
+                  </Text>
+
+              </TouchableOpacity>
+          ))
+          
+          }
+          </View>
+          </View> 
         {/* accessory array contains all supabase columns so we map to render a slot(press to equip press agin to unequip) and set to equip*/}
         <View className="flex-row flex-wrap justify-center gap-4 mt-8">
-          {accessories.map((item, index) => (
+       
+          {accessories
+          .filter((item) => item.slot.toLowerCase() === currentTab.toLowerCase())
+          .map((item, index) => (
             <SimpleInventorySlot
               key={index}
               selected={equipped[item.slot]?.item_id === item.item_id}

@@ -47,7 +47,10 @@ export async function fetchUserInfo(userId) {
     .from("profile_page")
     .select("weight, height, age, gender")
     .eq("id", userId)
-    .single();
+    .maybeSingle();
+
+    console.log("fetchUserInfo called with: " + userId)
+    console.log("data: " + JSON.stringify(data, null, 2) )
 
   if (error) {
     console.error("fetchUserInfo error", error);
@@ -74,6 +77,23 @@ export async function fetchProfileCalories(userId) {
 
   return data;
 }
+
+export async function fetchUsername(userId) {
+  const { data, error } = await supabase
+    .from("username")
+    .select("username")
+    .eq("user_id", userId)
+    .single();
+
+
+  if (error) {
+    console.error("fetchUsername error", error);
+    throw error;
+  }
+
+  return data.username;
+}
+
 
 //retrieve points info
 
@@ -676,3 +696,43 @@ export async function addGoalPoints(userId) {
     })
     .eq("id", userId);
 }
+
+export async function updateUsername(userId, username) {
+
+  const oldUsername = await fetchUsername(userId)
+
+  if (username === oldUsername) {
+    throw new Error("This is your current username :D")
+  }
+
+  const { data: existingUser, error: checkError } = await supabase
+    .from("username")
+    .select("username")
+    .eq("username", username)
+    .maybeSingle();
+
+  if (existingUser) {
+    throw new Error("This username is taken, choose another one!");
+  }
+
+
+
+  const { error: updateError } = await supabase
+    .from("profiles")
+    .update({ username })
+    .eq("id", userId);
+
+  const { error: updateProfileError } = await supabase
+  .from("profile_page")
+  .update({ username })
+  .eq("id", userId);
+
+  const { error: updateExtendedProfileError } = await supabase
+  .from("username")
+  .update({ username })
+  .eq("user_id", userId);
+
+  
+  return true;
+}
+

@@ -25,10 +25,7 @@ import fishNoodlesImg from "../assets/FishNoodle_Stall.jpg";
 import useProfileData from "../hooks/useProfileData";
 import { retrieveCoords } from "../services/hawkerService";
 import { handleFirstVisit } from "../services/profileService";
-import {
-  handleCheckboxes,
-  fetchVisitedStalls,
-} from "../services/stallVisitedService";
+import handleCheckboxes from "../services/stallVisitedService";
 //to center the horizontal scroll
 const screenWidth = Dimensions.get("window").width;
 const cardWidth = 256;

@@ -2,13 +2,12 @@ import { useEffect, useState } from "react";
 import {
   fetchPoints,
   fetchProfileCalories,
-  fetchVisited1,
   fetchWeeklyCalories,
-  fetchClaimedCheckboxes,
   fetchUserInfo,
   fetchWeeklySteps,
 } from "../services/profileService";
 import { useAuth } from "../contexts/AuthContext";
+import { fetchUsername } from "../services/profileService";
 
 export default function useProfileData() {
   const { session } = useAuth();
@@ -17,8 +16,8 @@ export default function useProfileData() {
   const [caloriesData, setCaloriesData] = useState([]);
   const [stepsData, setStepData] = useState([]);
   const [points, setPoints] = useState(0);
-  const [checkBoxes, setCheckBoxes] = useState([]);
   const [userDemographics, setUserDemographics] = useState({});
+  const [username, setUsername] = useState("")
   const userId = session?.user?.id;
   const [visited, setVisited] = useState([]);
 
@@ -28,17 +27,18 @@ export default function useProfileData() {
       const weeklyCalories = await fetchWeeklyCalories(userId);
       const userPoints = await fetchPoints(userId);
       const userInfo = await fetchUserInfo(userId);
+      console.log("user info: " + JSON.stringify(userInfo, null, 2))
       const weeklySteps = await fetchWeeklySteps(userId);
-      const visitedList = await fetchVisited(userId);
+      const profileUsername = await fetchUsername(userId)
 
       setTotalCalories(profileInfo.calories_consumed);
       setCalorieGoal(profileInfo.calorie_goal);
       setCaloriesData(weeklyCalories);
       setPoints(userPoints);
-      setCheckBoxes(claimed);
       setUserDemographics(userInfo);
       setStepData(weeklySteps);
-      setVisited(visitedList);
+      setUsername(profileUsername)
+      
     };
     fetchProfileData();
   }, [session]);
@@ -48,9 +48,9 @@ export default function useProfileData() {
     calorieGoal,
     caloriesData,
     points,
-    visited,
     userDemographics,
     stepsData,
+    username,
     setTotalCalories,
     setCalorieGoal,
     setVisited,
