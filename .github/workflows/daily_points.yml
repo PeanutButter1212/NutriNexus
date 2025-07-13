@@ -4,8 +4,8 @@ name: Daily Points Scheduler
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/5 * * * *" #  Runs every 5 mins for testing
-    # - cron: "59 15 * * *"  # For 11:59PM SGT (use later)
+    #- cron: "*/5 * * * *" #  Runs every 5 mins for testing
+    - cron: "59 15 * * *" # For 11:59PM SGT
 
 jobs:
   call-edge-function:
