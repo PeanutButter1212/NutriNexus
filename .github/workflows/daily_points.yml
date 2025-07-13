@@ -2,6 +2,7 @@
 name: Daily Points Scheduler
 
 on:
+workflow_dispatch:
   schedule:
     # - cron: "59 15 * * *" #this is equal to 2359pm SG time
     - cron: "*/5 * * * *" #5mins for testing
