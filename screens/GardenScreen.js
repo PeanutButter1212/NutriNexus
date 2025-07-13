@@ -10,8 +10,6 @@ import DraggableItem from '../components/DraggableItem'
 import { fetchPlants, handleAssetConsumption, insertToGarden, retrieveDecorInventory, removeFromGarden, returnToInventory, fetchDecorIdOnTile, addtoDecorInventory } from '../services/gardenService';
 import { useAuth } from "../contexts/AuthContext";
 import useDecorInventory from '../hooks/useDecorInventory';
-import useSkiaImageMap from '../hooks/useSkiaImageMap';
-import { drag } from 'd3';
 import useItemBank from '../hooks/useItemBank';
 import SkiaImageItem from '../components/skiaImageItem';
 import useLayoutData from '../hooks/useLayoutData';

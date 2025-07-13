@@ -10,6 +10,9 @@ import AvatarCustomisationScreen from "../screens/AvatarCustomisationScreen";
 import LocationScreen from "../screens/LocationScreen";
 import ShopScreen from "../screens/ShopScreen";
 import UsernameScreen from "../screens/UsernameScreen"
+import AddFriendScreen from "../screens/AddFriendScreen";
+import FriendRequestScreen from "../screens/FriendRequestScreen";
+import FriendProfileScreen from "../screens/FriendProfileScreen";
 const Stack = createNativeStackNavigator();
 
 export default function RootStack() {
@@ -18,7 +21,7 @@ export default function RootStack() {
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {!isAuthenticated ? (
+      {false ? (
         <Stack.Screen name="AuthStack" component={AuthStack} />
       ) : (
         <>
@@ -70,6 +73,22 @@ export default function RootStack() {
               headerShown: false
             }}
           />
+          <Stack.Screen
+            name="Add Friends"
+            component={AddFriendScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Friend Requests"
+            component={FriendRequestScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Friend Profile"
+            component={FriendProfileScreen}
+            options={{ headerShown: true }}
+          />
+
         </>
       )}
     </Stack.Navigator>

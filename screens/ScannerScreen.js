@@ -71,7 +71,6 @@ export default function ScannerScreen({ navigation }) {
   }
 
   const handleTakePhoto = async () => {
-    console.log("🚀 handleScan started");
 
     // Process photo with ML model
     setLoading(true);

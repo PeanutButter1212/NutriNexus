@@ -5,8 +5,8 @@
       "latitude": 1.2844248503218
     },
     "name": "Market Street Hawker Centre",
-    "image_url": null,
-    "address": null,
+    "image_url": "",
+    "address": "",
     "postal_code": "48940",
     "status": "Existing (replacement)",
     "description": "New Replacement Centre"
@@ -18,7 +18,7 @@
     },
     "name": "Marsiling Mall Hawker Centre",
     "image_url": "http://www.nea.gov.sg/images/default-source/Hawker-Centres-Division/mmhc.jpg",
-    "address": "Blk 4,Woodlands St 12,Singapore�738623",
+    "address": "Blk 4,Woodlands St 12,Singapore\ufffd738623",
     "postal_code": "738623",
     "status": "Existing (replacement)",
     "description": "New Replacement Centre"
@@ -29,8 +29,8 @@
       "latitude": 1.29748567106686
     },
     "name": "Margaret Drive Hawker Centre",
-    "image_url": null,
-    "address": null,
+    "image_url": "",
+    "address": "",
     "postal_code": "142038",
     "status": "Existing (replacement)",
     "description": "New Replacement Centre"
@@ -41,8 +41,8 @@
       "latitude": 1.39159232727757
     },
     "name": "Fernvale Hawker Centre & Market",
-    "image_url": null,
-    "address": null,
+    "image_url": "",
+    "address": "",
     "postal_code": "797650",
     "status": "Existing (new)",
     "description": "New Centre"
@@ -53,8 +53,8 @@
       "latitude": 1.40818996870647
     },
     "name": "One Punggol Hawker Centre",
-    "image_url": null,
-    "address": null,
+    "image_url": "",
+    "address": "",
     "postal_code": "828629",
     "status": "Existing (new)",
     "description": "New Centre"
@@ -65,8 +65,8 @@
       "latitude": 1.44901674160031
     },
     "name": "Bukit Canberra Hawker Centre",
-    "image_url": null,
-    "address": null,
+    "image_url": "",
+    "address": "",
     "postal_code": "756973",
     "status": "Existing (new)",
     "description": "New Centre"
@@ -77,8 +77,8 @@
       "latitude": 1.38713573069818
     },
     "name": "Senja Hawker Centre",
-    "image_url": null,
-    "address": null,
+    "image_url": "",
+    "address": "",
     "postal_code": "677632",
     "status": "Existing (new)",
     "description": "New Centre"
@@ -89,8 +89,8 @@
       "latitude": 1.38238755827879
     },
     "name": "Buangkok Hawker Centre",
-    "image_url": null,
-    "address": null,
+    "image_url": "",
+    "address": "",
     "postal_code": "544692",
     "status": "Under Construction",
     "description": "New Centre"
@@ -101,8 +101,8 @@
       "latitude": 1.35521457121361
     },
     "name": "Bukit Batok West Hawker Centre",
-    "image_url": null,
-    "address": null,
+    "image_url": "",
+    "address": "",
     "postal_code": "651469",
     "status": "Under Construction",
     "description": "New Centre"
@@ -113,8 +113,8 @@
       "latitude": 1.27324863952078
     },
     "name": "Telok Blangah Hawker Centre & Market",
-    "image_url": null,
-    "address": null,
+    "image_url": "",
+    "address": "",
     "postal_code": "103078",
     "status": "Under Construction",
     "description": "New Replacement Centre"
@@ -881,8 +881,8 @@
       "latitude": 1.3397961360031
     },
     "name": "Woodleigh Village Hawker Centre",
-    "image_url": null,
-    "address": null,
+    "image_url": "",
+    "address": "",
     "postal_code": "363202",
     "status": "Under Construction",
     "description": "New Centre"
@@ -893,8 +893,8 @@
       "latitude": 1.39691417603694
     },
     "name": "Anchorvale Village Hawker Centre",
-    "image_url": null,
-    "address": null,
+    "image_url": "",
+    "address": "",
     "postal_code": "540339",
     "status": "Under Construction",
     "description": "New Centre"
@@ -905,9 +905,9 @@
       "latitude": 1.41456688638677
     },
     "name": "Punggol Digital District Hawker Centre",
-    "image_url": null,
-    "address": null,
-    "postal_code": null,
+    "image_url": "",
+    "address": "",
+    "postal_code": "",
     "status": "Under Construction",
     "description": "New Centre"
   },
