@@ -47,17 +47,15 @@ export default function LocationScreen({ route }) {
   //checks which alr claimed so cannot claim again
   useEffect(() => {
     const fetchVisited = async () => {
-      const visitedStalls = await fetchVisitedStalls(userId, centreId);
+      const visitedStalls = await fetchVisitedStalls(userId, locationrow.id);
       console.log("Visited stalls: ", visitedStalls);
 
       const claimed = {};
-      visited.forEach(stallId => claimed[stallId] = true);
+      visitedStalls.forEach((stallId) => (claimed[stallId] = true));
       setClaimedStalls(claimed);
-    
     };
-  
+
     fetchVisited();
-  
   }, [userId, locationrow]);
 
   //save this to database?
@@ -111,29 +109,32 @@ export default function LocationScreen({ route }) {
 
       if (error) {
         console.error(
-          "Error retrieving hawker stalls from location's id: " + error
+          "Error retrieving hawker stalls from location's id:",
+          error
         );
+        return;
       }
 
-      if (!data) {
+      if (!data || data.length === 0) {
+        console.log("No stalls for this location, using default.");
         const { data: defaultStallsData, error: defaultStallsError } =
           await supabase
             .from("hawker_stall")
             .select("*")
             .eq("location_id", "6aacf124-0e46-4966-ada0-f9aa028e8fc0");
-        setStalls(defaultStallsData);
 
         if (defaultStallsError) {
-          console.error(
-            "Error retrieving default stalls; " + defaultStallsError
-          );
+          console.error("Error retrieving default stalls:", defaultStallsError);
           return;
         }
+
+        setStalls(defaultStallsData);
         return;
       }
 
       setStalls(data);
     };
+
     fetchStalls();
   }, [locationrow.id]);
 
@@ -162,12 +163,19 @@ export default function LocationScreen({ route }) {
                 )}
                 <TouchableOpacity
                   onPress={async () => {
-                    //console.log("Clicked checkbox for:", key);
-                    const result = await handleCheckboxes(userId, locationrow.id, selectedStall.id);
+                    console.log("Clicked checkbox for:");
+                    const result = await handleCheckboxes(
+                      userId,
+                      locationrow.id,
+                      selectedStall.unique_id
+                    );
                     console.log("Result from handleCheckboxes:", result);
 
                     if (result?.success || result?.alreadyClaimed) {
-                      setClaimedStalls((prev) => ({ ...prev, [stallId]: true }));
+                      setClaimedStalls((prev) => ({
+                        ...prev,
+                        [selectedStall.unique_id]: true,
+                      }));
 
                       if (result.success) {
                         setShowPopup(true);
@@ -180,12 +188,12 @@ export default function LocationScreen({ route }) {
                 >
                   <View
                     className={`w-6 h-6 rounded border-2 mr-2 ${
-                      claimedStalls[selectedStall.name]
+                      claimedStalls[selectedStall.unique_id]
                         ? "bg-green-500 border-green-700"
                         : "bg-white border-gray-400"
                     } items-center justify-center`}
                   >
-                    {claimedStalls[selectedStall.name] && (
+                    {claimedStalls[selectedStall.unique_id] && (
                       <Text className="text-white text-xs">✔️</Text>
                     )}
                   </View>
@@ -253,7 +261,7 @@ export default function LocationScreen({ route }) {
                 }}
               >
                 <ImageBackground
-                  source={stall.pic}
+                  source={{ uri: stall.pic }}
                   className=" flex-1 h-full w-full justify-end rounded-2xl overflow-hidden"
                   imageStyle={{ borderRadius: 16 }}
                 >
