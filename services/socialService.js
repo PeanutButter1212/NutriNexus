@@ -46,8 +46,7 @@ export async function acceptFriendRequest(senderId, receiverId) {
 }
 
 //method to fetch all incoming requests to display
-export async function fetchIncomingRequests(currentId) {
-  console.log("Querying for incoming requests for:", currentUserId);
+export async function fetchIncomingFriendRequests(currentId) {
   const { data, error } = await supabase
     .from("friendships")
     .select("user_id")
@@ -63,17 +62,18 @@ export async function fetchIncomingRequests(currentId) {
 }
 
 //retrieve usernames based on ID for display
-export async function fetchUsernamebyId(userId) {
+export async function fetchUsernameByIds(userIds) {
+  if (!userIds || userIds.length === 0) return [];
   const { data, error } = await supabase
     .from("username")
-    .select("username")
-    .eq("user_id", userId)
-    .single();
+    .select("username, user_id")
+    .in("user_id", userIds);
 
   if (error) {
     console.error("Error fetching usernames:", error);
     return [];
   }
+  console.log("Fetched usernames from DB:", data);
   return data;
 }
 

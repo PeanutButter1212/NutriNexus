@@ -6,7 +6,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useState, useEffect } from "react";
 import {
   fetchIncomingFriendRequests,
-  fetchUsernamesByIds,
+  fetchUsernameByIds,
   acceptFriendRequest,
 } from "../services/socialService";
 
@@ -18,19 +18,25 @@ export default function FriendRequestScreen({ navigation }) {
 
   //fetches list on load
   useEffect(() => {
-    if (!currentId) return;
+    console.log(currentId);
+
     const loadRequests = async () => {
-      const pending = await fetchIncomingFriendRequests(currentId);
-      console.log("Pending raw:", pending);
-      const senderIds = pending.map((req) => req.user_id); //extract out just the ids no header
-      console.log("Sender IDs:", senderIds);
-      const usernames = await fetchUsernamesByIds(senderIds);
-      console.log("Fetched usernames:", usernames);
-      setRequests(usernames);
+      try {
+        //console.log("Calling fetchIncomingFriendRequests...");
+        const pending = await fetchIncomingFriendRequests(currentId);
+        //console.log("Pending raw:", pending);
+        const senderIds = pending.map((req) => req.user_id); //extract out just the ids no header
+        console.log("Sender IDs:", senderIds);
+        const usernames = await fetchUsernameByIds(senderIds);
+        console.log("Fetched usernames:", usernames);
+        setRequests(usernames);
+      } catch (err) {
+        console.log(error);
+      }
     };
 
     loadRequests();
-  }, []);
+  }, [currentId]);
 
   return (
     <View className="">
