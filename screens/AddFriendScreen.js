@@ -12,14 +12,13 @@ import Feather from "@expo/vector-icons/Feather";
 import { useEffect, useState } from "react";
 import { searchUsers } from "../services/socialService";
 import { useAuth } from "../contexts/AuthContext";
-import { sendFriendRequest } from "../services/socialService";
+import { sendFriendRequest, getFriendStatus } from "../services/socialService";
 
 export default function AddFriendScreen({ navigation }) {
   const [searchResults, setSearchResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [friendList, setFriendList] = useState([]);
-  const [pendingRequests, setPendingRequests] = useState([]);
   const { user } = useAuth();
+  const [userStatuses, setUserStatuses] = useState({});
 
   const currentId = user?.id;
 
@@ -38,6 +37,24 @@ export default function AddFriendScreen({ navigation }) {
     runSearch();
   }, [searchTerm]); //run everytime searchTerm changes (when we type)
 
+  useEffect(() => {
+    const loadStatuses = async () => {
+      if (searchResults.length === 0 || !currentId) return;
+
+      const statuses = {};
+
+      for (const target of searchResults) {
+        const result = await getFriendStatus(currentId, target.user_id);
+        console.log(`${target.username} (${target.user_id}) status:`, result);
+        statuses[target.user_id] = result;
+      }
+
+      setUserStatuses(statuses);
+    };
+
+    loadStatuses();
+  }, [searchResults, currentId]);
+
   return (
     <View>
       <View className="mt-12 items-center">
@@ -48,7 +65,7 @@ export default function AddFriendScreen({ navigation }) {
         <TextInput
           placeholder="Search username..."
           className="flex-1 text-base"
-          autoCapitalize={false}
+          autoCapitalize="none"
           onChangeText={(text) => setSearchTerm(text)}
         ></TextInput>
       </View>
@@ -76,7 +93,7 @@ export default function AddFriendScreen({ navigation }) {
                 className="mr-8 justify-center"
                 onPress={async () => {
                   /* if alr friend can remove*/
-                  if (friendList.includes(targetuser.username)) {
+                  if (userStatuses[targetuser.user_id] === "accepted") {
                     Alert.alert(
                       "Remove Friend?",
                       `Remove ${targetuser.username} as a friend?`,
@@ -86,33 +103,31 @@ export default function AddFriendScreen({ navigation }) {
                           text: "Remove",
                           style: "destructive",
                           onPress: () => {
-                            setFriendList(
-                              friendList.filter(
-                                (name) => name !== targetuser.username
-                              )
-                            );
+                            setUserStatuses((prev) => ({
+                              ...prev,
+                              [targetuser.user_id]: null,
+                            }));
                           },
                         },
                       ]
                     );
                     /* if pending can cancel request */
-                  } else if (pendingRequests.includes(targetuser.username)) {
-                    setPendingRequests(
-                      pendingRequests.filter(
-                        (name) => name !== targetuser.username
-                      )
-                    );
+                  } else if (userStatuses[targetuser.user_id] === "pending") {
+                    setUserStatuses((prev) => ({
+                      ...prev,
+                      [targetuser.user_id]: null,
+                    }));
                   } else {
                     /* if sent request set to pending  */
                     const success = await sendFriendRequest(
                       currentId,
-                      targetuser.id
+                      targetuser.user_id
                     );
                     if (success) {
-                      setPendingRequests([
-                        ...pendingRequests,
-                        targetuser.username,
-                      ]);
+                      setUserStatuses((prev) => ({
+                        ...prev,
+                        [targetuser.user_id]: "pending",
+                      }));
                     } else {
                       Alert.alert("Error fail to send request");
                     }
@@ -121,38 +136,38 @@ export default function AddFriendScreen({ navigation }) {
               >
                 <View
                   className={`flex-row  px-2 py-2 rounded-xl items-center justify-center ${
-                    friendList.includes(targetuser.username)
+                    userStatuses[targetuser.user_id] === "accepted"
                       ? "bg-gray-200"
-                      : pendingRequests.includes(targetuser.username)
+                      : userStatuses[targetuser.user_id] === "pending"
                       ? "bg-indigo-300"
                       : "bg-blue-500"
                   }`}
                 >
                   <Feather
                     name={
-                      friendList.includes(targetuser.username)
+                      userStatuses[targetuser.user_id] === "accepted"
                         ? "check"
-                        : pendingRequests.includes(targetuser.username)
+                        : userStatuses[targetuser.user_id] === "pending"
                         ? "clock"
                         : "plus"
                     }
                     size={16}
                     color={
-                      friendList.includes(targetuser.username)
+                      userStatuses[targetuser.user_id] === "accepted"
                         ? "black"
                         : "white"
                     }
                   />
                   <Text
                     className={
-                      friendList.includes(targetuser.username)
+                      userStatuses[targetuser.user_id] === "accepted"
                         ? "text-black"
                         : "text-white"
                     }
                   >
-                    {friendList.includes(targetuser.username)
+                    {userStatuses[targetuser.user_id] === "accepted"
                       ? "Friends"
-                      : pendingRequests.includes(targetuser.username)
+                      : userStatuses[targetuser.user_id] === "pending"
                       ? "Request Sent"
                       : "Add Friend"}
                   </Text>

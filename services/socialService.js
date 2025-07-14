@@ -81,9 +81,9 @@ export async function fetchUsernameByIds(userIds) {
 export async function fetchApprovedRequests(currentId) {
   const { data, error } = await supabase
     .from("friendships")
-    .select("user_id")
-    .eq(currentId)
-    .eq("status", "approved");
+    .select("user_id, friend_id")
+    .or(`user_id.eq.${currentId},friend_id.eq.${currentId}`) // check if either user is the friend or if current
+    .eq("status", "accepted");
 
   if (error) {
     console.log("Error fetching requests", error);
@@ -91,4 +91,38 @@ export async function fetchApprovedRequests(currentId) {
   }
 
   return data;
+}
+
+//delete friend request in the friendrequestscreen
+export async function deleteFriendRequest(senderId, receiverId) {
+  const { error } = await supabase
+    .from("friendships")
+    .delete()
+    .match({ user_id: senderId, friend_id: receiverId, status: "pending" });
+
+  if (error) {
+    console.log("error", error);
+    return false;
+  }
+  return true;
+}
+
+//method to fetch status of friends for useEffect on addfreindscreen
+export async function getFriendStatus(currentId, targetUserId) {
+  if (currentId === targetUserId) return "self";
+
+  const { data, error } = await supabase
+    .from("friendships")
+    .select("status")
+    .or(
+      `and(user_id.eq.${currentId},friend_id.eq.${targetUserId}),and(user_id.eq.${targetUserId},friend_id.eq.${currentId})`
+    );
+  //checks if connected from both combinations of ids since either way is friends
+
+  if (error) {
+    console.error("Error fetching friend status:", error);
+    return null;
+  }
+
+  return data?.status || null;
 }

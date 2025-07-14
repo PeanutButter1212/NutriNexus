@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import Feather from "@expo/vector-icons/Feather";
@@ -8,6 +8,7 @@ import {
   fetchIncomingFriendRequests,
   fetchUsernameByIds,
   acceptFriendRequest,
+  deleteFriendRequest,
 } from "../services/socialService";
 
 export default function FriendRequestScreen({ navigation }) {
@@ -65,13 +66,43 @@ export default function FriendRequestScreen({ navigation }) {
             </View>
 
             <View className="flex-row">
-              <TouchableOpacity className="mr-4 justify-center">
+              <TouchableOpacity
+                className="mr-4 justify-center"
+                onPress={async () => {
+                  const success = await deleteFriendRequest(
+                    friend.user_id,
+                    currentId
+                  );
+                  if (success) {
+                    setRequests((prev) =>
+                      prev.filter((req) => req.user_id !== friend.user_id)
+                    );
+                  } else {
+                    Alert.alert("Error failed to delete friend :(");
+                  }
+                }}
+              >
                 <View className="bg-red-500 px-4 rounded-xl">
                   <Feather name="x" size={24} color="white" />
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity className="mr-4 justify-center">
+              <TouchableOpacity
+                className="mr-4 justify-center"
+                onPress={async () => {
+                  const success = await acceptFriendRequest(
+                    friend.user_id,
+                    currentId
+                  );
+                  if (success) {
+                    setRequests((prev) =>
+                      prev.filter((req) => req.user_id !== friend.user_id)
+                    );
+                  } else {
+                    Alert.alert("Error failed to add friend :(");
+                  }
+                }}
+              >
                 <View className="bg-green-600 px-4 rounded-xl">
                   <Feather name="check" size={24} color="white" />
                 </View>
