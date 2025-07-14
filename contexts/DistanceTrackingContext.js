@@ -161,12 +161,12 @@ export const DistanceProvider = ({ children }) => {
         !existingEntry ||
         (currentDistance > 0 && currentDistance > existingEntry.distance)
       ) {
-        console.log("Attempting to upsert:", {
+        /*console.log("Attempting to upsert:", {
           user_id: user.id,
           steps,
           date: today,
           distance: currentDistance,
-        });
+        }); */
 
         await supabase.from("step_log").upsert(
           {

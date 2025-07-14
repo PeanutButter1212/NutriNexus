@@ -28,7 +28,7 @@ export default function useProfileData() {
       const weeklyCalories = await fetchWeeklyCalories(userId);
       const userPoints = await fetchPoints(userId);
       const userInfo = await fetchUserInfo(userId);
-      console.log("user info: " + JSON.stringify(userInfo, null, 2));
+      //console.log("user info: " + JSON.stringify(userInfo, null, 2));
       const weeklySteps = await fetchWeeklySteps(userId);
       const profileUsername = await fetchUsername(userId);
       const visitedList = await fetchVisited(userId);
@@ -41,7 +41,7 @@ export default function useProfileData() {
       setStepData(weeklySteps);
       setUsername(profileUsername);
       setVisited(visitedList || []);
-      console.log("visitedList:", visitedList);
+      //console.log("visitedList:", visitedList);
     };
     fetchProfileData();
   }, [session]);
