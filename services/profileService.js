@@ -197,65 +197,61 @@ export async function fetchWeeklyCalories(userId) {
     .lte("date", endOfWeek.toISOString().split("T")[0]);
 
   const dailyTotals = {
-    MON: 0,
-    TUES: 0,
-    WED: 0,
-    THURS: 0,
-    FRI: 0,
-    SAT: 0,
-    SUN: 0,
+    //instead of 0 we use null which solves issue of fake graphs when value is 0
+    MON: null,
+    TUES: null,
+    WED: null,
+    THURS: null,
+    FRI: null,
+    SAT: null,
+    SUN: null,
   };
 
-  if (!data || data.length === 0) {
-    return Object.entries(dailyTotals).map(([day, value]) => ({
-      day,
-      value,
-    }));
+  if (data && data.length > 0) {
+    data.forEach((entry) => {
+      const date = new Date(entry.date);
+      const dayOfTheWeek = date
+        .toLocaleDateString("en-US", { weekday: "short" })
+        .toUpperCase();
+
+      let key;
+      switch (dayOfTheWeek) {
+        case "MON":
+          key = "MON";
+          break;
+        case "TUE":
+          key = "TUES";
+          break;
+        case "WED":
+          key = "WED";
+          break;
+        case "THU":
+          key = "THURS";
+          break;
+        case "FRI":
+          key = "FRI";
+          break;
+        case "SAT":
+          key = "SAT";
+          break;
+        case "SUN":
+          key = "SUN";
+          break;
+        default:
+          break;
+      }
+      if (key) {
+        dailyTotals[key] = (dailyTotals[key] || 0) + entry.calories;
+      }
+    });
   }
-
-  data.forEach((entry) => {
-    const date = new Date(entry.date);
-    const dayOfTheWeek = date
-      .toLocaleDateString("en-US", { weekday: "short" })
-      .toUpperCase();
-
-    let key;
-    switch (dayOfTheWeek) {
-      case "MON":
-        key = "MON";
-        break;
-      case "TUE":
-        key = "TUES";
-        break;
-      case "WED":
-        key = "WED";
-        break;
-      case "THU":
-        key = "THURS";
-        break;
-      case "FRI":
-        key = "FRI";
-        break;
-      case "SAT":
-        key = "SAT";
-        break;
-      case "SUN":
-        key = "SUN";
-        break;
-      default:
-        break;
-    }
-    if (key) {
-      dailyTotals[key] += entry.calories;
-    }
-  });
 
   const output = Object.entries(dailyTotals).map(([day, value]) => ({
     day,
     value,
   }));
 
-  return output;
+  return output; //this makes it into graph data format
 }
 
 //retrieve weekly step data for bar graph
@@ -277,58 +273,53 @@ export async function fetchWeeklySteps(userId) {
     .lte("date", endOfWeek.toISOString().split("T")[0]);
 
   const dailyTotals = {
-    MON: 0,
-    TUES: 0,
-    WED: 0,
-    THURS: 0,
-    FRI: 0,
-    SAT: 0,
-    SUN: 0,
+    MON: null,
+    TUES: null,
+    WED: null,
+    THURS: null,
+    FRI: null,
+    SAT: null,
+    SUN: null,
   };
 
-  if (!data || data.length === 0) {
-    return Object.entries(dailyTotals).map(([day, value]) => ({
-      day,
-      value,
-    }));
-  } //return dates if nth
+  if (data && data.length > 0) {
+    data.forEach((entry) => {
+      const date = new Date(entry.date);
+      const dayOfTheWeek = date
+        .toLocaleDateString("en-US", { weekday: "short" })
+        .toUpperCase();
 
-  data.forEach((entry) => {
-    const date = new Date(entry.date);
-    const dayOfTheWeek = date
-      .toLocaleDateString("en-US", { weekday: "short" })
-      .toUpperCase();
-
-    let key;
-    switch (dayOfTheWeek) {
-      case "MON":
-        key = "MON";
-        break;
-      case "TUE":
-        key = "TUES";
-        break;
-      case "WED":
-        key = "WED";
-        break;
-      case "THU":
-        key = "THURS";
-        break;
-      case "FRI":
-        key = "FRI";
-        break;
-      case "SAT":
-        key = "SAT";
-        break;
-      case "SUN":
-        key = "SUN";
-        break;
-      default:
-        break;
-    }
-    if (key) {
-      dailyTotals[key] += entry.steps;
-    }
-  });
+      let key;
+      switch (dayOfTheWeek) {
+        case "MON":
+          key = "MON";
+          break;
+        case "TUE":
+          key = "TUES";
+          break;
+        case "WED":
+          key = "WED";
+          break;
+        case "THU":
+          key = "THURS";
+          break;
+        case "FRI":
+          key = "FRI";
+          break;
+        case "SAT":
+          key = "SAT";
+          break;
+        case "SUN":
+          key = "SUN";
+          break;
+        default:
+          break;
+      }
+      if (key) {
+        dailyTotals[key] += entry.steps;
+      }
+    });
+  }
 
   const output = Object.entries(dailyTotals).map(([day, value]) => ({
     day,
