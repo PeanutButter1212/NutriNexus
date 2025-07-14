@@ -31,6 +31,7 @@
       [
       "expo-maps",
         {
+          "provider": "google",
           "requestLocationPermission": true,
           "locationPermission": "Allow NutriNexus to use your location"
         }
@@ -38,9 +39,7 @@
     ],
     "ios": {
       "config" : {
-        "googleMaps" : {
-          "apiKey": "AIzaSyCSm07EZwl0k_6Sd1yM9RZLAjqtnbPoTkg"
-        }
+        "googleMapsApiKey": "AIzaSyCSm07EZwl0k_6Sd1yM9RZLAjqtnbPoTkg" 
       },
       "supportsTablet": true,
       "bundleIdentifier": "nutrinuxus.club",

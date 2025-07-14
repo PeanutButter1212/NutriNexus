@@ -5,6 +5,7 @@ import {
   fetchWeeklyCalories,
   fetchUserInfo,
   fetchWeeklySteps,
+  fetchVisited,
 } from "../services/profileService";
 import { useAuth } from "../contexts/AuthContext";
 import { fetchUsername } from "../services/profileService";
@@ -17,7 +18,7 @@ export default function useProfileData() {
   const [stepsData, setStepData] = useState([]);
   const [points, setPoints] = useState(0);
   const [userDemographics, setUserDemographics] = useState({});
-  const [username, setUsername] = useState("")
+  const [username, setUsername] = useState("");
   const userId = session?.user?.id;
   const [visited, setVisited] = useState([]);
 
@@ -27,9 +28,11 @@ export default function useProfileData() {
       const weeklyCalories = await fetchWeeklyCalories(userId);
       const userPoints = await fetchPoints(userId);
       const userInfo = await fetchUserInfo(userId);
-      console.log("user info: " + JSON.stringify(userInfo, null, 2))
+      //console.log("user info: " + JSON.stringify(userInfo, null, 2));
       const weeklySteps = await fetchWeeklySteps(userId);
-      const profileUsername = await fetchUsername(userId)
+      const profileUsername = await fetchUsername(userId);
+      const visitedList = await fetchVisited(userId);
+      console.log("visited in useProfileData: " + visited)
 
       setTotalCalories(profileInfo.calories_consumed);
       setCalorieGoal(profileInfo.calorie_goal);
@@ -37,8 +40,9 @@ export default function useProfileData() {
       setPoints(userPoints);
       setUserDemographics(userInfo);
       setStepData(weeklySteps);
-      setUsername(profileUsername)
-      
+      setUsername(profileUsername);
+      setVisited(visitedList || []);
+      //console.log("visitedList:", visitedList);
     };
     fetchProfileData();
   }, [session]);
@@ -51,6 +55,7 @@ export default function useProfileData() {
     userDemographics,
     stepsData,
     username,
+    visited,
     setTotalCalories,
     setCalorieGoal,
     setVisited,

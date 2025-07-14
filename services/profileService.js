@@ -87,8 +87,7 @@ export async function fetchUsername(userId) {
 
 
   if (error) {
-    console.error("fetchUsername error", error);
-    throw error;
+    return; 
   }
 
   return data.username;
@@ -125,17 +124,22 @@ export async function fetchVisited(userId) {
     return [];
   }
 
-  return data;
+  return data?.visited ?? [];
 }
 
 //add to array if already visited
 
+
 export async function handleFirstVisit(userId, placeId) {
+  console.log("handlefirstvisit called")
   const { data, error } = await supabase
     .from("profile_page")
     .select("visited, points")
     .eq("id", userId)
     .single();
+
+  console.log("handlefirstivist check for visit: " + data)
+
 
   const currentVisited = data?.visited || [];
   const currentPoints = data?.points || 0;
@@ -159,6 +163,8 @@ export async function handleFirstVisit(userId, placeId) {
     })
     .eq("id", userId);
 
+
+
   if (updateError) {
     console.error("Failed to update points or visited1:", updateError);
     return;
@@ -180,6 +186,7 @@ export async function handleFirstVisit(userId, placeId) {
     console.log("Inserted row:", insertData);
   }
 }
+
 
 //retrieve weekly calorie data for bar graph
 
