@@ -88,7 +88,11 @@ export default function SocialScreen({ navigation }) {
 
             <TouchableOpacity
               className="mr-8 justify-center"
-              onPress={() => navigation.navigate("Friend Profile")}
+              onPress={() =>
+                navigation.navigate("Friend Profile", {
+                  friendId: friend.user_id,
+                })
+              }
             >
               <View className="bg-blue-500 px-4 rounded-xl">
                 <Entypo name="controller-play" size={24} color="white" />
