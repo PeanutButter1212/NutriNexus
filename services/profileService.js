@@ -316,7 +316,7 @@ export async function fetchWeeklySteps(userId) {
           break;
       }
       if (key) {
-        dailyTotals[key] += entry.steps;
+        dailyTotals[key] = (dailyTotals[key] || 0) + entry.steps;
       }
     });
   }
@@ -363,7 +363,7 @@ export async function updateCaloriesConsumed(userId) {
       .eq("id", userId)
       .single();
 
-    console.log("✅ Final profileRow:", profileRow);
+    console.log("Final profileRow:", profileRow);
 
     return profileRow;
   } catch (err) {
