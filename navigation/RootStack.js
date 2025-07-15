@@ -9,7 +9,7 @@ import ActivityLogScreen from "../screens/ActivityLogScreen";
 import AvatarCustomisationScreen from "../screens/AvatarCustomisationScreen";
 import LocationScreen from "../screens/LocationScreen";
 import ShopScreen from "../screens/ShopScreen";
-import UsernameScreen from "../screens/UsernameScreen"
+import UsernameScreen from "../screens/UsernameScreen";
 import AddFriendScreen from "../screens/AddFriendScreen";
 import FriendRequestScreen from "../screens/FriendRequestScreen";
 import FriendProfileScreen from "../screens/FriendProfileScreen";
@@ -54,7 +54,7 @@ export default function RootStack() {
             name="Setting"
             component={SettingScreen}
             options={{
-              headerShown: false
+              headerShown: false,
             }}
           />
           <Stack.Screen
@@ -66,11 +66,11 @@ export default function RootStack() {
               headerBackTitle: "Back",
             }}
           />
-           <Stack.Screen
+          <Stack.Screen
             name="Username Settings"
             component={UsernameScreen}
             options={{
-              headerShown: false
+              headerShown: false,
             }}
           />
           <Stack.Screen
@@ -88,7 +88,6 @@ export default function RootStack() {
             component={FriendProfileScreen}
             options={{ headerShown: true }}
           />
-
         </>
       )}
     </Stack.Navigator>

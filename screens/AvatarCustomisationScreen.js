@@ -5,10 +5,11 @@ import {
   TouchableOpacity,
   Image,
   Alert,
-  Modal
+  Modal,
 } from "react-native";
 import backgroundImage from "../assets/CustomisationBackground.png";
-import avatarImage from "../assets/MaleCharacter.png";
+import maleAvatarImage from "../assets/MaleCharacter.png";
+import femaleAvatarImage from "../assets/FemaleEdited.png";
 import inventoryImage from "../assets/InventorySign.png";
 import inventoryBackground from "../assets/Background.png";
 import useAccessoryInventory from "../hooks/useAccessoryInventory";
@@ -20,6 +21,7 @@ import { useNavigation } from "@react-navigation/native";
 import SimpleInventorySlot from "../components/SimpleInventorySlot";
 import { Ionicons } from "@expo/vector-icons";
 import AccessoryPopUp from "../components/AccessoryPopup";
+import useProfileData from "../hooks/useProfileData";
 
 export default function AvatarCustomisationScreen() {
   //const [accessories, setAccessories] = useState([]);
@@ -27,10 +29,14 @@ export default function AvatarCustomisationScreen() {
   const { session } = useAuth();
   const userId = session?.user?.id;
   const navigation = useNavigation();
-  const [showPopup, setShowPopup] = useState(false)
-  const [currentTab, setCurrentTab] = useState("Head")
+  const [showPopup, setShowPopup] = useState(false);
+  const [currentTab, setCurrentTab] = useState("Head");
+  const { userDemographics } = useProfileData();
 
-  const TABS = ["Head", "Body", "Hand"]
+  const avatarImage =
+    userDemographics.gender === "Female" ? femaleAvatarImage : maleAvatarImage;
+
+  const TABS = ["Head", "Body", "Hand"];
 
   //3 different kinda accessories
   const [equipped, setEquipped] = useState({
@@ -42,7 +48,6 @@ export default function AvatarCustomisationScreen() {
 
   const accessories = useAccessoryInventory();
 
- 
   /* accessories should look sth like this
   item_id: .....
   user_id
@@ -55,12 +60,11 @@ export default function AvatarCustomisationScreen() {
   const equippedFromDB = useEquippedItems();
 
   const handleSave = async () => {
-    const success = await saveEquippedItems(userId, equipped)
+    const success = await saveEquippedItems(userId, equipped);
     if (success) {
-      setShowPopup(true)
+      setShowPopup(true);
     }
-    
-  }
+  };
   useEffect(() => {
     setEquipped(equippedFromDB);
   }, [equippedFromDB]);
@@ -116,72 +120,64 @@ export default function AvatarCustomisationScreen() {
         resizeMode="cover"
         className="flex-1 justify-start items-center"
       >
-
-      <View
-        className="flex-row px-6 rounded-2xl mt-6"
-        >
-            <View
-            className="bg-[#C4A484] flex-row flex-1 rounded-2xl"
-            > 
-
-          {TABS.map((tab) => (
+        <View className="flex-row px-6 rounded-2xl mt-6">
+          <View className="bg-[#C4A484] flex-row flex-1 rounded-2xl">
+            {TABS.map((tab) => (
               <TouchableOpacity
-              key={tab}
-              className="flex-1 py-3 rounded-2xl"
-              onPress={() => setCurrentTab(tab)}
-              style={{
-                  backgroundColor: currentTab == tab ? "#419e34" : "transparent"
-              }}
-              > 
-                  <Text
+                key={tab}
+                className="flex-1 py-3 rounded-2xl"
+                onPress={() => setCurrentTab(tab)}
+                style={{
+                  backgroundColor:
+                    currentTab == tab ? "#419e34" : "transparent",
+                }}
+              >
+                <Text
                   className="text-center text-white text-xl"
                   style={{
-                      fontFamily: currentTab == tab ? 'Nunito-ExtraBold' : 'Nunito-Bold',
-                      color: currentTab == tab ? 'black' : '#5C4033'
-                      
+                    fontFamily:
+                      currentTab == tab ? "Nunito-ExtraBold" : "Nunito-Bold",
+                    color: currentTab == tab ? "black" : "#5C4033",
                   }}
-                  > 
+                >
                   {tab}
-                  </Text>
-
+                </Text>
               </TouchableOpacity>
-          ))
-          
-          }
+            ))}
           </View>
-          </View> 
+        </View>
         {/* accessory array contains all supabase columns so we map to render a slot(press to equip press agin to unequip) and set to equip*/}
         <View className="flex-row flex-wrap justify-center gap-4 mt-8">
-       
           {accessories
-          .filter((item) => item.slot.toLowerCase() === currentTab.toLowerCase())
-          .map((item, index) => (
-            <SimpleInventorySlot
-              key={index}
-              selected={equipped[item.slot]?.item_id === item.item_id}
-              onPress={() => {
-                console.log("Item pressed:", item);
-                const slot = item.slot;
-              
-                if (!slot) {
-                  console.error("Slot is missing for item:", item);
-                  return; // prevent further execution if slot is invalid
-                }
-              
-                setEquipped((prev) => ({
-                  ...prev,
-                  [slot]: prev[slot]?.item_id === item.item_id ? null : item,
-                }));
-              }}
-              
-            >
-              <Image
-                source={{ uri: item.image_url }}
-                className="w-16 h-16"
-                resizeMode="contain"
-              ></Image>
-            </SimpleInventorySlot>
-          ))}
+            .filter(
+              (item) => item.slot.toLowerCase() === currentTab.toLowerCase()
+            )
+            .map((item, index) => (
+              <SimpleInventorySlot
+                key={index}
+                selected={equipped[item.slot]?.item_id === item.item_id}
+                onPress={() => {
+                  console.log("Item pressed:", item);
+                  const slot = item.slot;
+
+                  if (!slot) {
+                    console.error("Slot is missing for item:", item);
+                    return; // prevent further execution if slot is invalid
+                  }
+
+                  setEquipped((prev) => ({
+                    ...prev,
+                    [slot]: prev[slot]?.item_id === item.item_id ? null : item,
+                  }));
+                }}
+              >
+                <Image
+                  source={{ uri: item.image_url }}
+                  className="w-16 h-16"
+                  resizeMode="contain"
+                ></Image>
+              </SimpleInventorySlot>
+            ))}
         </View>
         {/* Save Button */}
         <TouchableOpacity
@@ -198,25 +194,22 @@ export default function AvatarCustomisationScreen() {
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
       </ImageBackground>
-      
+
       <Modal
-          visible={showPopup}
-          transparent={true}
-          animationType="none"
-          onRequestClose={() => setShowPopup(false)}
+        visible={showPopup}
+        transparent={true}
+        animationType="none"
+        onRequestClose={() => setShowPopup(false)}
       >
-        <View 
-        className="flex-1 bg-black/50"
-        >
-          <AccessoryPopUp 
-          success={true}
-          messageHeading={"Avatar Saved!"}
-          messageDescription={"Your chtaracter has been updated"}
-          onContinue={() => setShowPopup(false)}/> 
+        <View className="flex-1 bg-black/50">
+          <AccessoryPopUp
+            success={true}
+            messageHeading={"Avatar Saved!"}
+            messageDescription={"Your chtaracter has been updated"}
+            onContinue={() => setShowPopup(false)}
+          />
         </View>
       </Modal>
     </View>
-
-    
   );
 }

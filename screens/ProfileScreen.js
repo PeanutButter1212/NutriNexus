@@ -27,7 +27,8 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useDistance } from "../contexts/DistanceTrackingContext";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import avatarImage from "../assets/MaleCharacter.png";
+import maleAvatarImage from "../assets/MaleCharacter.png";
+import femaleAvatarImage from "../assets/FemaleEdited.png";
 import { fetchEquippedItems } from "../services/avatarService";
 import { fetchPoints, fetchUsername } from "../services/profileService";
 import stoneImage from "../assets/stone_texture.png";
@@ -47,7 +48,12 @@ export default function Profile() {
 
   const [localPoints, setLocalPoints] = useState(0);
 
-  const [username, setUsername] = useState("User")
+  const [username, setUsername] = useState("User");
+
+  const { userDemographics } = useProfileData();
+
+  const avatarImage =
+    userDemographics.gender === "Female" ? femaleAvatarImage : maleAvatarImage;
 
   const handleLogout = () => {
     logout(authMethod, navigation);
@@ -70,8 +76,8 @@ export default function Profile() {
         const userPoints = await fetchPoints(session.user.id);
         setLocalPoints(userPoints);
 
-        const username = await fetchUsername(session.user.id)
-        setUsername(username)
+        const username = await fetchUsername(session.user.id);
+        setUsername(username);
       };
 
       loadData();

@@ -1,0 +1,17 @@
+# Supabase doesn't have schedule for edge functions via UI, so we use GitHub Actions instead
+name: Daily Points Scheduler
+
+on:
+  workflow_dispatch:
+  schedule:
+    #- cron: "*/5 * * * *" #  Runs every 5 mins for testing
+    - cron: "59 15 * * *" # For 11:59PM SGT
+
+jobs:
+  call-edge-function:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Supabase Edge Function
+        run: |
+          curl -X POST "https://rkrdnsnujizdskzbdwlp.supabase.co/functions/v1/awardDailyPoints" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"

@@ -32,7 +32,7 @@ export default function useProfileData() {
       const weeklySteps = await fetchWeeklySteps(userId);
       const profileUsername = await fetchUsername(userId);
       const visitedList = await fetchVisited(userId);
-      console.log("visited in useProfileData: " + visited)
+
 
       setTotalCalories(profileInfo.calories_consumed);
       setCalorieGoal(profileInfo.calorie_goal);

@@ -49,8 +49,8 @@ export async function fetchUserInfo(userId) {
     .eq("id", userId)
     .maybeSingle();
 
-    console.log("fetchUserInfo called with: " + userId)
-    console.log("data: " + JSON.stringify(data, null, 2) )
+  //console.log("fetchUserInfo called with: " + userId);
+  //console.log("data: " + JSON.stringify(data, null, 2));
 
   if (error) {
     console.error("fetchUserInfo error", error);
@@ -85,14 +85,12 @@ export async function fetchUsername(userId) {
     .eq("user_id", userId)
     .single();
 
-
   if (error) {
     return; 
   }
 
   return data.username;
 }
-
 
 //retrieve points info
 
@@ -124,7 +122,9 @@ export async function fetchVisited(userId) {
     return [];
   }
 
-  return data?.visited ?? [];
+
+  return data?.visited ?? []; //extract the array without visited header
+
 }
 
 //add to array if already visited
@@ -206,65 +206,61 @@ export async function fetchWeeklyCalories(userId) {
     .lte("date", endOfWeek.toISOString().split("T")[0]);
 
   const dailyTotals = {
-    MON: 0,
-    TUES: 0,
-    WED: 0,
-    THURS: 0,
-    FRI: 0,
-    SAT: 0,
-    SUN: 0,
+    //instead of 0 we use null which solves issue of fake graphs when value is 0
+    MON: null,
+    TUES: null,
+    WED: null,
+    THURS: null,
+    FRI: null,
+    SAT: null,
+    SUN: null,
   };
 
-  if (!data || data.length === 0) {
-    return Object.entries(dailyTotals).map(([day, value]) => ({
-      day,
-      value,
-    }));
+  if (data && data.length > 0) {
+    data.forEach((entry) => {
+      const date = new Date(entry.date);
+      const dayOfTheWeek = date
+        .toLocaleDateString("en-US", { weekday: "short" })
+        .toUpperCase();
+
+      let key;
+      switch (dayOfTheWeek) {
+        case "MON":
+          key = "MON";
+          break;
+        case "TUE":
+          key = "TUES";
+          break;
+        case "WED":
+          key = "WED";
+          break;
+        case "THU":
+          key = "THURS";
+          break;
+        case "FRI":
+          key = "FRI";
+          break;
+        case "SAT":
+          key = "SAT";
+          break;
+        case "SUN":
+          key = "SUN";
+          break;
+        default:
+          break;
+      }
+      if (key) {
+        dailyTotals[key] = (dailyTotals[key] || 0) + entry.calories;
+      }
+    });
   }
-
-  data.forEach((entry) => {
-    const date = new Date(entry.date);
-    const dayOfTheWeek = date
-      .toLocaleDateString("en-US", { weekday: "short" })
-      .toUpperCase();
-
-    let key;
-    switch (dayOfTheWeek) {
-      case "MON":
-        key = "MON";
-        break;
-      case "TUE":
-        key = "TUES";
-        break;
-      case "WED":
-        key = "WED";
-        break;
-      case "THU":
-        key = "THURS";
-        break;
-      case "FRI":
-        key = "FRI";
-        break;
-      case "SAT":
-        key = "SAT";
-        break;
-      case "SUN":
-        key = "SUN";
-        break;
-      default:
-        break;
-    }
-    if (key) {
-      dailyTotals[key] += entry.calories;
-    }
-  });
 
   const output = Object.entries(dailyTotals).map(([day, value]) => ({
     day,
     value,
   }));
 
-  return output;
+  return output; //this makes it into graph data format
 }
 
 //retrieve weekly step data for bar graph
@@ -286,58 +282,53 @@ export async function fetchWeeklySteps(userId) {
     .lte("date", endOfWeek.toISOString().split("T")[0]);
 
   const dailyTotals = {
-    MON: 0,
-    TUES: 0,
-    WED: 0,
-    THURS: 0,
-    FRI: 0,
-    SAT: 0,
-    SUN: 0,
+    MON: null,
+    TUES: null,
+    WED: null,
+    THURS: null,
+    FRI: null,
+    SAT: null,
+    SUN: null,
   };
 
-  if (!data || data.length === 0) {
-    return Object.entries(dailyTotals).map(([day, value]) => ({
-      day,
-      value,
-    }));
-  } //return dates if nth
+  if (data && data.length > 0) {
+    data.forEach((entry) => {
+      const date = new Date(entry.date);
+      const dayOfTheWeek = date
+        .toLocaleDateString("en-US", { weekday: "short" })
+        .toUpperCase();
 
-  data.forEach((entry) => {
-    const date = new Date(entry.date);
-    const dayOfTheWeek = date
-      .toLocaleDateString("en-US", { weekday: "short" })
-      .toUpperCase();
-
-    let key;
-    switch (dayOfTheWeek) {
-      case "MON":
-        key = "MON";
-        break;
-      case "TUE":
-        key = "TUES";
-        break;
-      case "WED":
-        key = "WED";
-        break;
-      case "THU":
-        key = "THURS";
-        break;
-      case "FRI":
-        key = "FRI";
-        break;
-      case "SAT":
-        key = "SAT";
-        break;
-      case "SUN":
-        key = "SUN";
-        break;
-      default:
-        break;
-    }
-    if (key) {
-      dailyTotals[key] += entry.steps;
-    }
-  });
+      let key;
+      switch (dayOfTheWeek) {
+        case "MON":
+          key = "MON";
+          break;
+        case "TUE":
+          key = "TUES";
+          break;
+        case "WED":
+          key = "WED";
+          break;
+        case "THU":
+          key = "THURS";
+          break;
+        case "FRI":
+          key = "FRI";
+          break;
+        case "SAT":
+          key = "SAT";
+          break;
+        case "SUN":
+          key = "SUN";
+          break;
+        default:
+          break;
+      }
+      if (key) {
+        dailyTotals[key] = (dailyTotals[key] || 0) + entry.steps;
+      }
+    });
+  }
 
   const output = Object.entries(dailyTotals).map(([day, value]) => ({
     day,
@@ -381,7 +372,7 @@ export async function updateCaloriesConsumed(userId) {
       .eq("id", userId)
       .single();
 
-    console.log("✅ Final profileRow:", profileRow);
+    console.log("Final profileRow:", profileRow);
 
     return profileRow;
   } catch (err) {
@@ -705,11 +696,10 @@ export async function addGoalPoints(userId) {
 }
 
 export async function updateUsername(userId, username) {
-
-  const oldUsername = await fetchUsername(userId)
+  const oldUsername = await fetchUsername(userId);
 
   if (username === oldUsername) {
-    throw new Error("This is your current username :D")
+    throw new Error("This is your current username :D");
   }
 
   const { data: existingUser, error: checkError } = await supabase
@@ -722,24 +712,20 @@ export async function updateUsername(userId, username) {
     throw new Error("This username is taken, choose another one!");
   }
 
-
-
   const { error: updateError } = await supabase
     .from("profiles")
     .update({ username })
     .eq("id", userId);
 
   const { error: updateProfileError } = await supabase
-  .from("profile_page")
-  .update({ username })
-  .eq("id", userId);
+    .from("profile_page")
+    .update({ username })
+    .eq("id", userId);
 
   const { error: updateExtendedProfileError } = await supabase
-  .from("username")
-  .update({ username })
-  .eq("user_id", userId);
+    .from("username")
+    .update({ username })
+    .eq("user_id", userId);
 
-  
   return true;
 }
-
