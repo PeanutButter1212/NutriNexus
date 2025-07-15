@@ -122,12 +122,12 @@ export default function ShopScreen({navigation}) {
 
           columns.push(
             <View
+            key={`row-${leftItemInfo.id}-${rightItemInfo?.id || 'empty'}`} 
             style={{
                 marginTop: isFirstRow ? 0 : 10
               }}
             > 
             <ShopRow
-              key={`row-${leftItemInfo.id}-${rightItemInfo?.id || 'empty'}`} 
               onGetPress={handleGet}
               leftItem={{
                 children: (

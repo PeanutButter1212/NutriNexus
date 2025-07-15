@@ -25,7 +25,7 @@ import fishNoodlesImg from "../assets/FishNoodle_Stall.jpg";
 import useProfileData from "../hooks/useProfileData";
 import { retrieveCoords } from "../services/hawkerService";
 import { handleFirstVisit } from "../services/profileService";
-import handleCheckboxes from "../services/stallVisitedService";
+import { handleCheckboxes, fetchVisitedStalls } from "../services/stallVisitedService";
 //to center the horizontal scroll
 const screenWidth = Dimensions.get("window").width;
 const cardWidth = 256;
@@ -58,47 +58,7 @@ export default function LocationScreen({ route }) {
     fetchVisited();
   }, [userId, locationrow]);
 
-  //save this to database?
-  /*
-  const stalls = [
-    {
-      name: "Roasted Delights",
-      foods: [
-        "Vegetarain Char Siew Rice (500kcal)",
-        "Steamed Chicken Rice (650kcal)",
-        "Wonton Noodles (450kcal)",
-      ],
-      pic: roastedDelightImg,
-    },
-    {
-      name: "Japanese Korean",
-      foods: [
-        "Beef Bibimbap (700kcal)",
-        "Vegetarian Bibimbap (550kcal)",
-        "Chicken Bibimbap (650kcal)",
-      ],
-      pic: japaneseKoreanImg,
-    },
-    {
-      name: "Fish Noodles",
-      foods: [
-        "Sliced Fish Noodle (400kcal)",
-        "Bittergourd Soup (250kcal)",
-        "Vegetarian Soup (300kcal)",
-      ],
-      pic: fishNoodlesImg,
-    },
-    {
-      name: "FishBall Noodles",
-      foods: [
-        "Dry FishBall Noodles (450kcal) ",
-        "Bak Kut Teh (400kcal)",
-        "Soup FishBall Noodles (350kcal)",
-      ],
-      pic: fishBallNoodlesImg,
-    },
-  ];
-  */
+  
 
   useEffect(() => {
     const fetchStalls = async () => {

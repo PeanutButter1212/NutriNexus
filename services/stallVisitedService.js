@@ -10,16 +10,18 @@ export async function handleCheckboxes(userId, centreId, stallId) {
     .eq("centre_id", centreId)
     .single();
 
+
+
   console.log("done with checking stalls visited by user in centre");
 
   if (error) {
-    console.error("Error detching stall visits: ", error);
+    console.error("Error detecting stall visits: ", error);
     return { success: false };
   }
 
   const alreadyVisited = stallVisitsInCentre.stall_ids.includes(stallId);
 
-  // if not visited yet
+
   if (!alreadyVisited) {
     const updatedStalls = [...stallVisitsInCentre.stall_ids, stallId];
     const { error: updateError } = await supabase
@@ -71,3 +73,4 @@ export async function fetchVisitedStalls(userId, centreId) {
 
   return data?.stall_ids || [];
 }
+
