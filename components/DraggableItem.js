@@ -3,7 +3,6 @@ import { useRef, useState } from 'react';
 const DraggableItem = ({
     item,
     itemInfo, 
-    itemData, 
     draggedItemData, 
     onDragStart, 
     onDragMove, 
@@ -14,10 +13,10 @@ const DraggableItem = ({
     
     const [isDraggingThis, setIsDraggingThis] = useState(false);
     const itemRef = useRef(null);
-
-    const currentItem = itemData || item;
-    const currentItemId = currentItem?.item_id;
+//currentItem menas item inside this inventory slot, not necesssarily the one being dragged rn 
+    const currentItem = item;
 // create draggable items which respond to user's touches 
+//item is user item, iteminfo is the item bank version 
 const panResponder = useRef(
     PanResponder.create({
         onStartShouldSetPanResponder: (evt, gestureState) => {
@@ -37,7 +36,7 @@ const panResponder = useRef(
             
             itemRef.current?.measure((fx, fy, width, height, px, py) => {
                 setIsDraggingThis(true);
-                onDragStart(currentItemId, currentItem, { uri: itemInfo.image_url }, { x: px, y: py });
+                onDragStart( currentItem, { uri: itemInfo.image_url }, { x: px, y: py });
             });
         },
         onPanResponderMove: (evt, gestureState) => {
@@ -50,7 +49,6 @@ const panResponder = useRef(
             const dropY = gestureState.moveY;
 
             const freshDragData = {
-                plantId: currentItemId, 
                 image: { uri: itemInfo.image_url },
                 itemData: currentItem 
             };
@@ -64,7 +62,7 @@ const panResponder = useRef(
         },
     })
 ).current;
-          const isThisItemBeingDragged = draggedItemData && draggedItemData.plantId === currentItemId;
+          const isThisItemBeingDragged = draggedItemData && draggedItemData.itemData.item_id === currentItem.item_id;
         
           return (
             <View style={{ position: 'relative' }}>

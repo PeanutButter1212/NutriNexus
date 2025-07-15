@@ -131,11 +131,7 @@ export async function insertToGarden(userId, row, col, decorId) {
 }
 
 export async function removeFromGarden(userId, col, row) {
-  console.log("🔥 removeFromGarden called with:", {
-    userId: userId,
-    col: col, 
-    row: row
-  });
+
 
   const { error: deleteError } = await supabase
   .from("garden_layout")
@@ -144,7 +140,6 @@ export async function removeFromGarden(userId, col, row) {
   .eq("row", row)
   .eq("col", col)
 
-  console.log("🔥 Delete query completed, error:", deleteError);
 
 
 
