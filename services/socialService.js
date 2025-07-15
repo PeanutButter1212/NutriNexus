@@ -126,3 +126,34 @@ export async function getFriendStatus(currentId, targetUserId) {
 
   return data?.[0]?.status || null; //returns an array [ { status: "accepted" } ] sth like that
 }
+
+//method to fetch number of visited marker
+
+export async function fetchNumberVisited(userId) {
+  const { data, error } = await supabase
+    .from("profile_page")
+    .select("visited")
+    .eq("id", userId);
+
+  if (error) {
+    console.error("Error fetching visited:", error);
+    return 0;
+  }
+
+  const visited = data?.[0]?.visited ?? [];
+  return visited.length;
+}
+
+export async function fetchNumberofFriends(userId) {
+  const { data, error } = await supabase
+    .from("friendships")
+    .select("*")
+    .eq("status", "accepted")
+    .or(`user_id.eq.${userId},friend_id.eq.${userId}`);
+
+  if (error) {
+    console.error("Error fetching friends:", error);
+    return 0;
+  }
+  return data.length;
+}

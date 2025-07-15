@@ -23,6 +23,12 @@ import { Canvas } from "@shopify/react-native-skia";
 import { fetchPlants } from "../services/gardenService";
 import { fetchPoints } from "../services/profileService";
 import { fetchUsername } from "../services/profileService";
+import {
+  deleteFriendRequest,
+  fetchNumberVisited,
+  fetchNumberofFriends,
+} from "../services/socialService";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function FriendProfileScreen({ navigation }) {
   const [equipped, setEquipped] = useState({
@@ -33,6 +39,9 @@ export default function FriendProfileScreen({ navigation }) {
 
   console.log("equipped:", equipped);
 
+  const { user } = useAuth();
+  const currentId = user?.id;
+
   const route = useRoute();
   const { friendId } = route.params;
   const [gender, setGender] = useState(null);
@@ -40,6 +49,8 @@ export default function FriendProfileScreen({ navigation }) {
   const [plantItems, setPlantItems] = useState({}); //for url of plant images
   const [points, setPoints] = useState();
   const [username, setUsername] = useState();
+  const [numfriends, setNumFriends] = useState();
+  const [numloc, setNumLoc] = useState();
 
   const gardenAreaRef = useRef(null);
 
@@ -47,7 +58,7 @@ export default function FriendProfileScreen({ navigation }) {
     useCallback(() => {
       const loadData = async () => {
         const fresh = await fetchEquippedItems(friendId);
-        console.log(fresh);
+        //console.log(fresh);
         setEquipped(fresh);
 
         const info = await fetchUserInfo(friendId);
@@ -58,6 +69,14 @@ export default function FriendProfileScreen({ navigation }) {
 
         const username = await fetchUsername(friendId);
         setUsername(username);
+
+        const numberFriends = await fetchNumberofFriends(friendId);
+        console.log(numberFriends);
+        setNumFriends(numberFriends);
+
+        const numberLocations = await fetchNumberVisited(friendId);
+        console.log(numberLocations);
+        setNumLoc(numberLocations);
 
         const layout = await retrieveGardenLayout(friendId);
         //console.log("Garden layout raw:", layout);
@@ -121,12 +140,12 @@ export default function FriendProfileScreen({ navigation }) {
 
               <View className="flex-row">
                 <View>
-                  <Text> 12 </Text>
+                  <Text> {numfriends} </Text>
                   <Text> Friends </Text>
                 </View>
 
                 <View className="ml-4">
-                  <Text> 20 </Text>
+                  <Text> {numloc} </Text>
                   <Text> Places </Text>
                 </View>
 
@@ -235,6 +254,15 @@ export default function FriendProfileScreen({ navigation }) {
           </View>
         </View>
       </View>
+      <TouchableOpacity
+        className="ml-14 items-center justify-center bg-red-600 w-3/4 rounded-xl mt-6 py-3 mt-8 mb-24"
+        onPress={async () => {
+          await deleteFriendRequest(currentId, friendId);
+          navigation.navigate("Friends List");
+        }}
+      >
+        <Text className="text-white text-base font-medium">Remove Friend</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
