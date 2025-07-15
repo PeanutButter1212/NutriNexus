@@ -41,6 +41,7 @@ export default function AddFriendScreen({ navigation }) {
     runSearch();
   }, [searchTerm]); //run everytime searchTerm changes (when we type)
 
+  //this is to update the status everytime search
   useEffect(() => {
     const loadStatuses = async () => {
       if (searchResults.length === 0 || !currentId) return;
@@ -66,7 +67,7 @@ export default function AddFriendScreen({ navigation }) {
         return {
           text: "Friends",
           icon: "check",
-          bgColor: "bg-gray-200",
+          bgColor: "bg-green-200",
           textColor: "text-black",
           iconColor: "black",
           disabled: true,
