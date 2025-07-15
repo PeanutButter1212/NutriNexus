@@ -7,6 +7,8 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  Platform,
+  ActivityIndicator
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { useAuth } from "../contexts/AuthContext";
@@ -68,14 +70,18 @@ export default function OTPScreen({ navigation, route }) {
       </TouchableOpacity>
 
       {loading && (
-        <View className="justify-center items-center">
+      <View className="justify-center items-center">
+        {Platform.OS === "ios" ? (
           <LottieView
             source={require("../assets/loading.json")}
             autoPlay
             loop
             style={{ width: 80, height: 80, marginTop: 15 }}
           />
-        </View>
+        ) : (
+          <ActivityIndicator size="large" color="#000" style={{ marginTop: 15 }} />
+        )}
+      </View>
     )}
 
     </View>
