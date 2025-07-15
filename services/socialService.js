@@ -127,8 +127,7 @@ export async function getFriendStatus(currentId, targetUserId) {
   return data?.[0]?.status || null; //returns an array [ { status: "accepted" } ] sth like that
 }
 
-//method to fetch number of visited marker
-
+//fetch number of visited marker for friendprofilescreen
 export async function fetchNumberVisited(userId) {
   const { data, error } = await supabase
     .from("profile_page")
@@ -143,7 +142,7 @@ export async function fetchNumberVisited(userId) {
   const visited = data?.[0]?.visited ?? [];
   return visited.length;
 }
-
+//fetch number of friends for friendprofilescreen
 export async function fetchNumberofFriends(userId) {
   const { data, error } = await supabase
     .from("friendships")
@@ -156,4 +155,17 @@ export async function fetchNumberofFriends(userId) {
     return 0;
   }
   return data.length;
+}
+
+//remove friend after accepting in friendprofilescreen
+export async function removeFriend(userA, userB) {
+  const { error } = await supabase.from("friendships").delete().or(
+    `and(user_id.eq.${userA},friend_id.eq.${userB},status.eq.accepted),and(user_id.eq.${userB},friend_id.eq.${userA},status.eq.accepted)` //once again need check both ways
+  );
+
+  if (error) {
+    console.log("error", error);
+    return false;
+  }
+  return true;
 }

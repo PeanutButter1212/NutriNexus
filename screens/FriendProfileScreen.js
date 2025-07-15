@@ -6,6 +6,7 @@ import {
   ScrollView,
   Image,
   Dimensions,
+  ImageBackground,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import maleAvatarImage from "../assets/MaleCharacter.png";
@@ -24,11 +25,12 @@ import { fetchPlants } from "../services/gardenService";
 import { fetchPoints } from "../services/profileService";
 import { fetchUsername } from "../services/profileService";
 import {
-  deleteFriendRequest,
   fetchNumberVisited,
   fetchNumberofFriends,
+  removeFriend,
 } from "../services/socialService";
 import { useAuth } from "../contexts/AuthContext";
+import backgroundImage from "../assets/CustomisationBackground.png";
 
 export default function FriendProfileScreen({ navigation }) {
   const [equipped, setEquipped] = useState({
@@ -169,34 +171,40 @@ export default function FriendProfileScreen({ navigation }) {
           </Text> */}
         </View>
 
-        <View className="border-2 border-grey-300  w-full">
+        <View className="border-2 border-grey-300 w-full">
           {/* Avatar view*/}
-          <View className="w-56 h-96 relative items-center justify-center">
-            <Image source={avatarImage} className="w-full h-full absolute" />
-            {/* for each equppied item we render image onto avatar*/}
+          <ImageBackground
+            source={backgroundImage}
+            resizeMode="cover"
+            className="w-full h-[384px] items-center justify-center"
+          >
+            <View className="w-56 h-96 relative items-center justify-center">
+              <Image source={avatarImage} className="w-full h-full absolute" />
+              {/* for each equppied item we render image onto avatar*/}
 
-            {Object.values(equipped).map((item, index) => {
-              if (!item || typeof item !== "object" || !item.image_url)
-                return null;
-              return (
-                //check if both item and url exists cause there was a error when item is null
-                <Image
-                  key={index}
-                  source={{ uri: item.image_url }}
-                  className="w-full h-full absolute"
-                  resizeMode="contain"
-                  style={{
-                    //i converted position to percenatges and store in backend so it will not be misaligned for different device sizes
-                    position: "absolute",
-                    top: (item.position?.topPct ?? 0) * 384,
-                    left: (item.position?.leftPct ?? 0) * 224,
-                    width: (item.position?.widthPct ?? 0) * 224,
-                    height: (item.position?.heightPct ?? 0) * 384,
-                  }}
-                />
-              );
-            })}
-          </View>
+              {Object.values(equipped).map((item, index) => {
+                if (!item || typeof item !== "object" || !item.image_url)
+                  return null;
+                return (
+                  //check if both item and url exists cause there was a error when item is null
+                  <Image
+                    key={index}
+                    source={{ uri: item.image_url }}
+                    className="w-full h-full absolute"
+                    resizeMode="contain"
+                    style={{
+                      //i converted position to percenatges and store in backend so it will not be misaligned for different device sizes
+                      position: "absolute",
+                      top: (item.position?.topPct ?? 0) * 384,
+                      left: (item.position?.leftPct ?? 0) * 224,
+                      width: (item.position?.widthPct ?? 0) * 224,
+                      height: (item.position?.heightPct ?? 0) * 384,
+                    }}
+                  />
+                );
+              })}
+            </View>
+          </ImageBackground>
         </View>
 
         <View className="flex-row justify-start self-start w-full">
@@ -209,7 +217,10 @@ export default function FriendProfileScreen({ navigation }) {
           </Text> */}
         </View>
 
-        <View className="w-full mt-4" style={{ height: 0.65 * SCREEN_HEIGHT }}>
+        <View
+          className="w-full mt-4 mr-8"
+          style={{ height: 0.65 * SCREEN_HEIGHT }}
+        >
           <View
             ref={gardenAreaRef}
             style={{
@@ -257,8 +268,8 @@ export default function FriendProfileScreen({ navigation }) {
       <TouchableOpacity
         className="ml-14 items-center justify-center bg-red-600 w-3/4 rounded-xl mt-6 py-3 mt-8 mb-24"
         onPress={async () => {
-          await deleteFriendRequest(currentId, friendId);
-          navigation.navigate("Friends List");
+          await removeFriend(currentId, friendId);
+          navigation.navigate("MainTabs", { screen: "Social" });
         }}
       >
         <Text className="text-white text-base font-medium">Remove Friend</Text>
