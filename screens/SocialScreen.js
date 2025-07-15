@@ -22,6 +22,8 @@ import {
   fetchUsernameByIds,
 } from "../services/socialService";
 import { useAuth } from "../contexts/AuthContext";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
 
 export default function SocialScreen({ navigation }) {
   const { user } = useAuth();
@@ -30,21 +32,23 @@ export default function SocialScreen({ navigation }) {
   const [friendList, setFriendList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    const loadFriends = async () => {
-      console.log("hi");
-      const rawFriends = await fetchApprovedRequests(currentId);
-      console.log(rawFriends);
+  useFocusEffect(
+    useCallback(() => {
+      const loadFriends = async () => {
+        //console.log("hi");
+        const rawFriends = await fetchApprovedRequests(currentId);
+        console.log(rawFriends);
 
-      const friendIds = rawFriends.map(
-        (f) => (f.user_id === currentId ? f.friend_id : f.user_id) //obtain either ids based on who the user/friend is
-      );
+        const friendIds = rawFriends.map(
+          (f) => (f.user_id === currentId ? f.friend_id : f.user_id) //obtain either ids based on who the user/friend is
+        );
 
-      const usernames = await fetchUsernameByIds(friendIds);
-      setFriendList(usernames);
-    };
-    loadFriends();
-  }, [currentId]);
+        const usernames = await fetchUsernameByIds(friendIds);
+        setFriendList(usernames);
+      };
+      loadFriends();
+    }, [currentId])
+  );
 
   const filteredResults = friendList.filter((user) =>
     user.username.toLowerCase().startsWith(searchTerm.toLowerCase())

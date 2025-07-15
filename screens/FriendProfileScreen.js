@@ -11,8 +11,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import maleAvatarImage from "../assets/MaleCharacter.png";
 import femaleAvatarImage from "../assets/FemaleEdited.png";
 import { useEffect, useCallback, useState, useRef } from "react";
-import { useRoute } from "@react-navigation/native";
-import { useFocusEffect } from "@react-navigation/native";
+import { useRoute, useFocusEffect } from "@react-navigation/native";
+
 import useProfileData from "../hooks/useProfileData";
 import { fetchEquippedItems } from "../services/avatarService";
 import { fetchUserInfo } from "../services/profileService";
@@ -22,6 +22,7 @@ import SkiaImageItem from "../components/skiaImageItem";
 import { Canvas } from "@shopify/react-native-skia";
 import { fetchPlants } from "../services/gardenService";
 import { fetchPoints } from "../services/profileService";
+import { fetchUsername } from "../services/profileService";
 
 export default function FriendProfileScreen({ navigation }) {
   const [equipped, setEquipped] = useState({
@@ -30,12 +31,15 @@ export default function FriendProfileScreen({ navigation }) {
     hand: null,
   });
 
+  console.log("equipped:", equipped);
+
   const route = useRoute();
   const { friendId } = route.params;
   const [gender, setGender] = useState(null);
   const [friendGarden, setFriendGarden] = useState([]); //for layout
   const [plantItems, setPlantItems] = useState({}); //for url of plant images
   const [points, setPoints] = useState();
+  const [username, setUsername] = useState();
 
   const gardenAreaRef = useRef(null);
 
@@ -43,6 +47,7 @@ export default function FriendProfileScreen({ navigation }) {
     useCallback(() => {
       const loadData = async () => {
         const fresh = await fetchEquippedItems(friendId);
+        console.log(fresh);
         setEquipped(fresh);
 
         const info = await fetchUserInfo(friendId);
@@ -50,6 +55,9 @@ export default function FriendProfileScreen({ navigation }) {
 
         const userPoints = await fetchPoints(friendId);
         setPoints(userPoints);
+
+        const username = await fetchUsername(friendId);
+        setUsername(username);
 
         const layout = await retrieveGardenLayout(friendId);
         //console.log("Garden layout raw:", layout);
@@ -106,7 +114,9 @@ export default function FriendProfileScreen({ navigation }) {
 
             <View className="flex-col ml-8">
               <View>
-                <Text className="font-nunito-extrabold text-2xl ml-1">Joh</Text>
+                <Text className="font-nunito-extrabold text-2xl ml-1">
+                  {username}
+                </Text>
               </View>
 
               <View className="flex-row">
@@ -145,8 +155,12 @@ export default function FriendProfileScreen({ navigation }) {
           <View className="w-56 h-96 relative items-center justify-center">
             <Image source={avatarImage} className="w-full h-full absolute" />
             {/* for each equppied item we render image onto avatar*/}
-            {Object.values(equipped).map((item, index) =>
-              item ? (
+
+            {Object.values(equipped).map((item, index) => {
+              if (!item || typeof item !== "object" || !item.image_url)
+                return null;
+              return (
+                //check if both item and url exists cause there was a error when item is null
                 <Image
                   key={index}
                   source={{ uri: item.image_url }}
@@ -155,14 +169,14 @@ export default function FriendProfileScreen({ navigation }) {
                   style={{
                     //i converted position to percenatges and store in backend so it will not be misaligned for different device sizes
                     position: "absolute",
-                    top: item.position?.topPct * 384,
-                    left: item.position?.leftPct * 224,
-                    width: item.position?.widthPct * 224,
-                    height: item.position?.heightPct * 384,
+                    top: (item.position?.topPct ?? 0) * 384,
+                    left: (item.position?.leftPct ?? 0) * 224,
+                    width: (item.position?.widthPct ?? 0) * 224,
+                    height: (item.position?.heightPct ?? 0) * 384,
                   }}
                 />
-              ) : null
-            )}
+              );
+            })}
           </View>
         </View>
 
