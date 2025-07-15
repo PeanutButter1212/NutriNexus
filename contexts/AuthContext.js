@@ -28,7 +28,11 @@ export const AuthProvider = ({ children }) => {
     console.log("Configuring Google Sign-In");
     GoogleSignin.configure({
       scopes: ["https://www.googleapis.com/auth/userinfo.email"],
-      iosClientId: "40873347659-vecf58o4qml6t89rirffpsitnvnddqru.apps.googleusercontent.com", 
+      webClientId: "40873347659-k56jrhdf11ipoqsihkqcg43aacjo2h06.apps.googleusercontent.com",
+      iosClientId: "40873347659-vecf58o4qml6t89rirffpsitnvnddqru.apps.googleusercontent.com",
+      offlineAccess: true,
+      forceCodeForRefreshToken: true,
+      profileImageSize: 120
     });
   
     const fetchProfile = async (userId) => {
@@ -338,6 +342,18 @@ const googleSignIn = async () => {
         throw insertError;
       }
 
+      const { error: usernameInsertError } = await supabase
+      .from("username") 
+      .insert({
+        username: username,
+        user_id: userId
+      });
+
+    if (usernameInsertError) {
+      console.error("Username table insertion error:", usernameInsertError);
+      throw usernameInsertError;
+    }
+
       // Insert default inventory items
       console.log("Inserting default inventory items for Google user");
       const inventorySuccess = await insertDefaultInventoryItems(userId);
@@ -365,7 +381,6 @@ const googleSignIn = async () => {
         throw profilePageInsertError;
       }
 
-      console.log("✅ Google profile and profile_page inserted successfully");
 
       // Fetch inserted profile data
       const { data: newProfileData, error: reloadError } = await supabase
@@ -387,10 +402,8 @@ const googleSignIn = async () => {
       setAuthMethod("google");
       setIsAuthenticated(true);
       setUser(profileData);
-      navigation.navigate("MainTabs");
     }
 
-    Alert.alert("Success", "You are now signed in with Google");
     return data.user;
   } catch (error) {
     console.error("Google Sign-In Error:", error.message);

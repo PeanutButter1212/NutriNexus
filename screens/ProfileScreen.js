@@ -180,7 +180,10 @@ export default function Profile() {
         </TouchableOpacity>
 
         <Text className="text-3xl font-bold text-white text-center mt-12 mb-4">
-          Welcome Back, {username}!
+          Welcome Back, {username === "User" ? profile
+                      ? profile.username
+                      : "undefined"
+                      : username}!
         </Text>
 
         <View className="flex-1 justify-center items-center mb-16">

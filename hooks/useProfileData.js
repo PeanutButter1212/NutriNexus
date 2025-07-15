@@ -33,6 +33,7 @@ export default function useProfileData() {
       const profileUsername = await fetchUsername(userId);
       const visitedList = await fetchVisited(userId);
 
+
       setTotalCalories(profileInfo.calories_consumed);
       setCalorieGoal(profileInfo.calorie_goal);
       setCaloriesData(weeklyCalories);

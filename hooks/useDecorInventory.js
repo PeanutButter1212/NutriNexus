@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useCallback,  useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { retrieveDecorInventory } from "../services/gardenService";
 import { useAuth } from "../contexts/AuthContext";
 export default function useDecorInventory() {
@@ -6,21 +7,22 @@ export default function useDecorInventory() {
     const [decorInventory, setDecorInventory] = useState([]);
     const userId = session?.user?.id 
 
-
-    if (!userId) return;
-
-    useEffect(() => {
-        async function fetchDecorInventory() {
-            try {
-                const data = await retrieveDecorInventory(userId)
-                setDecorInventory(data)
-            } catch (err) {
-                console.error(err)
-            }
+    const fetchDecorInventory = useCallback(async() =>  {
+        if (!userId) return;
+        try {
+            const data = await retrieveDecorInventory(userId)
+            setDecorInventory(data)
+        } catch (err) {
+            console.error(err)
         }
+    }, [userId])
+
+    useFocusEffect(
+        useCallback(() => {
+          fetchDecorInventory();
+        }, [fetchDecorInventory])
+      );
     
-    fetchDecorInventory()
-}, [session]);
 
     return decorInventory; 
 }
