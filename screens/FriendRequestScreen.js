@@ -41,7 +41,7 @@ export default function FriendRequestScreen({ navigation }) {
 
   return (
     <View className="">
-      <View className="mt-12 items-center justify-center">
+      <View className="mt-24 items-center justify-center">
         <Text className="text-3xl font-bold font-nunito-bold">
           Friend Requests
         </Text>

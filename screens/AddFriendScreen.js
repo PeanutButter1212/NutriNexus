@@ -12,7 +12,11 @@ import Feather from "@expo/vector-icons/Feather";
 import { useEffect, useState } from "react";
 import { searchUsers } from "../services/socialService";
 import { useAuth } from "../contexts/AuthContext";
-import { sendFriendRequest, getFriendStatus } from "../services/socialService";
+import {
+  sendFriendRequest,
+  getFriendStatus,
+  deleteFriendRequest,
+} from "../services/socialService";
 
 export default function AddFriendScreen({ navigation }) {
   const [searchResults, setSearchResults] = useState([]);
@@ -41,11 +45,11 @@ export default function AddFriendScreen({ navigation }) {
     const loadStatuses = async () => {
       if (searchResults.length === 0 || !currentId) return;
 
-      const statuses = {};
+      const statuses = {}; //hashmap where key is userid and value is status
 
       for (const target of searchResults) {
         const result = await getFriendStatus(currentId, target.user_id);
-        console.log(`${target.username} (${target.user_id}) status:`, result);
+        //console.log(`${target.username} (${target.user_id}) status:`, result);
         statuses[target.user_id] = result;
       }
 
@@ -55,9 +59,76 @@ export default function AddFriendScreen({ navigation }) {
     loadStatuses();
   }, [searchResults, currentId]);
 
+  //toggle between 3 modes, alr friends - nth happens, pending - option to cancel, add friends - option to add
+  const getButtonConfig = (status) => {
+    switch (status) {
+      case "accepted":
+        return {
+          text: "Friends",
+          icon: "check",
+          bgColor: "bg-gray-200",
+          textColor: "text-black",
+          iconColor: "black",
+          disabled: true,
+        };
+      case "pending":
+        return {
+          text: "Cancel Request",
+          icon: "x",
+          bgColor: "bg-red-500",
+          textColor: "text-white",
+          iconColor: "white",
+          disabled: false,
+        };
+      default:
+        return {
+          text: "Add Friend",
+          icon: "plus",
+          bgColor: "bg-blue-500",
+          textColor: "text-white",
+          iconColor: "white",
+          disabled: false,
+        };
+    }
+  };
+
+  //handle action based on 3 modes
+  const handleFriendAction = async (targetUserId) => {
+    const currentStatus = userStatuses[targetUserId];
+
+    if (currentStatus == "accepted") {
+      return;
+    } else if (currentStatus == "pending") {
+      try {
+        await deleteFriendRequest(currentId, targetUserId);
+        setUserStatuses((prev) => {
+          const newStatuses = { ...prev };
+          delete newStatuses[targetUserId];
+          return newStatuses;
+        });
+      } catch (error) {
+        Alert.alert("Error", "Failed to cancel friend request");
+      }
+    } else {
+      try {
+        const success = await sendFriendRequest(currentId, targetUserId);
+        if (success) {
+          setUserStatuses((prev) => ({
+            ...prev,
+            [targetUserId]: "pending",
+          }));
+        } else {
+          Alert.alert("Error failed to add");
+        }
+      } catch (error) {
+        Alert.alert("Error", error);
+      }
+    }
+  };
+
   return (
     <View>
-      <View className="mt-12 items-center">
+      <View className="mt-24 items-center">
         <Text className="text-3xl font-bold font-nunito-bold">Add Friends</Text>
       </View>
       <View className="w-3/4 flex-row items-center border border-gray-300 rounded-xl mt-6 px-4 py-3 self-center">
@@ -75,106 +146,45 @@ export default function AddFriendScreen({ navigation }) {
         contentContainerStyle={{ paddingVertical: 12 }}
       >
         {searchTerm !== "" &&
-          searchResults.map((targetuser, index) => (
-            <View
-              key={index}
-              className="justify-between flex-row bg-white py-4 rounded-xl shadow-md flex-1 self-center mb-3 w-[320px] px-4"
-            >
-              <View className="flex-row">
-                <View className="rounded-full bg-blue-500 p-4 ml-5"></View>
-                <View className="items-center justify-center ml-3">
-                  <Text className="font-nunito-regular">
-                    {targetuser.username}
-                  </Text>
-                </View>
-              </View>
+          searchResults.map((targetuser, index) => {
+            const status = userStatuses[targetuser.user_id];
+            const buttonConfig = getButtonConfig(status);
 
-              <TouchableOpacity
-                className="mr-8 justify-center"
-                onPress={async () => {
-                  /* if alr friend can remove*/
-                  if (userStatuses[targetuser.user_id] === "accepted") {
-                    Alert.alert(
-                      "Remove Friend?",
-                      `Remove ${targetuser.username} as a friend?`,
-                      [
-                        { text: "Cancel", style: "cancel" },
-                        {
-                          text: "Remove",
-                          style: "destructive",
-                          onPress: () => {
-                            setUserStatuses((prev) => ({
-                              ...prev,
-                              [targetuser.user_id]: null,
-                            }));
-                          },
-                        },
-                      ]
-                    );
-                    /* if pending can cancel request */
-                  } else if (userStatuses[targetuser.user_id] === "pending") {
-                    setUserStatuses((prev) => ({
-                      ...prev,
-                      [targetuser.user_id]: null,
-                    }));
-                  } else {
-                    /* if sent request set to pending  */
-                    const success = await sendFriendRequest(
-                      currentId,
-                      targetuser.user_id
-                    );
-                    if (success) {
-                      setUserStatuses((prev) => ({
-                        ...prev,
-                        [targetuser.user_id]: "pending",
-                      }));
-                    } else {
-                      Alert.alert("Error fail to send request");
-                    }
-                  }
-                }}
+            return (
+              <View
+                key={index}
+                className="justify-between flex-row bg-white py-4 rounded-xl shadow-md flex-1 self-center mb-3 w-[320px] px-4"
               >
-                <View
-                  className={`flex-row  px-2 py-2 rounded-xl items-center justify-center ${
-                    userStatuses[targetuser.user_id] === "accepted"
-                      ? "bg-gray-200"
-                      : userStatuses[targetuser.user_id] === "pending"
-                      ? "bg-indigo-300"
-                      : "bg-blue-500"
-                  }`}
-                >
-                  <Feather
-                    name={
-                      userStatuses[targetuser.user_id] === "accepted"
-                        ? "check"
-                        : userStatuses[targetuser.user_id] === "pending"
-                        ? "clock"
-                        : "plus"
-                    }
-                    size={16}
-                    color={
-                      userStatuses[targetuser.user_id] === "accepted"
-                        ? "black"
-                        : "white"
-                    }
-                  />
-                  <Text
-                    className={
-                      userStatuses[targetuser.user_id] === "accepted"
-                        ? "text-black"
-                        : "text-white"
-                    }
-                  >
-                    {userStatuses[targetuser.user_id] === "accepted"
-                      ? "Friends"
-                      : userStatuses[targetuser.user_id] === "pending"
-                      ? "Request Sent"
-                      : "Add Friend"}
-                  </Text>
+                <View className="flex-row">
+                  <View className="rounded-full bg-blue-500 p-4 ml-5"></View>
+                  <View className="items-center justify-center ml-3">
+                    <Text className="font-nunito-regular">
+                      {targetuser.username}
+                    </Text>
+                  </View>
                 </View>
-              </TouchableOpacity>
-            </View>
-          ))}
+
+                <TouchableOpacity
+                  className="mr-8 justify-center"
+                  disabled={buttonConfig.disabled}
+                  onPress={() => handleFriendAction(targetuser.user_id)}
+                >
+                  <View
+                    className={`flex-row  px-2 py-2 rounded-xl items-center justify-center ${buttonConfig.bgColor}`}
+                  >
+                    <Feather
+                      name={buttonConfig.icon}
+                      size={16}
+                      color={buttonConfig.iconColor}
+                    />
+                    <Text className={`${buttonConfig.textColor} ml-1`}>
+                      {buttonConfig.text}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            );
+          })}
       </ScrollView>
 
       <TouchableOpacity

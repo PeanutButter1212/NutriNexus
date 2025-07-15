@@ -124,5 +124,5 @@ export async function getFriendStatus(currentId, targetUserId) {
     return null;
   }
 
-  return data?.status || null;
+  return data?.[0]?.status || null; //returns an array [ { status: "accepted" } ] sth like that
 }
