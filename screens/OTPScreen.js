@@ -11,22 +11,27 @@ import {
 import { useRoute } from "@react-navigation/native";
 import { useAuth } from "../contexts/AuthContext";
 import React, { useEffect, useState } from "react";
+import LottieView from "lottie-react-native";
 
 export default function OTPScreen({ navigation, route }) {
   const { session, verifyOtp } = useAuth();
 
   const [otp, setOtp] = useState("");
-
+  const [loading, setLoading] = useState(false)
   const { email } = route.params;
+  
 
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleOtpVerification = async () => {
     try {
+      setLoading(true)
       setErrorMessage("");
       await verifyOtp(email, otp, navigation);
+      setLoading(false)
     } catch (err) {
       setErrorMessage(err.message);
+      setLoading(false)
     }
   };
 
@@ -55,11 +60,24 @@ export default function OTPScreen({ navigation, route }) {
       <TouchableOpacity
         onPress={handleOtpVerification}
         className="flex-row items-center justify-center w-full bg-green-600 rounded-xl mt-6 py-3"
+        disabled={loading}
       >
         <Text className="text-white text-base font-medium font-bold">
           Authenticate
         </Text>
       </TouchableOpacity>
+
+      {loading && (
+        <View className="justify-center items-center">
+          <LottieView
+            source={require("../assets/loading.json")}
+            autoPlay
+            loop
+            style={{ width: 80, height: 80, marginTop: 15 }}
+          />
+        </View>
+    )}
+
     </View>
   );
 }

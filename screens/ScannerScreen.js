@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
+  Modal
 } from "react-native";
 import { useAuth } from "../contexts/AuthContext";
 import { useState, useRef, useEffect } from "react";
@@ -28,6 +29,7 @@ import {
   fetchFoodSuggestions,
 } from "../services/scannerService";
 import { useIsFocused } from "@react-navigation/native";
+import AccessoryPopUp from "../components/AccessoryPopup";
 
 export default function ScannerScreen({ navigation }) {
   const [facing, setFacing] = useState("back");
@@ -41,7 +43,10 @@ export default function ScannerScreen({ navigation }) {
   const [suggestions, setSuggestions] = useState([]);
   const userId = session?.user?.id;
   const isFocused = useIsFocused(); //to make camera remount when come back to screen
-
+  const [showNoFoodDetectedPopup, setShowNoFoodDetectedPopup] = useState(false)
+  const [showFoodDetectedPopup, setShowFoodDetectedPopup] = useState(false)
+  const [showSubmittedPopup, setShowSubmittedPopup] = useState(false)
+  const [showNoPhotoPopup, setShowNoPhotoPopup] = useState(false)
   //load suggestions
   useEffect(() => {
     const load = async () => {
@@ -94,8 +99,14 @@ export default function ScannerScreen({ navigation }) {
 
       setFood(detectedName);
 
+      if (detectedName === undefined) {
+        throw new Error("Error detecting food")
+      }
+
       const foodCalories = await fetchCaloriesByFood(detectedName);
       setCalories(foodCalories);
+
+      setShowFoodDetectedPopup(true)
 
       /*await logActivity({
         userId: session.user.id,
@@ -103,7 +114,12 @@ export default function ScannerScreen({ navigation }) {
         calories,
       });*/
     } catch (err) {
-      console.error(err.message);
+    
+      if (err.message === "Error detecting food") {
+        setShowNoFoodDetectedPopup(true)
+      } else {
+        console.error("General error:", err.message);
+      }
     } finally {
       setLoading(false);
       await cameraRef.current.resumePreview(); //reset camera to prevent black screen
@@ -114,7 +130,7 @@ export default function ScannerScreen({ navigation }) {
     console.log("Submit pressed", { food, calories });
 
     if (!food || !calories || calories === "0") {
-      Alert.alert("Please take a photo first to identify the food");
+      setShowNoPhotoPopup(true)
       return;
     }
 
@@ -132,7 +148,7 @@ export default function ScannerScreen({ navigation }) {
       console.error(error);
       Alert.alert("Error", "Could not log activity.");
     } else {
-      Alert.alert("Success", "Activity logged!");
+      setShowSubmittedPopup(true);;
       setFood("");
       setCalories("0");
     }
@@ -154,6 +170,7 @@ export default function ScannerScreen({ navigation }) {
               alignItems: "center",
               paddingHorizontal: 8,
               paddingTop: 70,
+              marginTop: 15
             }}
           >
             <View
@@ -295,6 +312,81 @@ export default function ScannerScreen({ navigation }) {
               <ActivityIndicator size="large" color="#0000ff" />
             </View>
           )}
+
+          <Modal
+            visible={showNoFoodDetectedPopup}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={() => setShowNoFoodDetectedPopup(false)}
+        >
+            <View 
+            className="flex-1 bg-black/50"
+            >
+            <AccessoryPopUp 
+            success={false}
+            messageHeading={"No detected food found"} 
+            messageDescription={"We could not identify the food taken in your picture! :("}
+            onContinue={() => setShowNoFoodDetectedPopup(false)}/> 
+            </View>
+        </Modal>
+
+        <Modal
+            visible={showFoodDetectedPopup}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={() => setShowFoodDetectedPopup(false)}
+        >
+            <View 
+            className="flex-1 bg-black/50"
+            >
+            <AccessoryPopUp 
+            success={true}
+            messageHeading={"Food Detected!"} 
+            messageDescription={
+              <Text>
+                We successfully detected:{" "}
+                <Text className="text-3xl font-bold text-green-600">{food}</Text>
+              </Text>
+            }
+            onContinue={() => setShowFoodDetectedPopup(false)}/> 
+            </View>
+        </Modal>
+
+        <Modal
+            visible={showSubmittedPopup}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={() => setShowSubmittedPopup(false)}
+        >
+            <View 
+            className="flex-1 bg-black/50"
+            >
+            <AccessoryPopUp 
+            success={true}
+            messageHeading={"Update Success"} 
+            messageDescription={"This food entry has been successfully logged!"}
+            onContinue={() => setShowSubmittedPopup(false)}/> 
+            </View>
+        </Modal>
+
+
+        <Modal
+            visible={showNoPhotoPopup}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={() => setShowNoPhotoPopup(false)}
+        >
+            <View 
+            className="flex-1 bg-black/50"
+            >
+            <AccessoryPopUp 
+            success={false}
+            messageHeading={"No food or entry keyed in!"} 
+            messageDescription={"Please take a photo first to identify the food or key in a manual food entry first before submitting!"}
+            onContinue={() => setShowNoPhotoPopup(false)}/> 
+            </View>
+        </Modal>
+
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>

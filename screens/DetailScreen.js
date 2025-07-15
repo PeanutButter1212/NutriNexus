@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Modal
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import Slider from "@react-native-community/slider";
@@ -19,6 +20,7 @@ import useProfileData from "../hooks/useProfileData";
 import { useNavigation } from "@react-navigation/native";
 import { updateProfileDetails } from "../services/profileService";
 import { calculateRecommendedCalories } from "../utils/calculateRecommendedCalories";
+import AccessoryPopUp from "../components/AccessoryPopup";
 export default function DetailScreen() {
   const navigation = useNavigation()
   const { session, profile } = useAuth();
@@ -29,6 +31,8 @@ export default function DetailScreen() {
   const [gender, setGender] = useState("Male");
   const TABS = ["Male", "Female"]
   const [demographicAdjusted, setDemographicAdjusted] = useState(false);
+
+  const [showPopup, setShowPopup] = useState("false")
 
 
   const { calorieGoal, userDemographics } = useProfileData() 
@@ -81,9 +85,6 @@ export default function DetailScreen() {
       return;
     }
 
-    console.log("running profile details")
-    console.log("Session: " + session)
-    console.log("Profile: " + profile)
     const success = await updateProfileDetails(session, {
       weight: parseInt(weight),
       height: parseInt(height),
@@ -92,11 +93,8 @@ export default function DetailScreen() {
       gender, 
     });
 
-    console.log("end of running profile details")
-
     if (success) {
-      console.log("Navigator called")
-      navigation.replace("MainTabs");
+      setShowPopup(true)
     } else {
       Alert.alert("Error", "error lol")
     }
@@ -302,6 +300,34 @@ export default function DetailScreen() {
       </TouchableOpacity>
 
       </View>
+
+      <Modal
+            visible={showPopup}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={() => {
+              setShowPopup(true);
+              navigation.replace("MainTabs");
+            }}
+            
+        >
+            <View 
+            className="flex-1 bg-black/50"
+            >
+            <AccessoryPopUp 
+            success={true}
+            messageHeading={"Success!"}
+            messageDescription={"Your profile details has been successfully updated"}
+            onContinue={() => {
+              setShowPopup(true);
+              navigation.replace("MainTabs");
+            }}/>
+            </View>
+        </Modal>
+
+
     </ScrollView>
+
+      
   );
 }

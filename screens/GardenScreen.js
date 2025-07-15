@@ -288,22 +288,6 @@ useEffect(() => {
   }
 
 
-const incrementInventory = (plantId) => {
-  setLocalInventory(prev => {
-  console.log("plantId: " + plantId)
-  const itemExists = prev.find(item => item.item_id === plantId)
-  if (itemExists) {
-    return prev.map(item =>
-          item.item_id === plantId 
-          ? {...item, count: item.count + 1}
-          : item
-      )
-  } else {
-    return ([...prev, { item_id: plantId, count: 1 }])
-  }
-})}
-
-
  
 
 

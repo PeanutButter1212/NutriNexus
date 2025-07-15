@@ -3,7 +3,7 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { LinearGradient } from "expo-linear-gradient";
 import pointLogo from '../assets/Points.png'
 
-export default function ShopOrder({item, onConfirm, onCancel}) {
+export default function DeleteFriend({username, onConfirm, onCancel}) {
     return (
         <View
         className="flex-1 items-center justify-center"
@@ -14,42 +14,20 @@ export default function ShopOrder({item, onConfirm, onCancel}) {
             borderRadius: 12
           }}
           >
+
+      
           <View
           className="w-80 min-h-80 items-center justify-center border-yellow-300 border-4 rounded-xl flex-column p-5"
           >
+            <Text className="text-3xl font-bold text-green-700 mb-4">Delete Friend?</Text>
             <View className="w-64 bg-yellow-300 flex-column rounded-xl items-center justify-center p-3"> 
-           
-            <Image source={{ uri: item?.image_url }} className="w-20 h-20" />
-             <Text> {item?.name} </Text>
+            <View className="rounded-full bg-green-300 p-12"></View>
+
+             <Text> {username} </Text>
     
             </View>
     
-            <View
-            className="bg-white w-64 justify-center items-center p-3 rounded-xl mt-4"
-            > 
     
-            <Text> 
-              Confirm Purchase? 
-            </Text>
-    
-            <View className="bg-gray-800 border-2 border-yellow-500 rounded-xl px-4 py-2">
-                          
-                <View className="justify-center items-center flex-row">
-                      <Image
-                      source={pointLogo}
-                      className="h-8 w-8"
-                      />
-                      <Text className="font-nunito-extrabold text-orange-400"> 
-                        {item?.cost}
-                      </Text>
-    
-                </View>
-    
-    
-            </View>
-        
-            </View>   
-            
             <View
             className="flex-row w-64 justify-between mt-4"
             > 
@@ -59,7 +37,7 @@ export default function ShopOrder({item, onConfirm, onCancel}) {
             onPress={onCancel}
             > 
               <Text
-              className="text-center text-bold text-white"
+              className="text-center font-bold text-white"
               > 
               No
               </Text>
@@ -70,7 +48,7 @@ export default function ShopOrder({item, onConfirm, onCancel}) {
             onPress={onConfirm}
             > 
               <Text
-              className="text-center text-bold text-white"
+              className="text-center font-bold text-white"
               > 
               Yes
               </Text>

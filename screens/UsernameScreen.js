@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, Image, TouchableOpacity, TextInput, Modal } from 'react-native';
 import { supabase } from '../lib/supabase'; // make sure your Supabase client is set up correctly
 import { LinearGradient } from "expo-linear-gradient";
 import pointLogo from '../assets/Points.png'
@@ -14,6 +14,9 @@ export default function UsernameScreen({ navigation }) {
   const [errorMessage, setErrorMessage] = useState("")
   const { session } = useAuth() 
   const userId = session?.user?.id 
+
+
+  const [showPopup, setShowPopup] = useState("false")
 
   const { username } = useProfileData() 
 
@@ -32,7 +35,7 @@ export default function UsernameScreen({ navigation }) {
     }
     try {
         await updateUsername(userId, usernameInput);
-        navigation.replace("MainTabs")
+        setShowPopup(true)
       } catch (err) {
         setErrorMessage(err.message);
       }
@@ -87,6 +90,31 @@ export default function UsernameScreen({ navigation }) {
       >
         <Text className="text-white text-base font-medium"> Back </Text>
       </TouchableOpacity>
+
+
+      <Modal
+            visible={showPopup}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={() => {
+              setShowPopup(false);
+              navigation.replace("MainTabs");
+            }}
+            
+        >
+            <View 
+            className="flex-1 bg-black/50"
+            >
+            <AccessoryPopUp 
+            success={true}
+            messageHeading={"Success!"}
+            messageDescription={"Your username has been successfully updated"}
+            onContinue={() => {
+              setShowPopup(false);
+              navigation.replace("MainTabs");
+            }}/>
+            </View>
+        </Modal>
     
 </View>
 

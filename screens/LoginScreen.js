@@ -7,16 +7,19 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  Modal
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { Image } from "react-native";
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import LottieView from "lottie-react-native";
 
 export default function LoginScreen({ navigation }) {
   const { googleSignIn, signInWithOTP } = useAuth();
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
     if (!email.trim()) {
@@ -24,9 +27,11 @@ export default function LoginScreen({ navigation }) {
       return;
     }
     try {
+      setLoading(true)
       setErrorMessage("");
       console.log(email);
       const error = await signInWithOTP(email, navigation);
+      setLoading(false)
       if (error) {
         setErrorMessage(error);
       }
@@ -85,6 +90,7 @@ export default function LoginScreen({ navigation }) {
       <TouchableOpacity
         onPress={handleGoogleLogIn}
         className="flex-row items-center justify-center w-full bg-red-500 rounded-xl mt-6 py-3"
+        disabled={loading}
       >
         <AntDesign name="google" size={20} color="white" className="mr-2" />
         <Text className="text-white text-base font-medium">
@@ -96,15 +102,27 @@ export default function LoginScreen({ navigation }) {
       <TouchableOpacity
         onPress={handleLogin}
         className="flex-row items-center justify-center w-full bg-green-600 rounded-xl mt-6 py-3"
+        disabled={loading}
       >
         <Text className="text-white text-base font-medium font-bold">
           Login
         </Text>
       </TouchableOpacity>
 
+      {loading && (
+        <View className="justify-center items-center">
+          <LottieView
+            source={require("../assets/loading.json")}
+            autoPlay
+            loop
+            style={{ width: 80, height: 80, marginTop: 15 }}
+          />
+        </View>
+    )}
+
       {/*
 
-      <Text className="text-xl mt-2 text-green-600 pt-8">
+      <Text className="text-xl mt-2 textm-green-600 pt-8">
         Dont have an account?
       </Text>
    

@@ -7,6 +7,7 @@ import {
   Image,
   Dimensions,
   ImageBackground,
+  Modal
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import maleAvatarImage from "../assets/MaleCharacter.png";
@@ -31,6 +32,7 @@ import {
 } from "../services/socialService";
 import { useAuth } from "../contexts/AuthContext";
 import backgroundImage from "../assets/CustomisationBackground.png";
+import DeleteFriend from "../components/DeleteFriend";
 
 export default function FriendProfileScreen({ navigation }) {
   const [equipped, setEquipped] = useState({
@@ -53,6 +55,8 @@ export default function FriendProfileScreen({ navigation }) {
   const [username, setUsername] = useState();
   const [numfriends, setNumFriends] = useState();
   const [numloc, setNumLoc] = useState();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
 
   const gardenAreaRef = useRef(null);
 
@@ -267,13 +271,28 @@ export default function FriendProfileScreen({ navigation }) {
       </View>
       <TouchableOpacity
         className="ml-14 items-center justify-center bg-red-600 w-3/4 rounded-xl mt-6 py-3 mt-8 mb-24"
-        onPress={async () => {
-          await removeFriend(currentId, friendId);
-          navigation.navigate("MainTabs", { screen: "Social" });
-        }}
+        onPress={() => setShowDeleteModal(true)}
       >
         <Text className="text-white text-base font-medium">Remove Friend</Text>
       </TouchableOpacity>
+
+      <Modal
+            visible={showDeleteModal}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={() => setShowDeleteModal(false)}
+        >
+           <View className="flex-1 bg-black/50">
+                    <DeleteFriend
+                        username={username}
+                        onConfirm={async () => {
+                          await removeFriend(currentId, friendId)
+                          navigation.navigate("MainTabs", { screen: "Social"});
+                        }}
+                        onCancel={() => setShowDeleteModal(false)}
+                    />
+                </View>
+        </Modal>
     </ScrollView>
   );
 }

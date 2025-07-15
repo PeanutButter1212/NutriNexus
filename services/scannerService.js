@@ -57,6 +57,8 @@ export async function fetchCaloriesByFood(food) {
     console.error("Supabase error:", error.message);
   }
 
+  
+
   return data.calories.toString();
 }
 

@@ -182,7 +182,7 @@ export default function Profile() {
         <Text className="text-3xl font-bold text-white text-center mt-12 mb-4">
           Welcome Back, {username === "User" ? profile
                       ? profile.username
-                      : "undefined"
+                      : ""
                       : username}!
         </Text>
 

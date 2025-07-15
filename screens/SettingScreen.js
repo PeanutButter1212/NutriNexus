@@ -7,14 +7,18 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
-  ImageBackground
+  ImageBackground,
+  Modal
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import settingsBackground from '../assets/backgrounds/SettingsFinalBackground.png'
+import AccessoryPopUp from '../components/AccessoryPopup'
 
 export default function SettingScreen({ navigation }) {
   const { session, profile, logout, authMethod } = useAuth();
+
+  const [showPopup, setShowPopup] = useState("false")
 
 
   const handleLogout = () => {
@@ -55,6 +59,7 @@ export default function SettingScreen({ navigation }) {
       >
         <Text className="text-white text-base font-medium">Back</Text>
       </TouchableOpacity>
+
     </View>
     </ImageBackground>
   );
