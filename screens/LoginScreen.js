@@ -7,9 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
-  Modal,
-  Platform,
-  ActivityIndicator
+  Modal
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { Image } from "react-native";
@@ -112,18 +110,14 @@ export default function LoginScreen({ navigation }) {
       </TouchableOpacity>
 
       {loading && (
-      <View className="justify-center items-center">
-        {Platform.OS === "ios" ? (
+        <View className="justify-center items-center">
           <LottieView
             source={require("../assets/loading.json")}
             autoPlay
             loop
             style={{ width: 80, height: 80, marginTop: 15 }}
           />
-        ) : (
-          <ActivityIndicator size="large" color="#000" style={{ marginTop: 15 }} />
-        )}
-      </View>
+        </View>
     )}
 
       {/*

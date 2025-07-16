@@ -4,7 +4,7 @@ import { supabase } from "../lib/supabase";
 export async function searchUsers(query) {
   const { data, error } = await supabase
     .from("username")
-    .select("user_id,username")
+    .select("user_id, username, profile_pic_url")
     .ilike("username", `%${query}%`)
     .limit(10);
 
@@ -13,7 +13,13 @@ export async function searchUsers(query) {
     return [];
   }
 
-  return data;
+  const fallbackUrl =
+    "https://rkrdnsnujizdskzbdwlp.supabase.co/storage/v1/object/public/profile-pictures//Green_Background.png"
+    
+  return data.map((entry) => ({
+    ...entry,
+    profile_pic_url: entry.profile_pic_url || fallbackUrl,
+  }));
 }
 
 //method to add friend
@@ -66,15 +72,20 @@ export async function fetchUsernameByIds(userIds) {
   if (!userIds || userIds.length === 0) return [];
   const { data, error } = await supabase
     .from("username")
-    .select("username, user_id")
+    .select("*")
     .in("user_id", userIds);
 
   if (error) {
     console.error("Error fetching usernames:", error);
     return [];
   }
-  console.log("Fetched usernames from DB:", data);
-  return data;
+  const fallbackUrl =
+    "https://rkrdnsnujizdskzbdwlp.supabase.co/storage/v1/object/public/profile-pictures//Green_Background.png"
+
+  return data.map((entry) => ({
+    ...entry,
+    profile_pic_url: entry.profile_pic_url || fallbackUrl,
+  }));
 }
 
 //method to fetch all friends

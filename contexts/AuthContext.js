@@ -244,7 +244,7 @@ const verifyOtp = async (email, otp, navigation) => {
         throw extendedProfileDataError;
       }
 
-
+      console.log("✅ Profile page data inserted successfully");
 
       const { data: newProfileData, error: reloadError } = await supabase
         .from("profile_page")
@@ -261,7 +261,7 @@ const verifyOtp = async (email, otp, navigation) => {
       setUser(newProfileData);
       
 
-   
+      navigation.navigate("MainTabs");
       
     } else {
     
@@ -269,7 +269,7 @@ const verifyOtp = async (email, otp, navigation) => {
       setAuthMethod("email");
       setIsAuthenticated(true);
       setUser(profileData);
-    
+      navigation.navigate("MainTabs");
     }
   } catch (err) {
     console.error("verifyOtp error:", err);

@@ -8,6 +8,14 @@ import AccessoryPopUp from '../components/AccessoryPopup';
 import { updateUsername } from '../services/profileService';
 import { useAuth } from '../contexts/AuthContext';
 import useProfileData from '../hooks/useProfileData';
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
+import { uploadProfileImage } from '../services/profileService.js';
+import defaultProfilePic from '../assets/Green_Background.png';
+import { Image as ExpoImage } from 'expo-image';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 
 export default function UsernameScreen({ navigation }) {
   const [usernameInput, setUsernameInput] = useState("")
@@ -15,18 +23,134 @@ export default function UsernameScreen({ navigation }) {
   const { session } = useAuth() 
   const userId = session?.user?.id 
 
+  
+
+  const { username, profilePic } = useProfileData() 
+
+
 
   const [showPopup, setShowPopup] = useState("false")
 
-  const { username } = useProfileData() 
+  const [imageUri, setImageUri] = useState(null);
+
+  const [cachedPic, setCachedPic] = useState(null);
+
+
+
+
+  const [currentDisplayImage, setCurrentDisplayImage] = useState(null);
+
+  const getCacheKey = (userId) => `cachedProfilePic_${userId}`;
 
   useEffect(() => {
-    console.log("Username: " + username)
-    if (username) {
-      setUsernameInput(username);
-    }
-  }, [username]);
+    const loadCachedImage = async () => {
+      if (!userId) return;
+
+      try {
+        const key = getCacheKey(userId);
+        const cachedImage = await AsyncStorage.getItem(key);
+        
+        if (cachedImage) {
+          console.log("Loading cached image immediately:", cachedImage);
+          setCurrentDisplayImage(cachedImage);
+        }
+      } catch (error) {
+        console.error("Error loading cached image:", error);
+      }
+    };
+
+    loadCachedImage();
+  }, [userId]);
+
+  useEffect(() => {
+    const updateWithFreshData = async () => {
+      if (!userId) return;
+
+      if (username) {
+        setUsernameInput(username);
+      }
+
+      if (profilePic) {
+        console.log("Updating with fresh profilePic:", profilePic);
+        setCurrentDisplayImage(profilePic);
+        
+        try {
+          const key = getCacheKey(userId);
+          await AsyncStorage.setItem(key, profilePic);
+          console.log("Cache updated with fresh data");
+        } catch (error) {
+          console.error("Error updating cache:", error);
+        }
+      }
+    };
+
+    updateWithFreshData();
+  }, [userId, username, profilePic]);
+
+
+
+  const handleChangePhoto = async () => {
+    try {
+      
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
   
+  
+  
+      if (result.canceled || result.cancelled) {
+        console.log("User cancelled");
+        return;
+      }
+  
+
+      let selectedUri = null;
+      
+      if (result.assets && result.assets.length > 0) {
+        selectedUri = result.assets[0].uri;
+      } else if (result.uri) {
+        selectedUri = result.uri;
+        console.log("Got URI from result:", selectedUri);
+      }
+      
+      if (!selectedUri) {
+        alert("Could not get image. Please try again.");
+        return;
+      }
+  
+   
+      setCurrentDisplayImage(selectedUri);
+
+      const publicUrl = await uploadProfileImage(userId, selectedUri);
+      
+      console.log("Upload successful, updating database...");
+      const { error } = await supabase
+        .from('username')
+        .update({ profile_pic_url: publicUrl })
+        .eq('user_id', userId);
+  
+      if (error) {
+        console.error("Database error:", error);
+        alert("Failed to save image to database");
+        return;
+      }
+
+      const key = getCacheKey(userId);
+      await AsyncStorage.setItem(key, publicUrl);
+      setCachedPic(publicUrl);
+      setCurrentDisplayImage(publicUrl);
+
+      setShowPopup(true);
+      setErrorMessage('');
+      
+    } catch (err) {
+      alert("Upload failed: " + err.message);
+      setErrorMessage("Failed to upload image.");
+    }
+  };
 
   const handleSubmitUsername = async () => {
     if (!username) {
@@ -50,11 +174,40 @@ export default function UsernameScreen({ navigation }) {
     className="mt-48"
     > 
     <Text className="text-4xl font-bold text-black text-center">
-        Edit your username
+        Edit Profile Information
      </Text>
     
 
     </View>
+
+    <Text
+    className="text-3xl font-bold mt-8"
+    >
+      Profile Picture
+    </Text>
+
+  
+    <ExpoImage
+        source={
+          currentDisplayImage 
+            ? currentDisplayImage
+            : "https://rkrdnsnujizdskzbdwlp.supabase.co/storage/v1/object/public/profile-pictures//Green_Background.png"
+  }
+  style={{ width: 128, height: 128, borderRadius: 64, marginTop: 32 }}
+  contentFit="cover"
+  placeholder="blur"
+/>
+
+      
+      <TouchableOpacity onPress={handleChangePhoto}>
+      <Text className="mt-2 underline text-sky-700 text-base">Change Photo</Text>
+      </TouchableOpacity>
+
+    <Text
+    className="text-3xl font-bold mt-4"
+    >
+     Username 
+    </Text>
     
 
     <TextInput

@@ -17,6 +17,7 @@ import {
   getFriendStatus,
   deleteFriendRequest,
 } from "../services/socialService";
+import { Image as ExpoImage } from 'expo-image';
 
 export default function AddFriendScreen({ navigation }) {
   const [searchResults, setSearchResults] = useState([]);
@@ -157,7 +158,14 @@ export default function AddFriendScreen({ navigation }) {
                 className="justify-between flex-row bg-white py-4 rounded-xl shadow-md flex-1 self-center mb-3 w-[320px] px-4"
               >
                 <View className="flex-row">
-                  <View className="rounded-full bg-blue-500 p-4 ml-5"></View>
+                <ExpoImage
+                  source={targetuser.profile_pic_url}
+                  style={{ width: 48, height: 48, borderRadius: 9999, marginLeft: 20 }}
+                  contentFit="cover"
+                  transition={300}
+                  placeholder="blur"
+                  cachePolicy="memory-disk"
+                />
                   <View className="items-center justify-center ml-3">
                     <Text className="font-nunito-regular">
                       {targetuser.username}

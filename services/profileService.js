@@ -729,3 +729,60 @@ export async function updateUsername(userId, username) {
 
   return true;
 }
+
+// services/uploadProfileImage.js
+// FIXED uploadProfileImage function - handles blob conversion properly
+export const uploadProfileImage = async (userId, uri) => {
+  try {
+    console.log("=== UPLOAD FUNCTION START ===");
+    console.log("userId:", userId);
+    console.log("uri:", uri);
+    
+    if (!uri) {
+      throw new Error("No URI provided to uploadProfileImage");
+    }
+    
+    // FIXED: Use consistent filename (no timestamp)
+    const timestamp = Date.now(); // or new Date().getTime()
+    const fileName = `${userId}_avatar_${timestamp}.jpg`;
+    const filePath = `public/${fileName}`;
+
+    // Create file object
+    const file = {
+      uri: uri,
+      type: 'image/jpeg',
+      name: fileName,
+    };
+
+    console.log("File object created");
+
+    // Upload with upsert: true to replace existing file
+    const { data, error } = await supabase.storage
+      .from('profile-pictures')
+      .upload(filePath, file, {
+        contentType: 'image/jpeg',
+        cacheControl: '3600',
+        upsert: true, // This replaces the existing file
+      });
+
+    if (error) {
+      console.error("Storage error:", error);
+      throw error;
+    }
+
+    console.log("Storage upload successful:", data);
+
+    // Get public URL
+    const { data: urlData } = supabase.storage
+      .from('profile-pictures')
+      .getPublicUrl(filePath);
+
+    console.log("Public URL:", urlData.publicUrl);
+    return urlData.publicUrl;
+  } catch (err) {
+    console.error("uploadProfileImage error:", err);
+    throw err;
+  }
+};
+
+

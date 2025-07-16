@@ -10,6 +10,7 @@ import {
   acceptFriendRequest,
   deleteFriendRequest,
 } from "../services/socialService";
+import { Image as ExpoImage } from 'expo-image';
 
 export default function FriendRequestScreen({ navigation }) {
   const { user } = useAuth();
@@ -59,7 +60,14 @@ export default function FriendRequestScreen({ navigation }) {
             className="justify-between flex-row bg-white py-4 rounded-xl shadow-md mb-3 w-3/4 self-center"
           >
             <View className="flex-row">
-              <View className="rounded-full bg-blue-500 p-4 ml-5"></View>
+            <ExpoImage
+              source={friend.profile_pic_url}
+              style={{ width: 48, height: 48, borderRadius: 9999, marginLeft: 20 }}
+              contentFit="cover"
+              transition={300}
+              placeholder="blur"
+              cachePolicy="memory-disk"
+            />
               <View className="items-center justify-center ml-3">
                 <Text className="font-nunito-regular">{friend.username}</Text>
               </View>

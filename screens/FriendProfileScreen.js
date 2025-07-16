@@ -9,6 +9,7 @@ import {
   ImageBackground,
   Modal
 } from "react-native";
+import { fetchProfilePicture } from "../services/publicDetailsService";
 import { LinearGradient } from "expo-linear-gradient";
 import maleAvatarImage from "../assets/MaleCharacter.png";
 import femaleAvatarImage from "../assets/FemaleEdited.png";
@@ -33,6 +34,7 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import backgroundImage from "../assets/CustomisationBackground.png";
 import DeleteFriend from "../components/DeleteFriend";
+import { Image as ExpoImage } from 'expo-image';
 
 export default function FriendProfileScreen({ navigation }) {
   const [equipped, setEquipped] = useState({
@@ -56,6 +58,7 @@ export default function FriendProfileScreen({ navigation }) {
   const [numfriends, setNumFriends] = useState();
   const [numloc, setNumLoc] = useState();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [profilePic, setProfilePic] = useState("")
 
 
   const gardenAreaRef = useRef(null);
@@ -88,6 +91,9 @@ export default function FriendProfileScreen({ navigation }) {
         //console.log("Garden layout raw:", layout);
 
         const plants = await fetchPlants();
+
+        const profilePicUrl = await fetchProfilePicture(friendId)
+        setProfilePic(profilePicUrl)
 
         const plantLookup = {};
         //lookup each palant for respective pic
@@ -135,7 +141,14 @@ export default function FriendProfileScreen({ navigation }) {
       <View className="items-center">
         <View className="bg-white rounded-xl flex-row  w-[320px] py-8 mt-4 shadow-md rounded-xl \">
           <View className="justify-start flex-row items-center w-full ml-4 ">
-            <View className="rounded-full bg-green-300 p-12"></View>
+          <ExpoImage
+              source={profilePic}
+              style={{ width: 48, height: 48, borderRadius: 9999, marginLeft: 20, padding: 48 }}
+              contentFit="cover"
+              transition={300}
+              placeholder="blur"
+              cachePolicy="memory-disk"
+            />
 
             <View className="flex-col ml-8">
               <View>

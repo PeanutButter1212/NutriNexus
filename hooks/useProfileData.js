@@ -9,6 +9,7 @@ import {
 } from "../services/profileService";
 import { useAuth } from "../contexts/AuthContext";
 import { fetchUsername } from "../services/profileService";
+import { fetchProfilePicture } from "../services/publicDetailsService";
 
 export default function useProfileData() {
   const { session } = useAuth();
@@ -21,6 +22,7 @@ export default function useProfileData() {
   const [username, setUsername] = useState("");
   const userId = session?.user?.id;
   const [visited, setVisited] = useState([]);
+  const [profilePic, setProfilePic] = useState("")
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -32,6 +34,9 @@ export default function useProfileData() {
       const weeklySteps = await fetchWeeklySteps(userId);
       const profileUsername = await fetchUsername(userId);
       const visitedList = await fetchVisited(userId);
+      console.log("fetching profile pic efvjergjerugjre4oj")
+      const pictureUrl = await fetchProfilePicture(userId)
+      console.log("done")
 
 
       setTotalCalories(profileInfo.calories_consumed);
@@ -42,6 +47,7 @@ export default function useProfileData() {
       setStepData(weeklySteps);
       setUsername(profileUsername);
       setVisited(visitedList || []);
+      setProfilePic(pictureUrl)
       //console.log("visitedList:", visitedList);
     };
     fetchProfileData();
@@ -56,6 +62,7 @@ export default function useProfileData() {
     stepsData,
     username,
     visited,
+    profilePic, 
     setTotalCalories,
     setCalorieGoal,
     setVisited,
