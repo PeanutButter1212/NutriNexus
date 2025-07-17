@@ -17,7 +17,7 @@ import {
   getFriendStatus,
   deleteFriendRequest,
 } from "../services/socialService";
-import { Image as ExpoImage } from 'expo-image';
+import { Image as ExpoImage } from "expo-image";
 
 export default function AddFriendScreen({ navigation }) {
   const [searchResults, setSearchResults] = useState([]);
@@ -82,6 +82,15 @@ export default function AddFriendScreen({ navigation }) {
           iconColor: "white",
           disabled: false,
         };
+      case "self":
+        return {
+          text: "You",
+          icon: "user",
+          bgColor: "bg-gray-300",
+          textColor: "text-black",
+          iconColor: "black",
+          disabled: true,
+        };
       default:
         return {
           text: "Add Friend",
@@ -99,6 +108,8 @@ export default function AddFriendScreen({ navigation }) {
     const currentStatus = userStatuses[targetUserId];
 
     if (currentStatus == "accepted") {
+      return;
+    } else if (currentStatus == "self") {
       return;
     } else if (currentStatus == "pending") {
       try {
@@ -158,14 +169,19 @@ export default function AddFriendScreen({ navigation }) {
                 className="justify-between flex-row bg-white py-4 rounded-xl shadow-md flex-1 self-center mb-3 w-[320px] px-4"
               >
                 <View className="flex-row">
-                <ExpoImage
-                  source={targetuser.profile_pic_url}
-                  style={{ width: 48, height: 48, borderRadius: 9999, marginLeft: 20 }}
-                  contentFit="cover"
-                  transition={300}
-                  placeholder="blur"
-                  cachePolicy="memory-disk"
-                />
+                  <ExpoImage
+                    source={targetuser.profile_pic_url}
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: 9999,
+                      marginLeft: 20,
+                    }}
+                    contentFit="cover"
+                    transition={300}
+                    placeholder="blur"
+                    cachePolicy="memory-disk"
+                  />
                   <View className="items-center justify-center ml-3">
                     <Text className="font-nunito-regular">
                       {targetuser.username}
