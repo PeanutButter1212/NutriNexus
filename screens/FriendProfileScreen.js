@@ -7,7 +7,7 @@ import {
   Image,
   Dimensions,
   ImageBackground,
-  Modal
+  Modal,
 } from "react-native";
 import { fetchProfilePicture } from "../services/publicDetailsService";
 import { LinearGradient } from "expo-linear-gradient";
@@ -34,7 +34,7 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import backgroundImage from "../assets/CustomisationBackground.png";
 import DeleteFriend from "../components/DeleteFriend";
-import { Image as ExpoImage } from 'expo-image';
+import { Image as ExpoImage } from "expo-image";
 
 export default function FriendProfileScreen({ navigation }) {
   const [equipped, setEquipped] = useState({
@@ -58,8 +58,7 @@ export default function FriendProfileScreen({ navigation }) {
   const [numfriends, setNumFriends] = useState();
   const [numloc, setNumLoc] = useState();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [profilePic, setProfilePic] = useState("")
-
+  const [profilePic, setProfilePic] = useState("");
 
   const gardenAreaRef = useRef(null);
 
@@ -92,8 +91,8 @@ export default function FriendProfileScreen({ navigation }) {
 
         const plants = await fetchPlants();
 
-        const profilePicUrl = await fetchProfilePicture(friendId)
-        setProfilePic(profilePicUrl)
+        const profilePicUrl = await fetchProfilePicture(friendId);
+        setProfilePic(profilePicUrl);
 
         const plantLookup = {};
         //lookup each palant for respective pic
@@ -139,11 +138,17 @@ export default function FriendProfileScreen({ navigation }) {
       contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 20 }}
     >
       <View className="items-center">
-        <View className="bg-white rounded-xl flex-row  w-[320px] py-8 mt-4 shadow-md rounded-xl \">
-          <View className="justify-start flex-row items-center w-full ml-4 ">
-          <ExpoImage
+        <View className="bg-white rounded-xl flex-row  w-[340px] py-8 mt-4 shadow-md rounded-xl">
+          <View className="justify-start flex-row items-center w-full">
+            <ExpoImage
               source={profilePic}
-              style={{ width: 48, height: 48, borderRadius: 9999, marginLeft: 20, padding: 48 }}
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: 9999,
+                marginLeft: 20,
+                padding: 48,
+              }}
               contentFit="cover"
               transition={300}
               placeholder="blur"
@@ -290,22 +295,22 @@ export default function FriendProfileScreen({ navigation }) {
       </TouchableOpacity>
 
       <Modal
-            visible={showDeleteModal}
-            transparent={true}
-            animationType="fade"
-            onRequestClose={() => setShowDeleteModal(false)}
-        >
-           <View className="flex-1 bg-black/50">
-                    <DeleteFriend
-                        username={username}
-                        onConfirm={async () => {
-                          await removeFriend(currentId, friendId)
-                          navigation.navigate("MainTabs", { screen: "Social"});
-                        }}
-                        onCancel={() => setShowDeleteModal(false)}
-                    />
-                </View>
-        </Modal>
+        visible={showDeleteModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowDeleteModal(false)}
+      >
+        <View className="flex-1 bg-black/50">
+          <DeleteFriend
+            username={username}
+            onConfirm={async () => {
+              await removeFriend(currentId, friendId);
+              navigation.navigate("MainTabs", { screen: "Social" });
+            }}
+            onCancel={() => setShowDeleteModal(false)}
+          />
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
