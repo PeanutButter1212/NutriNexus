@@ -32,6 +32,8 @@ beforeEach(() => {
     
 })
 
+// Test 1: If placeholder is empty, fill in all fields error shows up 
+
 it('Does not accept empty email placeholder', async () => {
     const { getByPlaceholderText, getAllByText, getByText } = render(
         <LoginScreen navigation={mockNavigation} /> 
@@ -48,3 +50,45 @@ it('Does not accept empty email placeholder', async () => {
         expect(getByText("Please fill in all fields!")).toBeTruthy()
     })
 })
+
+//Test 2: Displays errror message when invalid email format is given 
+it('Displays error message for invalid credentials', async () => {
+    const { getByPlaceholderText, getAllByText, getByText } = render(
+        <LoginScreen navigation={mockNavigation} />
+    ) 
+    const emailInput = getByPlaceholderText('Email')
+    const loginDivisions = getAllByText('Login')
+    const loginButton = loginDivisions[1]
+
+    fireEvent.changeText(emailInput, "test@gmail")
+
+    const errorMessage = "Invalid Credentials"
+    mockSignInWithOTP.mockResolvedValue(errorMessage)
+
+    fireEvent.press(loginButton)
+
+    await waitFor(() => {
+        expect(getByText(errorMessage)).toBeTruthy() 
+    }
+    )
+})
+// Test 3: Sign in function should be called when valid email is given 
+it ('Calls signInWithOTP when valid email is given', async () => {
+    const { getByPlaceholderText, getAllByText, getByText } = render(
+        <LoginScreen navigation={mockNavigation} /> 
+    )
+
+    const emailInput = getByPlaceholderText('Email')
+    const loginDivisions = getAllByText('Login')
+    const loginButton = loginDivisions[1]
+
+    fireEvent.changeText(emailInput, "validemail@gmail.com")
+    fireEvent.press(loginButton)
+
+    await waitFor(() => {
+        expect(mockSignInWithOTP).toHaveBeenCalledWith("validemail@gmail.com", mockNavigation)
+
+    })
+
+})
+

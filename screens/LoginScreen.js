@@ -29,7 +29,6 @@ export default function LoginScreen({ navigation }) {
     try {
       setLoading(true)
       setErrorMessage("");
-      console.log(email);
       const error = await signInWithOTP(email, navigation);
       setLoading(false)
       if (error) {
