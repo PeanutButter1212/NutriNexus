@@ -8,48 +8,68 @@ import {
   fetchFoodSuggestions,
   fetchCaloriesByFood,
   predictFoodFromImage,
+  insertFoodEntry,
 } from "../../services/scannerService";
 
-//mock camera
+//Mocks to simulate screen
+
+//camera
 jest.mock("expo-camera", () => ({
   CameraView: () => null,
   useCameraPermissions: jest.fn(),
   requestCameraPermissionsAsync: jest.fn(),
 }));
 
-//mock authenticated
+//auhenticated user
 jest.mock("../../contexts/AuthContext", () => ({
   useAuth: jest.fn(),
 }));
 
-//mock methods to test
+//methods used
 jest.mock("../../services/scannerService", () => ({
   fetchFoodSuggestions: jest.fn(),
   fetchCaloriesByFood: jest.fn(),
   predictFoodFromImage: jest.fn(),
+  insertFoodEntry: jest.fn(),
 }));
 
-//folder called ScannerScreen permission handling
-describe("ScannerScreen permission handling", () => {
-  //need auth if not wont work just like in screem
-  beforeEach(() => {
-    useAuth.mockReturnValue({
-      session: {
-        user: { id: "test-user-id" },
-      },
-    });
-  });
+//shared cameraref
+const mockCameraRef = {
+  current: {
+    takePictureAsync: jest.fn(() =>
+      Promise.resolve({ uri: "file://mock.jpg" })
+    ),
+    resumePreview: jest.fn(),
+  },
+};
 
-  //Test 1: permission granted camera access
-  it("requests camera permission on mount", async () => {
+//mock profile service to test activity log
+jest.mock("../../services/profileService", () => ({
+  updateCaloriesConsumed: jest.fn(),
+  fetchProfileCalories: jest.fn(),
+  fetchWeeklyCalories: jest.fn(),
+}));
+
+describe("ScannerScreen", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    useAuth.mockReturnValue({
+      session: { user: { id: "test-user-id" } },
+    });
+
     useCameraPermissions.mockReturnValue([
       { granted: true, status: "granted" },
       jest.fn(),
     ]);
+    insertFoodEntry.mockResolvedValue({ error: null }); //return success
+  });
 
+  //Test 1: permission granted camera access
+  it("requests camera permission on mount", async () => {
     render(
       <NavigationContainer>
-        <ScannerScreen />
+        <ScannerScreen cameraRef={mockCameraRef} />
       </NavigationContainer>
     );
 
@@ -71,41 +91,100 @@ describe("ScannerScreen permission handling", () => {
       </NavigationContainer>
     );
 
-    await waitFor(() => {
-      expect(
+    expect(
+      await waitFor(() =>
         getByText("We need your permission to show the camera")
-      ).toBeTruthy();
+      )
+    ).toBeTruthy();
+  });
+
+  //Test 3: Test display and selection of suggestions for manual input with calories
+  it("displays suggestions and updates calories when food is selected", async () => {
+    fetchFoodSuggestions.mockResolvedValue([{ name: "NasiLemak" }]);
+    fetchCaloriesByFood.mockResolvedValue(500);
+
+    const { getByPlaceholderText, findByText, getByText } = render(
+      <NavigationContainer>
+        <ScannerScreen />
+      </NavigationContainer>
+    );
+
+    fireEvent.changeText(
+      getByPlaceholderText("Take a photo or type to search"),
+      "NasiLemak"
+    );
+    //user taps on suggestion from dropdown list
+    const suggestion = await findByText("NasiLemak");
+    fireEvent.press(suggestion);
+
+    await waitFor(() => {
+      expect(getByText("500 kcal")).toBeTruthy();
+    });
+  });
+
+  //Test 4: Upload image to ML backend and return food type with calories
+  it("takes photo and updates food + calories", async () => {
+    predictFoodFromImage.mockResolvedValue({ detections: ["NasiLemak"] });
+    fetchCaloriesByFood.mockResolvedValue(500);
+
+    const { getByText, findByText } = render(
+      <NavigationContainer>
+        <ScannerScreen cameraRef={mockCameraRef} />
+      </NavigationContainer>
+    );
+
+    fireEvent.press(getByText("Upload"));
+
+    await waitFor(() => {
+      expect(mockCameraRef.current.takePictureAsync).toHaveBeenCalled();
+      expect(predictFoodFromImage).toHaveBeenCalledWith({
+        uri: "file://mock.jpg",
+      });
+      expect(fetchCaloriesByFood).toHaveBeenCalledWith("NasiLemak");
+    });
+
+    expect(await findByText("500 kcal")).toBeTruthy();
+  });
+
+  //Test 5: No food detected by ML
+  it("shows text popup when no food is detected", async () => {
+    //return blank result from ml model
+    predictFoodFromImage.mockResolvedValue({ detections: [] });
+
+    const { getByText, findByText } = render(
+      <NavigationContainer>
+        <ScannerScreen cameraRef={mockCameraRef} />
+      </NavigationContainer>
+    );
+
+    fireEvent.press(getByText("Upload"));
+
+    expect(await findByText("No detected food found")).toBeTruthy();
+  });
+
+  //Test 6: Entry added to activity log after uplaod clicked
+  it("inserts food entry into activity_log after upload", async () => {
+    predictFoodFromImage.mockResolvedValue({ detections: ["NasiLemak"] });
+    fetchCaloriesByFood.mockResolvedValue(500);
+
+    const { getByText, findByText } = render(
+      <NavigationContainer>
+        <ScannerScreen cameraRef={mockCameraRef} />
+      </NavigationContainer>
+    );
+
+    fireEvent.press(getByText("Upload"));
+
+    await findByText("500 kcal");
+
+    fireEvent.press(getByText("Submit"));
+
+    await waitFor(() => {
+      expect(insertFoodEntry).toHaveBeenCalledWith({
+        userId: "test-user-id",
+        food: "NasiLemak",
+        calories: 500,
+      });
     });
   });
 });
-
-//Test 3: Test display and selection of suggestions for manual input with calories
-
-it("displays suggestions when manually input", async () => {
-  useCameraPermissions.mockReturnValue([
-    { granted: true, status: "granted" },
-    jest.fn(),
-  ]);
-
-  fetchFoodSuggestions.mockResolvedValue([{ name: "NasiLemak" }]);
-  fetchCaloriesByFood.mockResolvedValue(500);
-
-  const { getByPlaceholderText, getByText, findByText } = render(
-    <NavigationContainer>
-      <ScannerScreen />
-    </NavigationContainer>
-  );
-
-  const input = getByPlaceholderText("Take a photo or type to search");
-  fireEvent.changeText(input, "NasiLemak");
-
-  //user tapping on the suggestion
-  const suggestion = await findByText("NasiLemak");
-  fireEvent.press(suggestion);
-
-  await waitFor(() => {
-    expect(getByText("500 kcal")).toBeTruthy();
-  });
-});
-
-//Test 4: Upload image to ML backend and return food type with calories

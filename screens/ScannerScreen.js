@@ -31,10 +31,12 @@ import {
 import { useIsFocused } from "@react-navigation/native";
 import AccessoryPopUp from "../components/AccessoryPopup";
 
-export default function ScannerScreen({ navigation }) {
+export default function ScannerScreen({ cameraRef: externalRef }) {
+  const internalRef = useRef(null);
+  const cameraRef = externalRef || internalRef; //to enable mock for testing
   const [facing, setFacing] = useState("back");
   const [permission, requestPermission] = useCameraPermissions();
-  const cameraRef = useRef(null);
+  //const cameraRef = useRef(null);
   const { session } = useAuth();
   const [food, setFood] = useState("");
   const [calories, setCalories] = useState("0");
