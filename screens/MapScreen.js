@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { View, Text, Alert, Image, Platform } from "react-native";
-import MapView, { Marker, Circle, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from "react-native-maps";
+import MapView, {
+  Marker,
+  Circle,
+  PROVIDER_GOOGLE,
+  PROVIDER_DEFAULT,
+} from "react-native-maps";
 import { useDistance } from "../contexts/DistanceTrackingContext";
 import haversineDistance from "haversine-distance";
 import { useNavigation } from "@react-navigation/native";
@@ -10,8 +15,6 @@ import { handleFirstVisit } from "../services/profileService";
 import { useAuth } from "../contexts/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
 import { Ruler, Navigation, MapPin } from "lucide-react-native";
-
-//to expand more markers i can create an array for markers and usestate to see which is selected then display that instead of creating multiple
 
 export default function MapScreen() {
   const { location, distance } = useDistance();
@@ -69,46 +72,47 @@ export default function MapScreen() {
   return (
     //Since cannot use pedometer we use estimate to determine steps(0.75 is average stride)
 
-
-<View className="flex-1">
-  {/* Centered container for both stats */}
-    <View className="absolute z-10 top-16 left-0 right-0 flex-row justify-center items-center">
-      
-      {/* Steps div */}
-      <View className="bg-amber-900 rounded-xl border-2 border-green-500 px-6 py-3">
-        <View className="flex-row items-center justify-center">
-          <Ionicons name="footsteps" size={20} color="#90EE90" />
-          <Text className="text-white text-3xl font-nunito-extrabold ml-3">
-            {(distance / 0.75).toFixed(0)}
-          </Text>
-        </View>
-      </View>
-
-      {/* Distance div */}
-      <View className="bg-amber-900 rounded-xl border-2 border-green-500 px-4 py-3 ml-4">
-        <View className="flex-row items-center">
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <MapPin size={24} color="#FFD700" />
-            <Ruler size={24} color="#FFF8DC" style={{ marginHorizontal: 8 }} />
+    <View className="flex-1">
+      {/* Centered container for both stats */}
+      <View className="absolute z-10 top-16 left-0 right-0 flex-row justify-center items-center">
+        {/* Steps div */}
+        <View className="bg-amber-900 rounded-xl border-2 border-green-500 px-6 py-3">
+          <View className="flex-row items-center justify-center">
+            <Ionicons name="footsteps" size={20} color="#90EE90" />
+            <Text className="text-white text-3xl font-nunito-extrabold ml-3">
+              {(distance / 0.75).toFixed(0)}
+            </Text>
           </View>
-          <Text className="text-white text-3xl font-nunito-extrabold">
-            {distance.toFixed(2)} km
-          </Text>
+        </View>
+
+        {/* Distance div */}
+        <View className="bg-amber-900 rounded-xl border-2 border-green-500 px-4 py-3 ml-4">
+          <View className="flex-row items-center">
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <MapPin size={24} color="#FFD700" />
+              <Ruler
+                size={24}
+                color="#FFF8DC"
+                style={{ marginHorizontal: 8 }}
+              />
+            </View>
+            <Text className="text-white text-3xl font-nunito-extrabold">
+              {distance.toFixed(0)} m
+            </Text>
+          </View>
         </View>
       </View>
-      
-    </View>
 
-            {/* formula is distance / 0.75 or distance.toFixed(2) z-10 top-10 left-0 right-0 mx-auto w-72 max-w-ws bg-white items-center rounded-xl   */}
-
-     
+      {/* formula is distance / 0.75 or distance.toFixed(2) z-10 top-10 left-0 right-0 mx-auto w-72 max-w-ws bg-white items-center rounded-xl   */}
 
       <MapView
         ref={mapRef}
         style={{ flex: 1 }} //bruh need use default styling
         showsUserLocation={true}
         showsMyLocationButton={true}
-        provider={Platform.OS === "android" ? PROVIDER_GOOGLE: PROVIDER_DEFAULT}
+        provider={
+          Platform.OS === "android" ? PROVIDER_GOOGLE : PROVIDER_DEFAULT
+        }
         initialRegion={{
           latitude: location.latitude,
           longitude: location.longitude,
@@ -145,12 +149,13 @@ export default function MapScreen() {
             return (
               <Marker
                 key={`${index}-${locationrow.latitude}-${locationrow.longitude}`} //need use key to force it cause rn it only changes when refreshed and make it unique also
+                testID={`marker-${locationrow.id}`} //testing
                 coordinate={{
                   latitude: locationrow.latitude,
                   longitude: locationrow.longitude,
                 }}
                 onPress={() => {
-                  console.log("inRadius: " + inRadius)
+                  console.log("inRadius: " + inRadius);
                   if (inRadius) {
                     handleFirstVisit(userId, locationrow.id).then(() => {
                       setVisited((prev) => [...prev, locationrow.id]);
