@@ -86,7 +86,7 @@ export async function fetchUsername(userId) {
     .single();
 
   if (error) {
-    return; 
+    return;
   }
 
   return data.username;
@@ -122,24 +122,20 @@ export async function fetchVisited(userId) {
     return [];
   }
 
-
   return data?.visited ?? []; //extract the array without visited header
-
 }
 
 //add to array if already visited
 
-
 export async function handleFirstVisit(userId, placeId) {
-  console.log("handlefirstvisit called")
+  console.log("handlefirstvisit called");
   const { data, error } = await supabase
     .from("profile_page")
     .select("visited, points")
     .eq("id", userId)
     .single();
 
-  console.log("handlefirstivist check for visit: " + data)
-
+  console.log("handlefirstivist check for visit: " + data);
 
   const currentVisited = data?.visited || [];
   const currentPoints = data?.points || 0;
@@ -163,8 +159,6 @@ export async function handleFirstVisit(userId, placeId) {
     })
     .eq("id", userId);
 
-
-
   if (updateError) {
     console.error("Failed to update points or visited1:", updateError);
     return;
@@ -186,7 +180,6 @@ export async function handleFirstVisit(userId, placeId) {
     console.log("Inserted row:", insertData);
   }
 }
-
 
 //retrieve weekly calorie data for bar graph
 
@@ -737,11 +730,11 @@ export const uploadProfileImage = async (userId, uri) => {
     console.log("=== UPLOAD FUNCTION START ===");
     console.log("userId:", userId);
     console.log("uri:", uri);
-    
+
     if (!uri) {
       throw new Error("No URI provided to uploadProfileImage");
     }
-    
+
     // FIXED: Use consistent filename (no timestamp)
     const timestamp = Date.now(); // or new Date().getTime()
     const fileName = `${userId}_avatar_${timestamp}.jpg`;
@@ -750,7 +743,7 @@ export const uploadProfileImage = async (userId, uri) => {
     // Create file object
     const file = {
       uri: uri,
-      type: 'image/jpeg',
+      type: "image/jpeg",
       name: fileName,
     };
 
@@ -758,10 +751,10 @@ export const uploadProfileImage = async (userId, uri) => {
 
     // Upload with upsert: true to replace existing file
     const { data, error } = await supabase.storage
-      .from('profile-pictures')
+      .from("profile-pictures")
       .upload(filePath, file, {
-        contentType: 'image/jpeg',
-        cacheControl: '3600',
+        contentType: "image/jpeg",
+        cacheControl: "3600",
         upsert: true, // This replaces the existing file
       });
 
@@ -774,7 +767,7 @@ export const uploadProfileImage = async (userId, uri) => {
 
     // Get public URL
     const { data: urlData } = supabase.storage
-      .from('profile-pictures')
+      .from("profile-pictures")
       .getPublicUrl(filePath);
 
     console.log("Public URL:", urlData.publicUrl);
@@ -784,5 +777,3 @@ export const uploadProfileImage = async (userId, uri) => {
     throw err;
   }
 };
-
-
