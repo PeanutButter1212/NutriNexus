@@ -88,13 +88,18 @@ export default function AvatarCustomisationScreen() {
       >
         {/* Avatar view*/}
         <View className="w-56 h-96 mt-28 relative items-center justify-center">
-          <Image source={avatarImage} className="w-full h-full absolute" />
+          <Image
+            source={avatarImage}
+            testID="avatar-image"
+            className="w-full h-full absolute"
+          />
           {/* for each equppied item we render image onto avatar*/}
           {Object.values(equipped).map((item, index) =>
             item ? (
               <Image
                 key={index}
                 source={{ uri: item.image_url }}
+                testID={`equipped-${item.item_id}`} //for testing with name
                 className="w-full h-full absolute"
                 resizeMode="contain"
                 style={{
@@ -125,6 +130,7 @@ export default function AvatarCustomisationScreen() {
             {TABS.map((tab) => (
               <TouchableOpacity
                 key={tab}
+                testID={`tab-${tab}`}
                 className="flex-1 py-3 rounded-2xl"
                 onPress={() => setCurrentTab(tab)}
                 style={{
@@ -156,6 +162,7 @@ export default function AvatarCustomisationScreen() {
               <SimpleInventorySlot
                 key={index}
                 selected={equipped[item.slot]?.item_id === item.item_id}
+                testID={`accessory-button-${item.item_id}`}
                 onPress={() => {
                   console.log("Item pressed:", item);
                   const slot = item.slot;
