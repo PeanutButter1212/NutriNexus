@@ -10,7 +10,11 @@ import {
   predictFoodFromImage,
   insertFoodEntry,
 } from "../../services/scannerService";
-
+import {
+  updateCaloriesConsumed,
+  fetchProfileCalories,
+  fetchWeeklyCalories,
+} from "../../services/profileService";
 //Mocks to simulate screen
 
 //camera
@@ -55,7 +59,7 @@ describe("ScannerScreen", () => {
     jest.clearAllMocks();
 
     useAuth.mockReturnValue({
-      session: { user: { id: "test-user-id" } },
+      session: { user: { id: "marcus" } },
     });
 
     useCameraPermissions.mockReturnValue([
@@ -181,10 +185,13 @@ describe("ScannerScreen", () => {
 
     await waitFor(() => {
       expect(insertFoodEntry).toHaveBeenCalledWith({
-        userId: "test-user-id",
+        userId: "marcus",
         food: "NasiLemak",
         calories: 500,
       });
     });
+    expect(updateCaloriesConsumed).toHaveBeenCalledWith("marcus");
+    expect(fetchProfileCalories).toHaveBeenCalledWith("marcus");
+    expect(fetchWeeklyCalories).toHaveBeenCalledWith("marcus");
   });
 });

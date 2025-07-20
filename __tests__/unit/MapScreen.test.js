@@ -49,7 +49,7 @@ jest.mock("../../hooks/useCoords", () => () => ({
 jest.mock("../../contexts/AuthContext", () => ({
   useAuth: () => ({
     session: {
-      user: { id: "test-user" },
+      user: { id: "marcus" },
     },
   }),
 }));
