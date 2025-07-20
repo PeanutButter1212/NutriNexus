@@ -185,7 +185,9 @@ export async function handleFirstVisit(userId, placeId) {
 
 export async function fetchWeeklyCalories(userId) {
   const startOfWeek = new Date();
-  startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay() + 1); //this makes sure we get the monday of that week
+  const day = startOfWeek.getDay();
+  const diffToMonday = day === 0 ? -6 : 1 - day; //if its sunday we go back 6 days to that monday
+  startOfWeek.setDate(startOfWeek.getDate() + diffToMonday);
   startOfWeek.setHours(0, 0, 0, 0);
 
   const endOfWeek = new Date(startOfWeek);
@@ -260,7 +262,9 @@ export async function fetchWeeklyCalories(userId) {
 
 export async function fetchWeeklySteps(userId) {
   const startOfWeek = new Date();
-  startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay() + 1); //this makes sure we get the monday of that week
+  const day = startOfWeek.getDay();
+  const diffToMonday = day === 0 ? -6 : 1 - day; //if its sunday we go back 6 days to that monday
+  startOfWeek.setDate(startOfWeek.getDate() + diffToMonday);
   startOfWeek.setHours(0, 0, 0, 0);
 
   const endOfWeek = new Date(startOfWeek);
