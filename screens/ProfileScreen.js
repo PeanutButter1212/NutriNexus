@@ -35,6 +35,8 @@ import stoneImage from "../assets/stone_texture.png";
 import { updateCaloriesConsumed } from "../services/profileService";
 import { useIsFocused } from "@react-navigation/native";
 import { addGoalPoints } from "../services/profileService";
+import { useSharedValue, withTiming} from "react-native-reanimated";
+import AnimatedText from "../components/AnimatedText";
 
 export default function Profile() {
   const navigation = useNavigation();
@@ -44,6 +46,7 @@ export default function Profile() {
 
   const SCREEN_HEIGHT = Dimensions.get("window").height;
 
+  
   const { distance } = useDistance();
 
   const [localPoints, setLocalPoints] = useState(0);
@@ -55,9 +58,6 @@ export default function Profile() {
   const avatarImage =
     userDemographics.gender === "Female" ? femaleAvatarImage : maleAvatarImage;
 
-  const handleLogout = () => {
-    logout(authMethod, navigation);
-  };
 
   //avatar accessories
   const [equipped, setEquipped] = useState({
@@ -65,6 +65,17 @@ export default function Profile() {
     body: null,
     hand: null,
   });
+
+  const dayLabelMap = {
+    MON: "Monday",
+    TUES: "Tuesday",
+    WED: "Wednesday",
+    THURS: "Thursday",
+    FRI: "Friday",
+    SAT: "Saturday",
+    SUN: "Sunday",
+    Total: "Total"
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -84,6 +95,7 @@ export default function Profile() {
     }, [session?.user?.id])
   );
 
+ 
   const {
     totalCalories,
     calorieGoal,
@@ -98,6 +110,19 @@ export default function Profile() {
 
   const { width } = useWindowDimensions();
 
+  const selectedValue = useSharedValue(0)
+  const progress = useSharedValue(0)
+  const selectedBar = useSharedValue(null)
+  const totalValue = referenceData.reduce((acc, curr) => acc + curr.value, 0)
+
+  const [selectedDay, setSelectedDay] = useState('Total');
+
+  useEffect(() => {
+    if (referenceData.length > 0) {
+        progress.value = withTiming(1, { duration: 1000 });
+        selectedValue.value = withTiming(totalValue, { duration: 1000 });
+    }
+}, [referenceData, totalValue]);
   useEffect(() => {
     if (selectedDataType === "Steps") {
       setReferenceData(stepsData);
@@ -108,9 +133,15 @@ export default function Profile() {
 
   //fetch calories daily which refreshes whenever enter page
 
+
+
+
+   
+
   const isFocused = useIsFocused();
 
   useEffect(() => {
+ 
     if (isFocused && userId) {
       updateCaloriesConsumed(userId).then((profileRow) => {
         console.log("profileRow:", profileRow); // sanity check
@@ -150,6 +181,40 @@ export default function Profile() {
   const y = d3.scaleLinear().domain(yDomain).range(yRange);
 
   const barWidth = 35;
+
+  const touchHandler = (e) => {
+    const touchX = e.nativeEvent.locationX;
+    const touchY = e.nativeEvent.locationY 
+  
+    const step = x.step(); // spacing between points
+    const index = Math.floor( (touchX - barWidth / 2) / step);
+  
+    if (index >= 0 && index < referenceData.length) {
+      const { day, value } = referenceData[index];
+
+      const barCenter = x(day)
+
+      if (barCenter != null) {
+        if (
+          touchX > barCenter - barWidth / 2 &&
+          touchX < barCenter + barWidth / 2 &&
+          touchY > graphHeight - y(value) &&
+          touchY < graphHeight 
+        ) {
+          setSelectedDay(day)
+          selectedBar.value = day
+          selectedValue.value = withTiming(value)
+          console.log({ value, day })
+        } else {
+          setSelectedDay("Total");
+          selectedBar.value = null;
+          selectedValue.value = withTiming(totalValue); 
+          console.log("outside range of bars")
+        }
+      }
+    }
+  };
+  
 
   const handleDebug = () => {
     console.log(profile);
@@ -316,7 +381,10 @@ export default function Profile() {
             }}
           >
             <TouchableOpacity
-              onPress={() => navigation.navigate("Avatar Customisation")}
+              onPress={  () => {
+                console.log("steps data: " + JSON.stringify(stepsData, null, 2))
+                console.log("caloric data: " + JSON.stringify(caloriesData, null, 2))
+              }  }
             >
               <Text className="text-3xl text-white"> Avatar </Text>
             </TouchableOpacity>
@@ -341,6 +409,7 @@ export default function Profile() {
             height: canvasHeight,
             backgroundColor: "white",
           }}
+          onTouchStart={touchHandler}
         >
           {referenceData.map((dataPoint, index) => (
             <Group key={index}>
@@ -349,6 +418,9 @@ export default function Profile() {
                 y={y(dataPoint.value)}
                 barWidth={barWidth}
                 graphHeight={graphHeight}
+                progress={progress}
+                label={dataPoint.day}
+                selectedBar={selectedBar}
               />
               <XAxisText
                 x={x(dataPoint.day)}
@@ -357,8 +429,33 @@ export default function Profile() {
               />
             </Group>
           ))}
+
         </Canvas>
-      </View>
+
+      
+ 
+      
+        <AnimatedText selectedValue={selectedValue} />
+
+        <View className="justify-center items-center flex-row"> 
+          {selectedDataType === "Steps" ? (
+            <Ionicons name="footsteps-sharp" size={52} color="#ba4a00" />
+          ) : (
+            <FontAwesome5 name="fire" size={52} color="#FF7F50" />
+          )}
+
+        <Text className="text-lg text-black font-semibold ml-3 ">
+         {dayLabelMap[selectedDay] || selectedDay}{" "} 
+         {selectedDataType === "Steps" ? "Steps Taken" : "Consumed Calories"}
+          </Text>
+
+        </View>
+        
+          
+          
+      
+    
+      </View>  
     </ScrollView>
   );
 }
