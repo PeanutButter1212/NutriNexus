@@ -138,7 +138,7 @@ export default function MapScreen() {
           .map((locationrow, index) => {
             //console.log("coord.id:", coord.id);
             //console.log("visited array:", visited);
-            const distanceToMarker = haversineDistance(locationrow, {
+            const distanceToMarker = haversineDistance(location, {
               latitude: locationrow.latitude,
               longitude: locationrow.longitude,
             });
