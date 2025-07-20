@@ -45,16 +45,17 @@ export default DropdownComponent;
 
 const styles = StyleSheet.create({
   dropdown: {
-    margin: 16,
-    height: 50,
+    height: 30,
     borderBottomColor: "gray",
     borderBottomWidth: 0.5,
+    marginLeft: -5 
   },
   icon: {
     marginRight: 5,
   },
   placeholderStyle: {
     fontSize: 16,
+    marginRight: 5 
   },
   selectedTextStyle: {
     fontSize: 16,
@@ -66,5 +67,6 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
+    marginRight: 5
   },
 });

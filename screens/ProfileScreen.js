@@ -37,6 +37,8 @@ import { useIsFocused } from "@react-navigation/native";
 import { addGoalPoints } from "../services/profileService";
 import { useSharedValue, withTiming} from "react-native-reanimated";
 import AnimatedText from "../components/AnimatedText";
+import FoodLog from "../components/FoodLog";
+import BottomTabNav from "../components/BottomTabNav";
 
 export default function Profile() {
   const navigation = useNavigation();
@@ -54,6 +56,8 @@ export default function Profile() {
   const [username, setUsername] = useState("User");
 
   const { userDemographics } = useProfileData();
+
+  const [activeBottomTab, setActiveBottomTab] = useState('statistics');
 
   const avatarImage =
     userDemographics.gender === "Female" ? femaleAvatarImage : maleAvatarImage;
@@ -216,9 +220,6 @@ export default function Profile() {
   };
   
 
-  const handleDebug = () => {
-    console.log(profile);
-  };
 
   return (
     <ScrollView className="flex-1 bg-white">
@@ -332,8 +333,7 @@ export default function Profile() {
               </View>
             </View>
 
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Activity Log")}
+            <View
               className="bg-white rounded-xl p-4 flex-1 shadow-md"
             >
               <View className="flex-row items-center mb-1">
@@ -345,7 +345,7 @@ export default function Profile() {
               <Text className="text-black text-3xl font-extrabold">
                 {Math.round(distance * 0.05)} kcal
               </Text>
-            </TouchableOpacity>
+            </View>
           </View>
 
           <LinearGradient
@@ -378,82 +378,96 @@ export default function Profile() {
               shadowRadius: 3.84,
               elevation: 5,
               paddingHorizontal: 28,
+              matginBottom: 10
             }}
           >
             <TouchableOpacity
-              onPress={  () => {
-                console.log("steps data: " + JSON.stringify(stepsData, null, 2))
-                console.log("caloric data: " + JSON.stringify(caloriesData, null, 2))
-              }  }
+              onPress={() => {
+                navigation.navigate("Avatar Customisation")
+              } }
             >
               <Text className="text-3xl text-white"> Avatar </Text>
             </TouchableOpacity>
           </LinearGradient>
         </View>
       </LinearGradient>
-
-      <View>
-        <View className="bg-white py-5 px-4 flex-row justify-between items-center">
-          <Text className="text-xl font-bold"> Statistics</Text>
-          <View style={{ width: "40%" }}>
+     
+      <BottomTabNav 
+        activeTab={activeBottomTab}
+        onTabChange={setActiveBottomTab}
+        /> 
+      <View style={{ height: 550 }}>
+        {activeBottomTab === "statistics" ? (
+          <> 
+      <View className="bg-white flex-row justify-between items-center px-3 mt-2 mb-8">
+        <Text className="text-xl font-bold ml-3">Statistics</Text>
+        <View style={{ width: "40%", marginLeft: 8 }}>
             <DropdownComponent
               value={selectedDataType}
               onChange={setSelectedDataType}
             />
           </View>
+      </View>
+
+      <Canvas
+        style={{
+          width: canvasWidth,
+          height: canvasHeight,
+          backgroundColor: "white",
+        }}
+        onTouchStart={touchHandler}
+      >
+        {referenceData.map((dataPoint, index) => (
+          <Group key={index}>
+            <BarPath
+              x={x(dataPoint.day)}
+              y={y(dataPoint.value)}
+              barWidth={barWidth}
+              graphHeight={graphHeight}
+              progress={progress}
+              label={dataPoint.day}
+              selectedBar={selectedBar}
+            />
+            <XAxisText
+              x={x(dataPoint.day)}
+              y={canvasHeight}
+              text={dataPoint.day}
+            />
+          </Group>
+        ))}
+      </Canvas>
+
+    
+
+    
+      <AnimatedText selectedValue={selectedValue} />
+
+      <View className="justify-center items-center flex-row"> 
+        {selectedDataType === "Steps" ? (
+          <Ionicons name="footsteps-sharp" size={52} color="#ba4a00" />
+        ) : (
+          <FontAwesome5 name="fire" size={52} color="#FF7F50" />
+        )}
+
+      <Text className="text-lg text-black font-semibold ml-3 ">
+       {dayLabelMap[selectedDay] || selectedDay}{" "} 
+       {selectedDataType === "Steps" ? "Steps Taken" : "Consumed Calories"}
+        </Text>
+
+      </View>
+      </> 
+
+        ) : (
+          <View>
+          <View className="bg-white">
+            <View className="flex-row items-center px-3"> 
+            <Text className="text-xl font-bold ml-3">Food Log</Text>
+            <Image source={require("../assets/Folder.png")} className="w-12 h-12" />
+            </View> 
+          </View>
+          <FoodLog />
         </View>
-
-        <Canvas
-          style={{
-            width: canvasWidth,
-            height: canvasHeight,
-            backgroundColor: "white",
-          }}
-          onTouchStart={touchHandler}
-        >
-          {referenceData.map((dataPoint, index) => (
-            <Group key={index}>
-              <BarPath
-                x={x(dataPoint.day)}
-                y={y(dataPoint.value)}
-                barWidth={barWidth}
-                graphHeight={graphHeight}
-                progress={progress}
-                label={dataPoint.day}
-                selectedBar={selectedBar}
-              />
-              <XAxisText
-                x={x(dataPoint.day)}
-                y={canvasHeight}
-                text={dataPoint.day}
-              />
-            </Group>
-          ))}
-
-        </Canvas>
-
-      
- 
-      
-        <AnimatedText selectedValue={selectedValue} />
-
-        <View className="justify-center items-center flex-row"> 
-          {selectedDataType === "Steps" ? (
-            <Ionicons name="footsteps-sharp" size={52} color="#ba4a00" />
-          ) : (
-            <FontAwesome5 name="fire" size={52} color="#FF7F50" />
-          )}
-
-        <Text className="text-lg text-black font-semibold ml-3 ">
-         {dayLabelMap[selectedDay] || selectedDay}{" "} 
-         {selectedDataType === "Steps" ? "Steps Taken" : "Consumed Calories"}
-          </Text>
-
-        </View>
-        
-          
-          
-      
+        )}
     
       </View>  
     </ScrollView>
