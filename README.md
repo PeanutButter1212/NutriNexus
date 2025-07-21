@@ -167,50 +167,58 @@ npx e
 ## Guide to using our application 
 ### Profile Page
 On here you will see the personal dashboard, where you can:
-- Click on "Calories Burnt" where you can view the activity log of meals eaten, alongside their corresponding calories count
-- View calories consumed every day over the current week on the bar graph
 - A circular visual indicator to dynamically render how close the user is to exceeding the calories limit for the day (as set in the details page)
-- View steps taken every day over the current week on the bar graph (not yet implemented)
-- Change Character where you can edit your avatar
+- Shop button to access the shop
+- Change Character button where you can edit your avatar
 - View number of points earned in the account 
 - View number of steps taken on the current day, as well as calories burnt on the day itself from steps taken
-- Click on settings to logout and edit your details (calorie goal, age, weight, height, gender)
 - Every account will be give 1000 points at the start, refresh to obtain them
+- Toogle between statictic and food log to :
+     - View steps/calories taken every day over the current week on the bargraph by clicking on graph
+     - Activity log showing entries of all the food logged
+- Click on settings to logout, edit your details (calorie goal, age, weight, height, gender) and edit username or upload profile picture
+
 
 ### Scanner Page
 - Grant camera permssion when prompted 
 - Point the picture at your food (at the moment, our system can detect prata, chicken rice and nasi lemak) and click on "Upload" button
-- After approximately 3 minutes (we will be working on hosting our model on faster servers for future milestones), the food and its corresponding calories will be updated in their corresponding fields
+- After approximately 6 seconds, the food and its corresponding calories will be updated in their corresponding fields
 - Click on submit to add the meal entry into your account's activity log. You will notice this will update your activity log which can be accessed in the profile page
-- If camera screen is black refresh app again
+
 
 ### Garden Page
 - Drag and drop items from your inventory onto the tile map above
 - Once your done the layout will be automatically saved
 - You will be given 5 of 2 different plants for testing purposes
 
+
 ### Map Page
-- A location marker will spawn near you such that you are able to interact (for testing purpose)
-- On click you will be brought to a screen with the details of the food place
+- There are markers all aroud Singapore representign hawkers for you to interact with
+- On click you will be brought to a screen with the details of the food place and awarded 200 points for first visit 
 - Scroll through stalls to view all stalls available
 - Clicking a stall will show a popup with the list of healthy food
 - Checking the box will grant you points and disable it
+
 
 ### Shop Page
 - Toggle between decor and accessories to view the purchase options
 - Click on item to purchase it which will show a confirmation popup
 - Once confirmed points will be deducted and item added to invenotry (not implemented)
 
+
 ### Customise Avatar
-- As of now you will not have any accessories to equip but if you want we can give you a account that have
-- Click on the accessory to see it on the avatar
+- You will be given 5 accessories to test
+- Toggle between the body parts to view accessories
+- Click on the accessory to see it on the avatar and click again to remove it
 - Once done click save to see the updated avatar on the profile page
 
-### Social Page
-- To be implemented
 
-### Challenges Page
-- To be implemented
+### Social Page
+- Click on add friends and search for friends username to add them
+- When searching, status of friendship will be shown next to name with corresponding actions (not friended: option to add friend, requested: option to cancal request, self: no action, friended: no action)
+- You can accept/reject friend requests by clicking the friend request button
+- Once you accept/others accept your request, they will appear in friends list
+- Click on the arrow beside their entry to view statistics(number of friends, number of places visited, total points, avatar layout and garden layout) you can also remove them as friend here
 
 
 --- 
