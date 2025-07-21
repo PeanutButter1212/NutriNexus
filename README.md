@@ -193,11 +193,11 @@ On here you will see the personal dashboard, where you can:
 
 
 ### Map Page
-- There are markers all aroud Singapore representign hawkers for you to interact with
+- There are markers all aroud Singapore representing hawkers for you to interact with
 - On click you will be brought to a screen with the details of the food place and awarded 200 points for first visit 
 - Scroll through stalls to view all stalls available
 - Clicking a stall will show a popup with the list of healthy food
-- Checking the box will grant you points and disable it
+- Checking the box will grant you 10 points and disable it
 
 
 ### Shop Page
