@@ -1,5 +1,7 @@
 //this file handles services related to profiles and profile_page table
 import { supabase } from "../lib/supabase";
+import { gatherAccessoryNetWorth } from "./avatarService";
+import { gatherDecorNetWorth } from "./gardenService";
 
 //retrieve profile details
 export async function updateProfileDetails(session, details) {
@@ -727,8 +729,6 @@ export async function updateUsername(userId, username) {
   return true;
 }
 
-// services/uploadProfileImage.js
-// FIXED uploadProfileImage function - handles blob conversion properly
 export const uploadProfileImage = async (userId, uri) => {
   try {
     console.log("=== UPLOAD FUNCTION START ===");
@@ -739,27 +739,26 @@ export const uploadProfileImage = async (userId, uri) => {
       throw new Error("No URI provided to uploadProfileImage");
     }
 
-    // FIXED: Use consistent filename (no timestamp)
-    const timestamp = Date.now(); // or new Date().getTime()
+
+    const timestamp = Date.now(); 
     const fileName = `${userId}_avatar_${timestamp}.jpg`;
     const filePath = `public/${fileName}`;
 
-    // Create file object
+  
     const file = {
       uri: uri,
       type: "image/jpeg",
       name: fileName,
     };
 
-    console.log("File object created");
 
-    // Upload with upsert: true to replace existing file
+   
     const { data, error } = await supabase.storage
       .from("profile-pictures")
       .upload(filePath, file, {
         contentType: "image/jpeg",
         cacheControl: "3600",
-        upsert: true, // This replaces the existing file
+        upsert: true,
       });
 
     if (error) {
@@ -769,7 +768,7 @@ export const uploadProfileImage = async (userId, uri) => {
 
     console.log("Storage upload successful:", data);
 
-    // Get public URL
+  
     const { data: urlData } = supabase.storage
       .from("profile-pictures")
       .getPublicUrl(filePath);
@@ -781,3 +780,22 @@ export const uploadProfileImage = async (userId, uri) => {
     throw err;
   }
 };
+
+export async function retrieveTotalEarnedPoints(userId) {
+  console.log("retrieving decorPoints")
+  const decorPoints = await gatherDecorNetWorth(userId)
+  console.log("decorPoints: " + decorPoints)
+
+  console.log("retrieving accessoryPoints")
+  const accessoryPoints = await gatherAccessoryNetWorth(userId)
+  console.log("accessoryPoints: " + accessoryPoints)
+
+  console.log("retrieving current points")
+  const currentPoints = await fetchPoints(userId)
+  console.log("currentPoints: " + currentPoints)
+
+  const totalPoints =  decorPoints + accessoryPoints + currentPoints
+  return totalPoints  
+
+
+}

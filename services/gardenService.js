@@ -1,4 +1,5 @@
 import { supabase } from "../lib/supabase";
+import { getCostsMap } from "./itemBankService";
 
 export async function retrieveDecorInventory(userId) {
   let { data: decorInventory, error } = await supabase
@@ -13,18 +14,6 @@ export async function retrieveDecorInventory(userId) {
   return decorInventory;
 }
 
-export async function fetchPlants() {
-  const { data, error } = await supabase
-    .from("item")
-    .select("id, name, image_url");
-
-  if (error) {
-    console.error("Failed to fetch plants:", error);
-    return [];
-  }
-
-  return data;
-}
 
 export async function handleAssetConsumption(userId, plantId) {
   console.log("now handling asset");
@@ -82,15 +71,7 @@ export async function handleAssetConsumption(userId, plantId) {
   }
 }
 
-export async function fetchItemBank() {
-  const { data, error } = await supabase.from("item").select("*");
 
-  if (error) {
-    //console.log("Error fetching item bank: " + error)
-  }
-
-  return data;
-}
 
 export async function retrieveGardenLayout(userId) {
   const { data, error } = await supabase
@@ -241,4 +222,38 @@ export async function fetchDecorIdOnTile(userId, col, row) {
       item_id: data.decor_id
     }
   
+}
+
+export async function gatherDecorNetWorth(userId) {
+
+  console.log("userId passed to gatherDecorNetWorth:", userId);
+
+  const { data, error } = await supabase
+  .from("inventory")
+  .select("item_id, count")
+  .eq("user_id", userId)
+
+
+  console.log("data in gatherDecorNetWorth: " + data)
+
+  if (error || !data) {
+    console.error("Failed to fetch inventory", error);
+    return 0;
+  }
+
+  const itemIds = data.map(item => item.item_id);
+
+  console.log("itemIds in user account on gatherDecorNetWorth: " + itemIds)
+
+  const costMap = await getCostsMap(itemIds);
+
+  let totalPoints = 0;
+
+  for (const { item_id, count } of data) {
+    const itemPrice = costMap[item_id] || 0;
+    totalPoints += itemPrice * count;
+  }
+
+  return totalPoints 
+
 }

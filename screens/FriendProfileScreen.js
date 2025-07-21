@@ -18,12 +18,12 @@ import { useRoute, useFocusEffect } from "@react-navigation/native";
 
 import useProfileData from "../hooks/useProfileData";
 import { fetchEquippedItems } from "../services/avatarService";
-import { fetchUserInfo } from "../services/profileService";
+import { fetchUserInfo, retrieveTotalEarnedPoints } from "../services/profileService";
 import gardenImage from "../assets/garden/garden.png";
 import { retrieveGardenLayout } from "../services/gardenService";
 import SkiaImageItem from "../components/skiaImageItem";
 import { Canvas } from "@shopify/react-native-skia";
-import { fetchPlants } from "../services/gardenService";
+import { fetchPlants } from "../services/itemBankService.js";
 import { fetchPoints } from "../services/profileService";
 import { fetchUsername } from "../services/profileService";
 import {
@@ -59,7 +59,6 @@ export default function FriendProfileScreen({ navigation }) {
   const [numloc, setNumLoc] = useState();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [profilePic, setProfilePic] = useState("");
-
   const gardenAreaRef = useRef(null);
 
   useFocusEffect(
@@ -72,7 +71,7 @@ export default function FriendProfileScreen({ navigation }) {
         const info = await fetchUserInfo(friendId);
         setGender(info?.gender);
 
-        const userPoints = await fetchPoints(friendId);
+        const userPoints = await retrieveTotalEarnedPoints(friendId);
         setPoints(userPoints);
 
         const username = await fetchUsername(friendId);
@@ -87,7 +86,7 @@ export default function FriendProfileScreen({ navigation }) {
         setNumLoc(numberLocations);
 
         const layout = await retrieveGardenLayout(friendId);
-        //console.log("Garden layout raw:", layout);
+        console.log("Garden layout raw:", layout);
 
         const plants = await fetchPlants();
 

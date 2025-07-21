@@ -1,5 +1,5 @@
 import { supabase } from "../lib/supabase";
-
+import { getCostsMap } from "./itemBankService";
 export async function retrieveAccessoryInventory(userId) {
   let { data: accessoryInventory, error } = await supabase
     .from("accessory_inventory")
@@ -82,3 +82,32 @@ export async function fetchEquippedItems(userId) {
 
   return data;
 } */
+
+export async function gatherAccessoryNetWorth(userId) {
+  const { data, error } = await supabase
+  .from("accessory_inventory")
+  .select("item_id")
+  .eq("user_id", userId)
+
+  console.log("data form gatherAccessoryInventory: " + data)
+
+  if (error || !data) {
+    console.error("Failed to fetch accessory inventory", accessoryError);
+    return 0;
+  }
+
+  const itemIds = data.map(item => item.item_id);
+
+  const costMap = await getCostsMap(itemIds);
+
+  let totalPoints = 0;
+
+  for (const { item_id } of data) {
+    totalPoints += costMap[item_id] || 0;
+  }
+
+  console.log("totalpoints in accessory net worth: " + totalPoints)
+
+  return totalPoints 
+
+}
