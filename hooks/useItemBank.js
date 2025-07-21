@@ -1,4 +1,4 @@
-import { fetchItemBank } from "../services/gardenService";
+import { fetchItemBank } from "../services/itemBankService.js";
 import { useState, useEffect } from "react";
 
 export default function useItemBank() {
@@ -13,6 +13,6 @@ export default function useItemBank() {
     loadItemBank();
   }, []);
 
-  //console.log("item bank: " + itemBank)
+  console.log("item bank: " + itemBank)
   return itemBank;
 }
