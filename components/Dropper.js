@@ -6,7 +6,9 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 const data = [
   { label: "Steps", val: "Steps" },
-  { label: "Calories", val: "Calories" },
+  { label: "Calories Consumed", val: "Calories Consumed" },
+  { label: "Calories Burnt", val: "Calories Burnt"}
+
 ];
 
 const DropdownComponent = ({ value, onChange }) => {
@@ -54,11 +56,11 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   placeholderStyle: {
-    fontSize: 16,
-    marginRight: 5 
+    fontSize: 16
   },
   selectedTextStyle: {
-    fontSize: 16,
+    fontSize: 12,
+    marginLeft: 3
   },
   iconStyle: {
     width: 20,
@@ -67,6 +69,7 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
-    marginRight: 5
+    marginRight: 10,
+    marginLeft: 12
   },
 });

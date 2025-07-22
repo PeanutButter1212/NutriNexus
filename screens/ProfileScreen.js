@@ -136,8 +136,18 @@ export default function Profile() {
   useEffect(() => {
     if (selectedDataType === "Steps") {
       setReferenceData(stepsData);
-    } else if (selectedDataType === "Calories") {
+    } else if (selectedDataType === "Calories Consumed") {
       setReferenceData(caloriesData);
+    } else if (selectedDataType === "Calories Burnt") {
+      const caloriesBurntData = stepsData.map(stepLog => {
+        return {
+          day: stepLog.day,
+          value: estimateCaloriesBurnt(stepLog.value, userDemographics.weight) || null
+        } 
+      } 
+    )
+    console.log(caloriesBurntData)
+    setReferenceData(caloriesBurntData)
     }
   }, [selectedDataType, caloriesData]);
 
@@ -428,7 +438,7 @@ export default function Profile() {
           <>
             <View className="bg-white flex-row justify-between items-center px-3 mt-2 mb-8">
               <Text className="text-xl font-bold ml-3">Statistics</Text>
-              <View style={{ width: "40%", marginLeft: 8 }}>
+              <View style={{ width: "45%"}}>
                 <DropdownComponent
                   value={selectedDataType}
                   onChange={setSelectedDataType}
