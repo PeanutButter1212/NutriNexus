@@ -34,13 +34,34 @@ export async function predictFoodFromImage(photo) {
 }
 
 export async function insertFoodEntry({ userId, food, calories }) {
+  const nowSG = new Date();
+
+  const dateSG = nowSG.toLocaleDateString("en-CA", {
+    timeZone: "Asia/Singapore",
+  });
+
+  const timeSG = nowSG.toLocaleTimeString("en-GB", {
+    timeZone: "Asia/Singapore",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
   const { error } = await supabase.from("activity_log").insert([
     {
       food,
       calories: parseInt(calories),
       user_id: userId,
+      date: dateSG,
+      time: timeSG,
     },
   ]);
+  console.log("Inserting:", {
+    food,
+    calories,
+    userId,
+    date: dateSG,
+    time: timeSG,
+  });
   return { error };
 }
 
@@ -56,8 +77,6 @@ export async function fetchCaloriesByFood(food) {
   if (error) {
     console.error("Supabase error:", error.message);
   }
-
-  
 
   return data.calories.toString();
 }
