@@ -42,7 +42,7 @@ export default function SettingScreen({ navigation }) {
         onPress={() => navigation.navigate("Username Settings")}
         className="items-center justify-center bg-blue-500 w-3/4 rounded-xl mt-6 py-3"
       >
-        <Text className="text-white text-base font-medium">Edit Username</Text>
+        <Text className="text-white text-base font-medium">Edit Profile Information</Text>
       </TouchableOpacity>
 
       <TouchableOpacity

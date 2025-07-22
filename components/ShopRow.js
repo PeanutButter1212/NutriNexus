@@ -1,10 +1,11 @@
-import { View, Text, Image, TouchableOpacity, Modal } from 'react-native'
+import { View, Text, Image, TouchableOpacity, Modal, Platform } from 'react-native'
 import React from 'react'
 import pointLogo from '../assets/Points.png'
 
 const ShopRow = ({leftItem, rightItem, onGetPress}) => {
 
-    const outerBoxWidth = 140
+    const outerBoxWidth = Platform.OS === "android" ? 135 : 140;
+
 
     const renderItemBox = (item) => (
      <View
@@ -21,7 +22,9 @@ const ShopRow = ({leftItem, rightItem, onGetPress}) => {
                  {item.children}
                  <View className="items-center justify-center"> 
                    <Text
-                   className="text-white font-nunito-bold mb-3 text-xl"
+                   className={`${Platform.OS === "ios" ? "text-xl mb-3" : "text-base mb-2" } text-white font-nunito-bold`} 
+                   numberOfLines={1}
+                   ellipsizeMode="tail"
                    >
                    {item.name}
                    </Text>
@@ -34,7 +37,10 @@ const ShopRow = ({leftItem, rightItem, onGetPress}) => {
                             source={pointLogo}
                             className="h-8 w-8"
                             />
-                            <Text className="font-nunito-extrabold text-orange-400"> 
+                            <Text 
+                            className="font-nunito-extrabold text-orange-400"
+                            
+                            > 
                                {item.cost}
                             </Text>
            
@@ -73,13 +79,13 @@ const ShopRow = ({leftItem, rightItem, onGetPress}) => {
         )
     return (
         <View className="flex-row justify-between">
-            <View className="ml-3">
+            <View className={`${Platform.OS === "ios" ? "ml-3" : "" }`}>
                 {renderItemBox(leftItem)}
             </View>
             
             {/* Right item with consistent spacing */}
             {rightItem && (
-                <View className="mr-3">
+                      <View className={`${Platform.OS === "ios" ? "ml-3" : "" }`}>
                     {renderItemBox(rightItem)}
                 </View>
             )}

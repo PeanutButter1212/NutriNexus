@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, TextInput, Modal } from 'react-native';
+import { View, Text, Image, TouchableOpacity, TextInput, Modal, ActivityIndicator } from 'react-native';
 import { supabase } from '../lib/supabase'; // make sure your Supabase client is set up correctly
 import { LinearGradient } from "expo-linear-gradient";
 import pointLogo from '../assets/Points.png'
@@ -14,6 +14,7 @@ import { uploadProfileImage } from '../services/profileService.js';
 import defaultProfilePic from '../assets/Green_Background.png';
 import { Image as ExpoImage } from 'expo-image';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { fetchProfilePicture } from '../services/publicDetailsService';
 
 
 
@@ -29,7 +30,12 @@ export default function UsernameScreen({ navigation }) {
 
 
 
-  const [showPopup, setShowPopup] = useState("false")
+  const [showUsernamePopup, setShowUsernamePopup] = useState(false)
+  const [showProfilePicPopup, setShowProfilePicPopup] = useState(false)
+
+  const [loading, setLoading] = useState(false);
+
+
 
   const [imageUri, setImageUri] = useState(null);
 
@@ -92,6 +98,8 @@ export default function UsernameScreen({ navigation }) {
   const handleChangePhoto = async () => {
     try {
       
+      setLoading(true)
+
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
@@ -120,13 +128,36 @@ export default function UsernameScreen({ navigation }) {
         alert("Could not get image. Please try again.");
         return;
       }
+
+      const currentPicUrl = await fetchProfilePicture(userId)
+      const defaultUrl =  "https://rkrdnsnujizdskzbdwlp.supabase.co/storage/v1/object/public/profile-pictures//Green_Background.png";
+
+  
+      if (currentPicUrl !== defaultUrl) {
+
+
+        const match = currentPicUrl.match(/\/profile-pictures\/public\/(.+?)(?:\?|$)/);
+        const fileName = match?.[1];
+
+    
+        if (fileName) {
+          const { data: deleteData, error: deleteError } = await supabase
+          .storage
+          .from("profile-pictures")
+          .remove([`public/${fileName}`]);
+        
+
+          if (deleteError) {
+            console.error("Failed to delete old profile pic: " + deleteError)
+          } 
+        }
+      }
   
    
       setCurrentDisplayImage(selectedUri);
 
       const publicUrl = await uploadProfileImage(userId, selectedUri);
       
-      console.log("Upload successful, updating database...");
       const { error } = await supabase
         .from('username')
         .update({ profile_pic_url: publicUrl })
@@ -142,13 +173,14 @@ export default function UsernameScreen({ navigation }) {
       await AsyncStorage.setItem(key, publicUrl);
       setCachedPic(publicUrl);
       setCurrentDisplayImage(publicUrl);
-
-      setShowPopup(true);
+      setLoading(false)
+      setShowProfilePicPopup(true);
       setErrorMessage('');
       
     } catch (err) {
       alert("Upload failed: " + err.message);
       setErrorMessage("Failed to upload image.");
+      setLoading(false)
     }
   };
 
@@ -157,11 +189,18 @@ export default function UsernameScreen({ navigation }) {
         setErrorMessage("Please enter a username.");
         return;
     }
+    if (usernameInput.length > 18) {
+      setErrorMessage("Username cannot be longer than 16 characters.");
+      return;
+    }
     try {
+        setLoading(true)
         await updateUsername(userId, usernameInput);
-        setShowPopup(true)
+        setLoading(false)
+        setShowUsernamePopup(true)
       } catch (err) {
         setErrorMessage(err.message);
+        setLoading(false)
       }
 
   }
@@ -199,7 +238,9 @@ export default function UsernameScreen({ navigation }) {
 />
 
       
-      <TouchableOpacity onPress={handleChangePhoto}>
+      <TouchableOpacity 
+      disabled={loading}
+      onPress={handleChangePhoto}>
       <Text className="mt-2 underline text-sky-700 text-base">Change Photo</Text>
       </TouchableOpacity>
 
@@ -229,6 +270,7 @@ export default function UsernameScreen({ navigation }) {
 
     <TouchableOpacity
         onPress={handleSubmitUsername}
+        disabled={loading}
         className="items-center justify-center bg-green-600 rounded-xl mt-6
         py-3 mt-3 px-[100px]"
       >
@@ -238,20 +280,33 @@ export default function UsernameScreen({ navigation }) {
 
     <TouchableOpacity
         onPress={() => navigation.goBack()}
+        disabled={loading}
         className="items-center justify-center bg-red-500 rounded-xl mt-6
         py-3 mt-3 px-[135px]"
       >
         <Text className="text-white text-base font-medium"> Back </Text>
       </TouchableOpacity>
 
+      {loading && (
+            <View
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: [{ translateX: -25 }, { translateY: -25 }],
+              }}
+            >
+              <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+          )}
+
 
       <Modal
-            visible={showPopup}
+            visible={showUsernamePopup}
             transparent={true}
             animationType="fade"
             onRequestClose={() => {
-              setShowPopup(false);
-              navigation.replace("MainTabs");
+              setShowUsernamePopup(false);
             }}
             
         >
@@ -263,8 +318,29 @@ export default function UsernameScreen({ navigation }) {
             messageHeading={"Success!"}
             messageDescription={"Your username has been successfully updated"}
             onContinue={() => {
-              setShowPopup(false);
-              navigation.replace("MainTabs");
+              setShowUsernamePopup(false);
+            }}/>
+            </View>
+        </Modal>
+
+        <Modal
+            visible={showProfilePicPopup}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={() => {
+              setShowProfilePicPopup(false)
+            }}
+            
+        >
+            <View 
+            className="flex-1 bg-black/50"
+            >
+            <AccessoryPopUp 
+            success={true}
+            messageHeading={"Success!"}
+            messageDescription={"Your Profile Picture has been successfully updated"}
+            onContinue={() => {
+              setShowProfilePicPopup(false);
             }}/>
             </View>
         </Modal>

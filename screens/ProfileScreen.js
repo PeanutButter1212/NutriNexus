@@ -12,6 +12,7 @@ import {
   Settings,
   Dimensions,
   ImageBackground,
+  Platform
 } from "react-native";
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useAuth } from "../contexts/AuthContext";
@@ -299,10 +300,14 @@ export default function Profile() {
               <View className="flex-row items-center">
                 <Image
                   source={require("../assets/Points.png")}
-                  className="w-8 h-8"
+                  className={`${
+                    Platform.OS === 'ios' ? 'w-8 h-8' : 'w-6 h-6'
+                  }`}
                 />
 
-                <Text className="text-stone-500 text-sm text-xl font-bold">
+              <Text className={`text-stone-500 font-bold ml-1 ${
+                  Platform.OS === 'ios' ? 'text-xl' : 'text-lg'
+                }`}>
                   Points
                 </Text>
               </View>
@@ -319,10 +324,12 @@ export default function Profile() {
 
             <View className="bg-white rounded-xl p-4 flex-1 shadow-md mr-2">
               <View className="flex-row items-center">
-                <Ionicons name="footsteps" size={20} color="black" />
+                <Ionicons name="footsteps" size={Platform.OS === "ios" ? 20 : 16} color="black" />
                 <Text
                   testID="steps-label"
-                  className="text-stone-500 text-sm text-xl font-bold"
+                  className={`text-stone-500 font-bold ml-1 ${
+                    Platform.OS === 'ios' ? 'text-xl' : 'text-lg'
+                  }`}
                 >
                   Steps
                 </Text>
@@ -342,9 +349,13 @@ export default function Profile() {
 
             <View className="bg-white rounded-xl p-4 flex-1 shadow-md">
               <View className="flex-row items-center mb-1">
-                <FontAwesome5 name="fire" size={20} color="black" />
-                <Text className="text-stone-500 text-m font-bold"> Burnt </Text>
-                <Text className="text-stone-500 text-m font-bold">Kcal</Text>
+                <FontAwesome5 name="fire" size={Platform.OS === "ios" ? 20 : 16} color="black" />
+                <Text className={`text-stone-500 font-bold ml-1 ${
+                  Platform.OS === 'ios' ? 'text-base' : 'text-sm'
+                }`}>Burnt </Text>
+                <Text className={`text-stone-500 font-bold ${
+                  Platform.OS === 'ios' ? 'text-base' : 'text-sm'
+                }`}>Kcal</Text>
               </View>
 
               <Text className="text-black text-3xl font-extrabold">
