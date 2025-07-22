@@ -227,7 +227,7 @@ export async function fetchWeeklyCalories(userId) {
     data.forEach((entry) => {
       const date = new Date(entry.date);
       const dayOfTheWeek = date
-        .toLocaleDateString("en-US", { weekday: "short" })
+        .toLocaleDateString("en-CA", { weekday: "short" })
         .toUpperCase();
 
       let key;
@@ -315,7 +315,7 @@ export async function fetchWeeklySteps(userId) {
     data.forEach((entry) => {
       const date = new Date(entry.date);
       const dayOfTheWeek = date
-        .toLocaleDateString("en-US", { weekday: "short" })
+        .toLocaleDateString("en-CA", { weekday: "short" })
         .toUpperCase();
 
       let key;
