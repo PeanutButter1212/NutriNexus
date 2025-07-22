@@ -205,12 +205,6 @@ const shouldShowLoading = isLoadingCalories || !userDemographics || Object.keys(
   //console.log("calorieGoal:", calorieGoal);
   //console.log("progressPercentage:", progressPercentage);
 
-  console.log('=== DEBUG ===');
-  console.log('totalCalories:', totalCalories, 'type:', typeof totalCalories);
-  console.log('calorieGoal:', calorieGoal, 'type:', typeof calorieGoal);
-  console.log('userDemographics:', userDemographics);
-  console.log('=============');
-  
   const progressPercentage = 
   (!calorieGoal || calorieGoal === 0 || !totalCalories && totalCalories !== 0) 
     ? NaN 
