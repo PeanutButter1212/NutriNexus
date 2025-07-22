@@ -234,7 +234,8 @@ const verifyOtp = async (email, otp, navigation) => {
         calorie_goal: 2200,
         age: 36,
         gender: "Male",
-        points: 1000
+        points: 1000,
+        is_first_time: true  
       }, 
       { onConflict: 'id' })
 
@@ -244,7 +245,6 @@ const verifyOtp = async (email, otp, navigation) => {
         throw extendedProfileDataError;
       }
 
-      console.log("✅ Profile page data inserted successfully");
 
       const { data: newProfileData, error: reloadError } = await supabase
         .from("profile_page")
@@ -334,7 +334,7 @@ const googleSignIn = async () => {
           weight: 70,
           calories: 2200,
           age: 36,
-          gender: "Male"
+          gender: "Male" 
         }, { onConflict: 'id' });
 
       if (insertError) {
@@ -371,6 +371,7 @@ const googleSignIn = async () => {
           age: 36,
           gender: "Male",
           points: 1000,
+          is_first_time: true 
         }, { onConflict: 'id' });
 
       if (profilePageInsertError) {
@@ -438,6 +439,7 @@ const googleSignIn = async () => {
     triggerRefresh,
     refreshFlag,
     user,
+    setProfile 
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
