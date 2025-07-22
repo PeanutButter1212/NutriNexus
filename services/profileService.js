@@ -360,11 +360,12 @@ export async function fetchWeeklySteps(userId) {
 //update calories when scanned and submitted
 export async function updateCaloriesConsumed(userId) {
   try {
+    const today = new Date().toLocaleDateString("en-CA");
     const { data, error } = await supabase
       .from("activity_log")
       .select("calories")
       .eq("user_id", userId)
-      .eq("date", new Date().toISOString().split("T")[0]); //this is yyyy-mm-dd format same as our table
+      .eq("date", today);
 
     if (error) {
       console.log("Error fetching entries:", error);
@@ -377,9 +378,6 @@ export async function updateCaloriesConsumed(userId) {
     if (!totalCalories) {
       totalCalories = 0;
     }
-
-    console.log("Today’s date:", new Date().toISOString().split("T")[0]);
-    console.log("Queried entries:", data);
 
     const { error: updateError } = await supabase
       .from("profile_page")

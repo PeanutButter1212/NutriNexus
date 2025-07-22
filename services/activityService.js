@@ -4,7 +4,7 @@ import { supabase } from "../lib/supabase";
 
 export async function activityService(session) {
   const userId = session?.user?.id;
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toLocaleDateString("en-CA");
 
   if (!userId) {
     console.warn("No USER ID HELP!");
@@ -29,7 +29,7 @@ export async function activityService(session) {
 
 //to include calories burnt in total calories
 export async function updateCaloriesBurnt(userId, caloriesBurnt) {
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toLocaleDateString("en-CA");
   const { error } = await supabase
     .from("step_log")
     .update({ calories_burnt: caloriesBurnt })
