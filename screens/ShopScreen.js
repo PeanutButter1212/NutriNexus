@@ -21,7 +21,7 @@ export default function ShopScreen({navigation}) {
 
     const itemBank = useItemBank() 
 
-    const { points } = useProfileData() 
+    const { points, loading } = useProfileData() 
 
     const [ownedAccessories, setOwnedAccessories] = useState([])
 
@@ -35,9 +35,11 @@ export default function ShopScreen({navigation}) {
 
 
 
-    useEffect( () => {
-        setLocalPoints(points) }
-    , [points])
+    useEffect(() => {
+        if (!loading && points !== undefined && points !== null) {
+            setLocalPoints(points)
+        }
+    }, [points, loading])
 
     useFocusEffect(
         useCallback(() => {
@@ -195,7 +197,7 @@ export default function ShopScreen({navigation}) {
                         />
                         <Text
                         className="text-white font-nunito-bold text-xl"
-                        > {localPoints}
+                        > {loading ? "..." : localPoints}
                         </Text>
                     </View>
               

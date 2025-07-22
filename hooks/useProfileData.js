@@ -69,6 +69,7 @@ export default function useProfileData() {
     username,
     visited,
     profilePic,
+    loading,
     setTotalCalories,
     setCalorieGoal,
     setVisited,

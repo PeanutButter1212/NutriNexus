@@ -35,9 +35,8 @@ const DropdownComponent = ({ value, onChange }) => {
         const selectedItem = data.find((item) => item.val === value);
         return selectedItem?.val === "Steps" ? (
           <Ionicons name="footsteps-sharp" size={24} color="#ba4a00" />
-        ) : (
-          <FontAwesome5 name="fire" size={20} color="#FF7F50" />
-        );
+        ) : selectedItem?.val === "Calories Burnt" ?  (<FontAwesome5 name="fire" size={20} color="#FF7F50" />)
+                                                      : (<Ionicons name="nutrition" size={24} color="#f21127" />)
       }}
     />
   );
