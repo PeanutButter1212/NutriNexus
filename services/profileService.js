@@ -186,21 +186,31 @@ export async function handleFirstVisit(userId, placeId) {
 //retrieve weekly calorie data for bar graph
 
 export async function fetchWeeklyCalories(userId) {
-  const startOfWeek = new Date();
-  const day = startOfWeek.getDay();
-  const diffToMonday = day === 0 ? -6 : 1 - day; //if its sunday we go back 6 days to that monday
-  startOfWeek.setDate(startOfWeek.getDate() + diffToMonday);
-  startOfWeek.setHours(0, 0, 0, 0);
+  const now = new Date();
 
-  const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(startOfWeek.getDate() + 6); //this makes sure is sunday of the current week
-  endOfWeek.setHours(23, 59, 59, 999);
+  const day = now.getDay(); //return 0/1/2 0 = Sunday
+
+  // Get Monday of the current week
+  const monday = new Date(now);
+  if (day === 0) {
+    //if today Sunday go back 6 days
+    monday.setDate(now.getDate() - 6);
+  } else {
+    //other day back to monday
+    monday.setDate(now.getDate() - (day - 1));
+  }
+  monday.setHours(0, 0, 0, 0);
+
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  sunday.setHours(23, 59, 59, 999);
+
   const { data, error } = await supabase
     .from("activity_log")
     .select("calories, date")
     .eq("user_id", userId)
-    .gte("date", startOfWeek.toISOString().split("T")[0]) //set the range of dates to retrieve from
-    .lte("date", endOfWeek.toISOString().split("T")[0]);
+    .gte("date", monday.toLocaleDateString("en-CA"))
+    .lte("date", sunday.toLocaleDateString("en-CA"));
 
   const dailyTotals = {
     //instead of 0 we use null which solves issue of fake graphs when value is 0
@@ -263,22 +273,33 @@ export async function fetchWeeklyCalories(userId) {
 //retrieve weekly step data for bar graph
 
 export async function fetchWeeklySteps(userId) {
-  const startOfWeek = new Date();
-  const day = startOfWeek.getDay();
-  const diffToMonday = day === 0 ? -6 : 1 - day; //if its sunday we go back 6 days to that monday
-  startOfWeek.setDate(startOfWeek.getDate() + diffToMonday);
-  startOfWeek.setHours(0, 0, 0, 0);
+  const now = new Date();
 
-  const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(startOfWeek.getDate() + 6); //this makes sure is sunday of the current week
-  endOfWeek.setHours(23, 59, 59, 999);
+  const day = now.getDay(); //return 0/1/2 0 = Sunday
+
+  // Get Monday of the current week
+  const monday = new Date(now);
+  if (day === 0) {
+    //if today Sunday go back 6 days
+    monday.setDate(now.getDate() - 6);
+  } else {
+    //other day back to monday
+    monday.setDate(now.getDate() - (day - 1));
+  }
+  monday.setHours(0, 0, 0, 0);
+
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  sunday.setHours(23, 59, 59, 999);
+
+  //console.log("Week range:", monday.toISOString(), "→", sunday.toISOString());
 
   const { data, error } = await supabase
     .from("step_log")
     .select("steps, date")
     .eq("user_id", userId)
-    .gte("date", startOfWeek.toISOString().split("T")[0]) //set the range of dates to retrieve from
-    .lte("date", endOfWeek.toISOString().split("T")[0]);
+    .gte("date", monday.toLocaleDateString("en-CA")) //bruh the error was cause toISo gives time zone is US which is 1 day different causing sunday to show as start of week but now toLocale works
+    .lte("date", sunday.toLocaleDateString("en-CA"));
 
   const dailyTotals = {
     MON: null,
