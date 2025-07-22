@@ -1,4 +1,4 @@
-import { View, Text, Image, Dimensions, ImageBackground, TouchableOpacity, Animated, ScrollView, UIManager, Pressable, findNodeHandle, TouchableWithoutFeedback} from 'react-native';
+import { View, Text, Image, Dimensions, ImageBackground, TouchableOpacity, Animated, ScrollView, Platform, UIManager, Pressable, findNodeHandle, TouchableWithoutFeedback} from 'react-native';
 import React,  { useRef, useState, useEffect, useMemo, useCallback } from 'react'
 import gardenImage from '../assets/garden/garden.png'
 import woodenBackground from '../assets/backgrounds/inventoryBackground.png'
@@ -16,9 +16,10 @@ import useLayoutData from '../hooks/useLayoutData';
 import ShovelComponent from '../components/ShovelComponent';
 import DraggableShovel from '../components/DraggableShovel';
 import { useFocusEffect } from '@react-navigation/native';
-import { Platform } from 'react-native';
 import useItemInteraction from '../hooks/useItemInteraction';
 import useShovelInteraction from '../hooks/useShovelInteraction';
+import inventoryLabel from '../assets/InventoryLabel.png';
+
 
 
 
@@ -30,10 +31,10 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 const IMAGE_WIDTH = 56;
 const IMAGE_HEIGHT = 64;
 
-const DIAMOND_SIZE = 36; 
-const SPACING = 41; 
+const DIAMOND_SIZE = Platform.OS === 'ios' ? 36 : 34
+const SPACING = Platform.OS === 'ios' ? 41 : 38
 const xStartOfGarden = SCREEN_WIDTH / 2 
-const yStartOfGarden = 0.25 * SCREEN_HEIGHT; 
+const yStartOfGarden = Platform.OS === 'ios' ? 0.25 * SCREEN_HEIGHT : 0.25 * SCREEN_HEIGHT + 14;  
 
 
 
@@ -235,7 +236,7 @@ useEffect(() => {
                 onDragStart={handleDragStart}
                 onDragMove={handleDragMove}
                 onDragEnd={handleDragEnd}
-                size = {80}
+                size = {Platform.OS === 'ios' ? 80 : 70}
               />
             ),
           }}
@@ -263,7 +264,7 @@ useEffect(() => {
 
     return (
       <View
-      className="ml-8 mb-6"
+      className="ml-8 mb-4"
       >
       <ShovelComponent
       topItem={{
@@ -275,7 +276,7 @@ useEffect(() => {
               onDragStart={handleShovelStart}
               onDragMove={handleShovelMove}
               onDragEnd={handleShovelEnd}
-              size={50}
+              size={Platform.OS === 'ios' ? 50 : 40}
               className="mt-2 mr-2"
           />
       ),
@@ -318,6 +319,8 @@ useEffect(() => {
         height: SCREEN_HEIGHT,
        }}
        > 
+
+      {/* shows vacant plant tiles by highlighting them with red squares, is disabled when dragging the shovel as it signifies removal of item */}
       {draggedItemRef.current && !isDraggingShovel && gridView.map(({ path, col, row }) => {
         if (isTileOccupied(col, row)) return null;
         return (
@@ -331,16 +334,22 @@ useEffect(() => {
           />
         );
       })}
-    
 
-        {placedPlants.map((plant, idx) => {
+      {/* once dropped at a valid tile, a plant will be added to placedPlants, adding a SkiaImage to the garden view  */}
+        {[...placedPlants]
+        .sort((a, b) => {
+          //if plants both have same row, the one more to the left (lower col) will be rendered first
+          if (a.row === b.row) return a.col - b.col; 
+          // if plants do not have same row, then render the top rows first, preventing plants on the top row from rendering before plants on the bottom row (so that plants do not appear stacked on top of each other)
+          return a.row - b.row; 
+        }).map((plant, idx) => {
           const { x, y } = getIsometricPosition(plant.col, plant.row);
           return (
           <SkiaImageItem
           key={`plant-${plant.row}-${plant.col}-${plant.item.id}`}
           item={plant.item}
-          x={x - IMAGE_WIDTH / 2}
-          y={y - IMAGE_HEIGHT * 0.75}
+          x={Platform.OS === "ios" ? x - IMAGE_WIDTH / 2 : x - IMAGE_WIDTH / 2 - 3}
+          y={Platform.OS === "ios" ? y - IMAGE_HEIGHT * 0.75 : y - IMAGE_HEIGHT * 0.75 - 2.5}
           />
           )
           
@@ -349,15 +358,7 @@ useEffect(() => {
       
       
 
-      {shouldShowHoverTileForRemoval && (
-        <Path
-          path={diamondView(hoverTile.x, hoverTile.y, DIAMOND_SIZE)}
-          style="fill"
-          color="rgba(255, 255, 255, 0.3)" 
-          strokeWidth={2}
-          strokeColor="#ffffff"
-        />
-      )}
+  {/* when dragging shovel, tiles that are occupied will have red overlay */}
 
       {showPlantTiles && placedPlantsRef.current.map((plant, idx) => {
         const {x, y} = getIsometricPosition(plant.col, plant.row)
@@ -376,16 +377,44 @@ useEffect(() => {
 
       }
 
+  {/* hovering overlay for tiles that are vacant, used when decor item is dragged */}
+      {shouldShowHoverTile &&
+        (() => {
+          const matchedTile = gridView.find(
+            tile => tile.col === hoverTile.col && tile.row === hoverTile.row
+          );
+          if (!matchedTile) return null;
 
-      {shouldShowHoverTile && (
-        <Path
-          path={diamondView(hoverTile.x, hoverTile.y, DIAMOND_SIZE)}
-          style="fill"
-          color="rgba(255, 255, 255, 0.3)" 
-          strokeWidth={2}
-          strokeColor="#ffffff"
-        />
-      )}
+          return (
+            <Path
+              path={matchedTile.path}
+              style="fill"
+              color="rgba(255, 255, 255, 0.3)"
+              strokeWidth={2}
+              strokeColor="#ffffff"
+            />
+          );
+        })()}
+
+  {/* hovering overlay for tiles that are occupied, used when shovel is being dragged */}
+        {shouldShowHoverTileForRemoval &&
+          (() => {
+            const matchedTile = gridView.find(
+              tile => tile.col === hoverTile.col && tile.row === hoverTile.row
+            );
+            if (!matchedTile) return null;
+
+            return (
+              <Path
+                path={matchedTile.path}
+                style="fill"
+                color="rgba(255, 255, 255, 0.3)"
+                strokeWidth={2}
+                strokeColor="#ffffff"
+              />
+            );
+          })()}
+
 
 
 
@@ -403,19 +432,27 @@ useEffect(() => {
         source={woodenBackground}
         resizeMode="cover"
         className="flex-1">
-      
-        <Text style=
-        {{ fontFamily: 'pixel-font',
-          letterSpacing: 3
-        }} 
-        className="text-yellow-300 text-center pb-0 p-5 text-2xl">  
-          INVENTORY
+        
+        <View className="items-center mt-2">
+          <Image
+            source={inventoryLabel}
+            style={{
+              width: 350, 
+              height: 50,
+              resizeMode: 'contain',
+              transform: [{ scale: 2.8 }], 
+            }}
+          />
+        </View>
 
-        </Text>
 
         <SafeAreaProvider> 
           <SafeAreaView>
-          <ScrollView className="flex-row flex-wrap m-4" horizontal scrollEnabled={!draggedItemRef.current}>
+          <ScrollView 
+          className="flex-row flex-wrap m-4"
+          horizontal 
+          scrollEnabled={!draggedItemRef.current}
+          >
               {renderInventoryColumns()}
             </ScrollView>
               
@@ -428,17 +465,7 @@ useEffect(() => {
         <View>
           {renderShovel()}
         </View>
-{/**   <TouchableOpacity
-        onPress={handleDebug}
-        className="bg-red-200"
-        >
-          <Text>
-            Button
-          </Text>
-        </TouchableOpacity>
 
-        
-*/}
       </ImageBackground>
       
 

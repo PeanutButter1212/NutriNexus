@@ -18,3 +18,5 @@ export async function fetchProfilePicture(userId) {
   
     return data.profile_pic_url || "https://rkrdnsnujizdskzbdwlp.supabase.co/storage/v1/object/public/profile-pictures//Green_Background.png"
   }
+
+  

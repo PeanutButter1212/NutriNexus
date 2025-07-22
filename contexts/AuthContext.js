@@ -354,14 +354,11 @@ const googleSignIn = async () => {
       throw usernameInsertError;
     }
 
-      // Insert default inventory items
-      console.log("Inserting default inventory items for Google user");
       const inventorySuccess = await insertDefaultInventoryItems(userId);
       if (!inventorySuccess) {
         console.warn("Failed to insert default inventory items for Google user.");
       }
 
-      // Insert into profile_page table
       const { error: profilePageInsertError } = await supabase
         .from("profile_page")
         .upsert({
@@ -382,7 +379,6 @@ const googleSignIn = async () => {
       }
 
 
-      // Fetch inserted profile data
       const { data: newProfileData, error: reloadError } = await supabase
         .from("profile_page")
         .select("*")
@@ -406,8 +402,7 @@ const googleSignIn = async () => {
 
     return data.user;
   } catch (error) {
-    console.error("Google Sign-In Error:", error.message);
-    Alert.alert("Error", error.message || "An unknown error occurred");
+  
   }
 };
 

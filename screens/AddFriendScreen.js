@@ -71,14 +71,15 @@ export default function AddFriendScreen({ navigation }) {
           bgColor: "bg-green-200",
           textColor: "text-black",
           iconColor: "black",
+          width:"",
           disabled: true,
         };
       case "pending":
         return {
           text: "Cancel Request",
           icon: "x",
-          bgColor: "bg-red-500",
-          textColor: "text-white",
+          bgColor: "bg-red-500 ",
+          textColor: "text-white text-sm",
           iconColor: "white",
           disabled: false,
         };
@@ -98,6 +99,7 @@ export default function AddFriendScreen({ navigation }) {
           bgColor: "bg-blue-500",
           textColor: "text-white",
           iconColor: "white",
+          width:"w-40",
           disabled: false,
         };
     }
@@ -166,7 +168,7 @@ export default function AddFriendScreen({ navigation }) {
             return (
               <View
                 key={index}
-                className="justify-between flex-row bg-white py-4 rounded-xl shadow-md flex-1 self-center mb-3 w-[320px] px-4"
+                className="justify-between flex-row bg-white py-4 rounded-xl shadow-md flex-1 self-center mb-3 w-[360px]"
               >
                 <View className="flex-row">
                   <ExpoImage
@@ -195,7 +197,7 @@ export default function AddFriendScreen({ navigation }) {
                   onPress={() => handleFriendAction(targetuser.user_id)}
                 >
                   <View
-                    className={`flex-row  px-2 py-2 rounded-xl items-center justify-center ${buttonConfig.bgColor}`}
+                    className={`flex-row w-32 py-2 rounded-xl items-center justify-center ${buttonConfig.bgColor}`}
                   >
                     <Feather
                       name={buttonConfig.icon}

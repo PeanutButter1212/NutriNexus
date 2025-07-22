@@ -1,4 +1,4 @@
-import { Text, View, ImageBackground, Image, TouchableOpacity, ScrollView , Modal, Alert} from 'react-native'
+import { Text, View, ImageBackground, Image, TouchableOpacity, ScrollView , Modal, Alert, Platform} from 'react-native'
 import React, { Component, useState, useCallback, useMemo } from 'react'
 import woodenBackground from '../assets/backgrounds/shopBackground.png'
 import woodenSquare from '../assets/backgrounds/woodenSquare.png'
@@ -267,7 +267,7 @@ export default function ShopScreen({navigation}) {
             </View>
 
             <View
-            className="h-[512px] border-2 mx-[22px]" 
+            className={`${Platform.OS === 'ios' ? "h-[512px]" : "h-[440px]"} border-2 mx-[22px]`}
             style={{ overflow: 'hidden' }}
             >
                 <ImageBackground

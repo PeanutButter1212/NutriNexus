@@ -94,7 +94,6 @@ export default function ScannerScreen({ cameraRef: externalRef }) {
       const takenPhoto = await cameraRef.current.takePictureAsync(options);
       const foodDetected = await predictFoodFromImage(takenPhoto);
 
-      //console.log(" Detected food object:", foodDetected); //returns an array
 
       const detectedName = foodDetected?.detections?.[0];
 
@@ -129,14 +128,18 @@ export default function ScannerScreen({ cameraRef: externalRef }) {
   const handleSubmit = async () => {
     console.log("Submit pressed", { food, calories });
 
+    setLoading(true)
+
     if (!food || !calories || calories === "0") {
       setShowNoPhotoPopup(true);
+      setLoading(false)
       return;
     }
 
     if (!session || !session.user) {
       console.error("Not authenticated");
       Alert.alert("Error", "You must be logged in.");
+      setLoading(false)
       return;
     }
 
@@ -147,6 +150,7 @@ export default function ScannerScreen({ cameraRef: externalRef }) {
     if (error) {
       console.error(error);
       Alert.alert("Error", "Could not log activity.");
+      setLoading(false)
     } else {
       setShowSubmittedPopup(true);
       setFood("");
@@ -156,6 +160,7 @@ export default function ScannerScreen({ cameraRef: externalRef }) {
     await updateCaloriesConsumed(userId);
     await fetchProfileCalories(userId);
     await fetchWeeklyCalories(userId);
+    setLoading(false)
   };
 
   return (
@@ -204,6 +209,7 @@ export default function ScannerScreen({ cameraRef: externalRef }) {
               <TouchableOpacity
                 className="w-32 bg-blue-600 rounded-xl py-4 items-center"
                 onPress={handleTakePhoto}
+                disabled={loading}
               >
                 <Text className="text-white text-base font-semibold">
                   Upload
@@ -287,6 +293,7 @@ export default function ScannerScreen({ cameraRef: externalRef }) {
               <View className="items-center">
                 <TouchableOpacity
                   className="w-32 bg-green-600 rounded-xl py-4 items-center"
+                  disabled={loading}
                   onPress={() => {
                     handleSubmit();
                     //updateCaloriesConsumed(userId);
@@ -344,7 +351,7 @@ export default function ScannerScreen({ cameraRef: externalRef }) {
                 messageDescription={
                   <Text>
                     We successfully detected:{" "}
-                    <Text className="text-3xl font-bold text-green-600">
+                    <Text className="text-2xl font-black text-green-600">
                       {food}
                     </Text>
                   </Text>
