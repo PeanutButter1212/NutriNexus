@@ -28,22 +28,28 @@ serve(async () => {
     const caloriesConsumed = user.calories_consumed;
     const currentPoints = user.points;
 
+     
+
     let pointsToAdd = 0;
 
     //check steps if more than 10k
-    const { data: stepData, error: stepError } = await supabase
+    const { data: stepLog, error: stepError } = await supabase
       .from("step_log")
-      .select("steps")
+      .select("steps, calories_burnt")
       .eq("user_id", userId)
       .eq("date", todayDate)
       .single();
 
-    if (!stepError && stepData?.steps >= 10000) {
+    const { calories_burnt, steps } = stepLog
+
+    const totalCalories = caloriesConsumed - (calories_burnt ?? 0);
+
+    if (!stepError && steps >= 10000) {
       pointsToAdd += 200;
     }
 
     // check claoires if within goal
-    if (caloriesConsumed <= calorieLimit) {
+    if (totalCalories <= calorieLimit) {
       pointsToAdd += 200;
     }
 

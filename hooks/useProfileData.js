@@ -12,6 +12,7 @@ import { fetchUsername } from "../services/profileService";
 import { fetchProfilePicture } from "../services/publicDetailsService";
 
 export default function useProfileData() {
+  const [loading, setLoading] = useState(true);
   const { session } = useAuth();
   const [totalCalories, setTotalCalories] = useState(0);
   const [calorieGoal, setCalorieGoal] = useState(100);
@@ -22,35 +23,40 @@ export default function useProfileData() {
   const [username, setUsername] = useState("");
   const userId = session?.user?.id;
   const [visited, setVisited] = useState([]);
-  const [profilePic, setProfilePic] = useState("")
+  const [profilePic, setProfilePic] = useState("");
 
   useEffect(() => {
     const fetchProfileData = async () => {
-      const profileInfo = await fetchProfileCalories(userId);
-      const weeklyCalories = await fetchWeeklyCalories(userId);
-      const userPoints = await fetchPoints(userId);
-      const userInfo = await fetchUserInfo(userId);
-      //console.log("user info: " + JSON.stringify(userInfo, null, 2));
-      const weeklySteps = await fetchWeeklySteps(userId);
-      const profileUsername = await fetchUsername(userId);
-      const visitedList = await fetchVisited(userId);
-      console.log("fetching profile pic efvjergjerugjre4oj")
-      const pictureUrl = await fetchProfilePicture(userId)
-      console.log("done")
+      try {
+        setLoading(true);
 
+        const profileInfo = await fetchProfileCalories(userId);
+        const weeklyCalories = await fetchWeeklyCalories(userId);
+        const userPoints = await fetchPoints(userId);
+        const userInfo = await fetchUserInfo(userId);
+        //console.log("user info: " + JSON.stringify(userInfo, null, 2));
+        const weeklySteps = await fetchWeeklySteps(userId);
+        const profileUsername = await fetchUsername(userId);
+        const visitedList = await fetchVisited(userId);
+        console.log("fetching profile pic efvjergjerugjre4oj");
+        const pictureUrl = await fetchProfilePicture(userId);
 
-      setTotalCalories(profileInfo.calories_consumed);
-      setCalorieGoal(profileInfo.calorie_goal);
-      setCaloriesData(weeklyCalories);
-      setPoints(userPoints);
-      setUserDemographics(userInfo);
-      setStepData(weeklySteps);
-      setUsername(profileUsername);
-      setVisited(visitedList || []);
-      setProfilePic(pictureUrl)
-      //console.log("visitedList:", visitedList);
+        setTotalCalories(profileInfo.calories_consumed);
+        setCalorieGoal(profileInfo.calorie_goal);
+        setCaloriesData(weeklyCalories);
+        setPoints(userPoints);
+        setUserDemographics(userInfo);
+        setStepData(weeklySteps);
+        setUsername(profileUsername);
+        setVisited(visitedList || []);
+        setProfilePic(pictureUrl);
+      } catch (e) {
+        console.error("Failed to load profile data:", e);
+      } finally {
+        setLoading(false);
+      }
     };
-    fetchProfileData();
+    if (userId) fetchProfileData();
   }, [session]);
 
   return {
@@ -62,7 +68,7 @@ export default function useProfileData() {
     stepsData,
     username,
     visited,
-    profilePic, 
+    profilePic,
     setTotalCalories,
     setCalorieGoal,
     setVisited,

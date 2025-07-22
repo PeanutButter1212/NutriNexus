@@ -39,6 +39,10 @@ import { useSharedValue, withTiming } from "react-native-reanimated";
 import AnimatedText from "../components/AnimatedText";
 import FoodLog from "../components/FoodLog";
 import BottomTabNav from "../components/BottomTabNav";
+import {
+  estimateStepCount,
+  estimateCaloriesBurnt,
+} from "../utils/calorieBurnt";
 
 export default function Profile() {
   const navigation = useNavigation();
@@ -60,6 +64,10 @@ export default function Profile() {
 
   const avatarImage =
     userDemographics.gender === "Female" ? femaleAvatarImage : maleAvatarImage;
+
+  useEffect(() => {
+    console.log("User demographics:", userDemographics);
+  }, [userDemographics]);
 
   //avatar accessories
   const [equipped, setEquipped] = useState({
@@ -137,14 +145,24 @@ export default function Profile() {
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    if (isFocused && userId) {
+    if (isFocused && userId && userDemographics) {
       updateCaloriesConsumed(userId).then((profileRow) => {
-        console.log("profileRow:", profileRow); // sanity check
-        setTotalCalories(profileRow.calories_consumed);
-        setCalorieGoal(profileRow.calorie_goal);
+        const { calories_consumed, calorie_goal } = profileRow;
+
+        const steps = estimateStepCount(
+          distance,
+          userDemographics.height,
+          userDemographics.gender
+        );
+        const burnt = estimateCaloriesBurnt(steps, userDemographics.weight);
+
+        const netCalories = calories_consumed - burnt;
+
+        setTotalCalories(netCalories);
+        setCalorieGoal(calorie_goal);
       });
     }
-  }, [isFocused, userId]);
+  }, [isFocused, userId, userDemographics]);
 
   //console.log("totalCalories:", totalCalories);
   //console.log("calorieGoal:", calorieGoal);
@@ -311,7 +329,13 @@ export default function Profile() {
               </View>
               <View>
                 <Text className="text-black text-3xl font-extrabold">
-                  {(distance / 0.75).toFixed(0)}{" "}
+                  {userDemographics
+                    ? estimateStepCount(
+                        distance,
+                        userDemographics.height,
+                        userDemographics.gender
+                      )
+                    : "0"}
                 </Text>
               </View>
             </View>
@@ -324,7 +348,18 @@ export default function Profile() {
               </View>
 
               <Text className="text-black text-3xl font-extrabold">
-                {Math.round(distance * 0.05)} kcal
+                {userDemographics
+                  ? estimateCaloriesBurnt(
+                      estimateStepCount(
+                        distance,
+                        userDemographics.height,
+                        userDemographics.gender
+                      ),
+
+                      userDemographics.weight
+                    )
+                  : "0"}{" "}
+                kcal
               </Text>
             </View>
           </View>

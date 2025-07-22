@@ -8,6 +8,12 @@ import { supabase } from "../lib/supabase";
 import { useAuth } from "./AuthContext";
 import useStepsData from "../hooks/useActivityData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { updateCaloriesBurnt } from "../services/activityService";
+import useProfileData from "../hooks/useProfileData";
+import {
+  estimateStepCount,
+  estimateCaloriesBurnt,
+} from "../utils/calorieBurnt";
 
 const DistanceTrackingContext = createContext();
 
@@ -22,12 +28,18 @@ export const DistanceProvider = ({ children }) => {
   const [currentDate, setCurrentDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+  const { userDemographics, loading: profileLoading } = useProfileData();
+  //console.log(userDemographics);
 
   useEffect(() => {
     distanceRef.current = distance;
   }, [distance]);
 
-  const user = session?.user;
+  const isDemographicsReady =
+    userDemographics &&
+    userDemographics.height &&
+    userDemographics.gender &&
+    userDemographics.weight;
 
   //obtain diatnce and steps from supbase
   const { distance: fetchedDistance, loading } = useStepsData(session);
@@ -125,7 +137,13 @@ export const DistanceProvider = ({ children }) => {
 
   //update supabase table with steps for users each time they enter app + every 10 sec(best way possible)
   useEffect(() => {
-    if (!initialized) return;
+    if (!initialized || profileLoading || !isDemographicsReady) {
+      if (!isDemographicsReady) {
+        console.log("Waiting for demographics data:", userDemographics);
+      }
+      return;
+    }
+
     const interval = setInterval(async () => {
       // await checkNewDay();
 
@@ -133,7 +151,24 @@ export const DistanceProvider = ({ children }) => {
       //console.log("📏 distanceRef.current is", currentDistance);
       if (currentDistance === 0) return;
 
-      const steps = Math.round(currentDistance / 0.75);
+      if (
+        !userDemographics ||
+        !userDemographics.height ||
+        !userDemographics.gender ||
+        !userDemographics.weight
+      ) {
+        console.warn(
+          "Demographics missing, skipping calculation:",
+          userDemographics
+        );
+        return;
+      }
+
+      const steps = estimateStepCount(
+        currentDistance,
+        userDemographics.height,
+        userDemographics.gender
+      );
       const today = new Date().toISOString().split("T")[0];
 
       const { data, error } = await supabase.auth.getUser();
@@ -177,6 +212,17 @@ export const DistanceProvider = ({ children }) => {
           },
           { onConflict: ["user_id", "date"] }
         );
+        console.log("📤 Attempting to upsert step_log with:", {
+          user_id: user.id,
+          steps,
+          date: today,
+          distance: currentDistance,
+        });
+
+        const weightKg = userDemographics.weight;
+        const burnt = estimateCaloriesBurnt(steps, weightKg);
+        await updateCaloriesBurnt(user.id, burnt);
+        console.log("🔥 Calories burnt updated:", burnt);
       }
     }, 10000); //update supabase every 10 sec
 

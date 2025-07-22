@@ -4,7 +4,11 @@ import { useState, useEffect } from "react";
 import { activityService } from "../services/activityService";
 
 export default function useStepsData(session) {
-  const [stepData, setStepData] = useState({ steps: 0, distance: 0 });
+  const [stepData, setStepData] = useState({
+    steps: 0,
+    distance: 0,
+    calories_burnt: 0,
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

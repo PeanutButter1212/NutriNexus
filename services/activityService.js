@@ -12,7 +12,7 @@ export async function activityService(session) {
   }
   const { data, error } = await supabase
     .from("step_log")
-    .select("steps, distance")
+    .select("steps, distance, calories_burnt")
     .eq("user_id", userId)
     .eq("date", today)
     .maybeSingle();
@@ -25,4 +25,22 @@ export async function activityService(session) {
   }
 
   return data;
+}
+
+//to include calories burnt in total calories
+export async function updateCaloriesBurnt(userId, caloriesBurnt) {
+  const today = new Date().toISOString().split("T")[0];
+  const { error } = await supabase
+    .from("step_log")
+    .update({ calories_burnt: caloriesBurnt })
+    .eq("user_id", userId)
+    .eq("date", today);
+
+  if (error) {
+    console.error("Error updating calories_burnt:", error);
+    throw error;
+  }
+
+  console.log("Updated calories_burnt to:", caloriesBurnt);
+  return true;
 }

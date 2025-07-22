@@ -739,20 +739,16 @@ export const uploadProfileImage = async (userId, uri) => {
       throw new Error("No URI provided to uploadProfileImage");
     }
 
-
-    const timestamp = Date.now(); 
+    const timestamp = Date.now();
     const fileName = `${userId}_avatar_${timestamp}.jpg`;
     const filePath = `public/${fileName}`;
 
-  
     const file = {
       uri: uri,
       type: "image/jpeg",
       name: fileName,
     };
 
-
-   
     const { data, error } = await supabase.storage
       .from("profile-pictures")
       .upload(filePath, file, {
@@ -768,7 +764,6 @@ export const uploadProfileImage = async (userId, uri) => {
 
     console.log("Storage upload successful:", data);
 
-  
     const { data: urlData } = supabase.storage
       .from("profile-pictures")
       .getPublicUrl(filePath);
@@ -782,20 +777,18 @@ export const uploadProfileImage = async (userId, uri) => {
 };
 
 export async function retrieveTotalEarnedPoints(userId) {
-  console.log("retrieving decorPoints")
-  const decorPoints = await gatherDecorNetWorth(userId)
-  console.log("decorPoints: " + decorPoints)
+  console.log("retrieving decorPoints");
+  const decorPoints = await gatherDecorNetWorth(userId);
+  console.log("decorPoints: " + decorPoints);
 
-  console.log("retrieving accessoryPoints")
-  const accessoryPoints = await gatherAccessoryNetWorth(userId)
-  console.log("accessoryPoints: " + accessoryPoints)
+  console.log("retrieving accessoryPoints");
+  const accessoryPoints = await gatherAccessoryNetWorth(userId);
+  console.log("accessoryPoints: " + accessoryPoints);
 
-  console.log("retrieving current points")
-  const currentPoints = await fetchPoints(userId)
-  console.log("currentPoints: " + currentPoints)
+  console.log("retrieving current points");
+  const currentPoints = await fetchPoints(userId);
+  console.log("currentPoints: " + currentPoints);
 
-  const totalPoints =  decorPoints + accessoryPoints + currentPoints
-  return totalPoints  
-
-
+  const totalPoints = decorPoints + accessoryPoints + currentPoints;
+  return totalPoints;
 }

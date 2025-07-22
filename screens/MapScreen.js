@@ -15,6 +15,7 @@ import { handleFirstVisit } from "../services/profileService";
 import { useAuth } from "../contexts/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
 import { Ruler, Navigation, MapPin } from "lucide-react-native";
+import { estimateStepCount } from "../utils/calorieBurnt";
 
 export default function MapScreen() {
   const { location, distance } = useDistance();
@@ -31,6 +32,16 @@ export default function MapScreen() {
 
   const { session } = useAuth();
   const userId = session?.user?.id;
+
+  const { userDemographics } = useProfileData();
+
+  const steps = userDemographics
+    ? estimateStepCount(
+        distance,
+        userDemographics.height,
+        userDemographics.gender
+      )
+    : 0;
 
   //camera tracking
 
@@ -80,7 +91,7 @@ export default function MapScreen() {
           <View className="flex-row items-center justify-center">
             <Ionicons name="footsteps" size={20} color="#90EE90" />
             <Text className="text-white text-3xl font-nunito-extrabold ml-3">
-              {(distance / 0.75).toFixed(0)}
+              {steps}
             </Text>
           </View>
         </View>
