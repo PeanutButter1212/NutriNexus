@@ -169,7 +169,7 @@ export const DistanceProvider = ({ children }) => {
         userDemographics.height,
         userDemographics.gender
       );
-      const today = new Date().toISOString().split("T")[0];
+      const today = new Date().toLocaleDateString("en-CA");
 
       const { data, error } = await supabase.auth.getUser();
       const user = data?.user;
