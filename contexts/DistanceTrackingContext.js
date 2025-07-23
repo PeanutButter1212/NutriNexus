@@ -9,7 +9,6 @@ import { useAuth } from "./AuthContext";
 import useStepsData from "../hooks/useActivityData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { updateCaloriesBurnt } from "../services/activityService";
-import useProfileData from "../hooks/useProfileData";
 import {
   estimateStepCount,
   estimateCaloriesBurnt,
@@ -28,8 +27,12 @@ export const DistanceProvider = ({ children }) => {
   const [currentDate, setCurrentDate] = useState(
     new Date().toISOString().split("T")[0]
   );
-  const { userDemographics, loading: profileLoading } = useProfileData();
-  console.log(userDemographics);
+  const { profile } = useAuth();
+  const height = profile?.height;
+  const weight = profile?.weight;
+  const gender = profile?.gender;
+
+  //console.log(height);
 
   useEffect(() => {
     distanceRef.current = distance;
@@ -138,11 +141,7 @@ export const DistanceProvider = ({ children }) => {
       //console.log("📏 distanceRef.current is", currentDistance);
       if (currentDistance === 0) return;
 
-      const steps = estimateStepCount(
-        currentDistance,
-        userDemographics.height,
-        userDemographics.gender
-      );
+      const steps = estimateStepCount(currentDistance, height, gender);
       console.log("👣 Calculated steps:", steps);
       const today = new Date().toLocaleDateString("en-CA");
 
@@ -195,8 +194,7 @@ export const DistanceProvider = ({ children }) => {
           distance: currentDistance,
         });
 
-        const weightKg = userDemographics.weight;
-        const burnt = estimateCaloriesBurnt(steps, weightKg);
+        const burnt = estimateCaloriesBurnt(steps, weight);
         await updateCaloriesBurnt(user.id, burnt);
         console.log("Calories burnt updated:", burnt);
       }
