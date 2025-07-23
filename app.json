@@ -7,6 +7,7 @@
     "scheme": "com.supabase",
     "userInterfaceStyle": "light",
     "newArchEnabled": false,
+    "icon": "./assets/Logo_no_bg.png",
     "splash": {
       "image": "./assets/Logo_no_bg.png",
       "resizeMode": "contain",
