@@ -8,11 +8,6 @@
     "scheme": "com.supabase",
     "userInterfaceStyle": "light",
     "newArchEnabled": false,
-    "splash": {
-      "image":  "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "plugins": [
       [
         "expo-splash-screen",
@@ -91,7 +86,6 @@
         "googleMaps" : {
           "apiKey": "AIzaSyCSm07EZwl0k_6Sd1yM9RZLAjqtnbPoTkg"
         }
-
       }
     },
     "web": {
