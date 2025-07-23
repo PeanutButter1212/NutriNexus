@@ -29,17 +29,11 @@ export const DistanceProvider = ({ children }) => {
     new Date().toISOString().split("T")[0]
   );
   const { userDemographics, loading: profileLoading } = useProfileData();
-  //console.log(userDemographics);
+  console.log(userDemographics);
 
   useEffect(() => {
     distanceRef.current = distance;
   }, [distance]);
-
-  const isDemographicsReady =
-    userDemographics &&
-    userDemographics.height &&
-    userDemographics.gender &&
-    userDemographics.weight;
 
   //obtain diatnce and steps from supbase
   const { distance: fetchedDistance, loading } = useStepsData(session);
@@ -69,10 +63,6 @@ export const DistanceProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (!isDemographicsReady || profileLoading) {
-      console.log("⏳ Waiting for demographics to start tracking...");
-      return;
-    }
     let subscription;
 
     const startTracking = async () => {
@@ -141,13 +131,6 @@ export const DistanceProvider = ({ children }) => {
 
   //update supabase table with steps for users each time they enter app + every 10 sec(best way possible)
   useEffect(() => {
-    if (!initialized || profileLoading) {
-      if (!isDemographicsReady) {
-        console.log("Waiting for demographics data:", userDemographics);
-      }
-      return;
-    }
-
     const interval = setInterval(async () => {
       // await checkNewDay();
 
@@ -155,31 +138,12 @@ export const DistanceProvider = ({ children }) => {
       //console.log("📏 distanceRef.current is", currentDistance);
       if (currentDistance === 0) return;
 
-      if (
-        !userDemographics ||
-        !userDemographics.height ||
-        !userDemographics.gender ||
-        !userDemographics.weight
-      ) {
-        console.warn(
-          "Demographics missing, skipping calculation:",
-          userDemographics
-        );
-        return;
-      }
-
-      if (!isDemographicsReady) {
-        console.warn("Fake demographics used");
-        userDemographics.height = 170;
-        userDemographics.gender = "male";
-        userDemographics.weight = 60;
-      }
-
       const steps = estimateStepCount(
         currentDistance,
         userDemographics.height,
         userDemographics.gender
       );
+      console.log("👣 Calculated steps:", steps);
       const today = new Date().toLocaleDateString("en-CA");
 
       const { data, error } = await supabase.auth.getUser();
@@ -223,6 +187,7 @@ export const DistanceProvider = ({ children }) => {
           },
           { onConflict: ["user_id", "date"] }
         );
+
         console.log("Attempting to upsert step_log with:", {
           user_id: user.id,
           steps,

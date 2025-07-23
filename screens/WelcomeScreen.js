@@ -1,28 +1,78 @@
-import React from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { supabase } from "../lib/supabase";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import { useAuth } from "../contexts/AuthContext";
+import useProfileData from "../hooks/useProfileData";
+import { supabase } from "../lib/supabase";
+import { LinearGradient } from "expo-linear-gradient";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
 export default function WelcomeScreen({ navigation }) {
   const { session, setProfile } = useAuth();
+  const {
+    userDemographics,
+    username,
+    loading,
+    points,
+    profilePic,
+    visited,
+    stepsData,
+    totalCalories,
+    calorieGoal,
+    caloriesData,
+  } = useProfileData();
+
+  const [processing, setProcessing] = useState(false);
 
   const handleNext = async () => {
-    try {
-      if (session?.user?.id) {
-        await supabase
-          .from("profile_page")
-          .update({ is_first_time: false })
-          .eq("id", session.user.id);
+    if (!session?.user?.id) return;
 
-        setProfile((prev) => ({ ...prev, is_first_time: false }));
-      }
+    try {
+      setProcessing(true);
+
+      // Update is_first_time flag
+      await supabase
+        .from("profile_page")
+        .update({ is_first_time: false })
+        .eq("id", session.user.id);
+
+      // Set all profile data in AuthContext
+      setProfile({
+        id: session.user.id,
+        username,
+        userDemographics,
+        points,
+        profilePic,
+        visited,
+        stepsData,
+        totalCalories,
+        calorieGoal,
+        caloriesData,
+        is_first_time: false,
+      });
+
+      // Navigate to main app
+      navigation.replace("Maintabs");
     } catch (error) {
-      console.error("Error updating first time flag:", error);
-      setProfile((prev) => ({ ...prev, is_first_time: false }));
+      console.error("Error in handleNext:", error);
+    } finally {
+      setProcessing(false);
     }
   };
+
+  if (loading || !userDemographics) {
+    return (
+      <View className="flex-1 justify-center items-center bg-white">
+        <ActivityIndicator size="large" />
+        <Text className="mt-4 text-gray-500">Preparing your profile...</Text>
+      </View>
+    );
+  }
   return (
     <LinearGradient
       colors={["#2E8B57", "#90EE90", "#006400"]}
