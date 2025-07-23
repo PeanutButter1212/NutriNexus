@@ -9,7 +9,7 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": false,
     "splash": {
-      "image": "./assets/Logo_no_bg.png",
+      "image":  "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -48,12 +48,12 @@
     ],
     "ios": {
       "config" : {
-        "googleMapsApiKey": "AIzaSyCSm07EZwl0k_6Sd1yM9RZLAjqtnbPoTkg",
+        "googleMapsApiKey": "AIzaSyCSm07EZwl0k_6Sd1yM9RZLAjqtnbPoTkg"
       },
       "icon": {
-        "light": "../assets/icons/ios-light.png",
-        "dark": "../assets/icons/ios-light.png",
-        "tinted": "../assets/icons/ios-light.png"
+        "light": "./assets/icons/ios-light.png",
+        "dark": "./assets/icons/ios-light.png",
+        "tinted": "./assets/icons/ios-light.png"
       }, 
       "supportsTablet": true,
       "bundleIdentifier": "nutrinuxus.club",
