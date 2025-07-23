@@ -69,6 +69,10 @@ export const DistanceProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    if (!isDemographicsReady || profileLoading) {
+      console.log("⏳ Waiting for demographics to start tracking...");
+      return;
+    }
     let subscription;
 
     const startTracking = async () => {
@@ -137,7 +141,7 @@ export const DistanceProvider = ({ children }) => {
 
   //update supabase table with steps for users each time they enter app + every 10 sec(best way possible)
   useEffect(() => {
-    if (!initialized || profileLoading || !isDemographicsReady) {
+    if (!initialized || profileLoading) {
       if (!isDemographicsReady) {
         console.log("Waiting for demographics data:", userDemographics);
       }
@@ -162,6 +166,13 @@ export const DistanceProvider = ({ children }) => {
           userDemographics
         );
         return;
+      }
+
+      if (!isDemographicsReady) {
+        console.warn("Fake demographics used");
+        userDemographics.height = 170;
+        userDemographics.gender = "male";
+        userDemographics.weight = 60;
       }
 
       const steps = estimateStepCount(
@@ -196,12 +207,12 @@ export const DistanceProvider = ({ children }) => {
         !existingEntry ||
         (currentDistance > 0 && currentDistance > existingEntry.distance)
       ) {
-        /*console.log("Attempting to upsert:", {
+        console.log("Attempting to upsert:", {
           user_id: user.id,
           steps,
           date: today,
           distance: currentDistance,
-        });*/
+        });
 
         await supabase.from("step_log").upsert(
           {
@@ -212,7 +223,7 @@ export const DistanceProvider = ({ children }) => {
           },
           { onConflict: ["user_id", "date"] }
         );
-        console.log("📤 Attempting to upsert step_log with:", {
+        console.log("Attempting to upsert step_log with:", {
           user_id: user.id,
           steps,
           date: today,
@@ -222,7 +233,7 @@ export const DistanceProvider = ({ children }) => {
         const weightKg = userDemographics.weight;
         const burnt = estimateCaloriesBurnt(steps, weightKg);
         await updateCaloriesBurnt(user.id, burnt);
-        console.log("🔥 Calories burnt updated:", burnt);
+        console.log("Calories burnt updated:", burnt);
       }
     }, 10000); //update supabase every 10 sec
 
