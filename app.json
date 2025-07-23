@@ -5,11 +5,10 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "com.supabase",
-    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": false,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/Logo_no_bg.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
