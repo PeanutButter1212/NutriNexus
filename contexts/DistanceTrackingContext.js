@@ -201,7 +201,7 @@ export const DistanceProvider = ({ children }) => {
           steps,
           date: today,
           distance: currentDistance,
-        }); */
+        });*/
 
         await supabase.from("step_log").upsert(
           {

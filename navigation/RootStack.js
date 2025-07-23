@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ActivityIndicator } from "react-native"
+import { View, ActivityIndicator } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useAuth } from "../contexts/AuthContext";
 import AuthStack from "./AuthStack";
@@ -19,16 +19,15 @@ import FriendProfileScreen from "../screens/FriendProfileScreen";
 const Stack = createNativeStackNavigator();
 
 export default function RootStack() {
-  const { session, profile } = useAuth(); 
+  const { session, profile } = useAuth();
   const isAuthenticated = !!session;
-  
 
   const isLoadingProfile = isAuthenticated && !profile;
   const shouldShowBuffer = isAuthenticated && profile?.is_first_time === true;
 
   if (isLoadingProfile) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" color="#2E8B57" />
       </View>
     );
@@ -39,8 +38,8 @@ export default function RootStack() {
       {!isAuthenticated ? (
         <Stack.Screen name="AuthStack" component={AuthStack} />
       ) : shouldShowBuffer ? (
-        <Stack.Screen 
-          name="Welcome" 
+        <Stack.Screen
+          name="Welcome"
           component={WelcomeScreen}
           options={{ headerShown: false }}
         />

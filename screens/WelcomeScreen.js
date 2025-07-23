@@ -1,67 +1,62 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { supabase } from '../lib/supabase';
-import { useAuth } from '../contexts/AuthContext';
+import React from "react";
+import { View, Text, TouchableOpacity, Image } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { supabase } from "../lib/supabase";
+import { useAuth } from "../contexts/AuthContext";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
 export default function WelcomeScreen({ navigation }) {
+  const { session, setProfile } = useAuth();
 
-    const { session, setProfile } = useAuth() 
+  const handleNext = async () => {
+    try {
+      if (session?.user?.id) {
+        await supabase
+          .from("profile_page")
+          .update({ is_first_time: false })
+          .eq("id", session.user.id);
 
-    const handleNext = async () => {
-        try {
-          if (session?.user?.id) {
-            await supabase
-              .from('profile_page')
-              .update({ is_first_time: false })
-              .eq('id', session.user.id);
-        
-            setProfile(prev => ({ ...prev, is_first_time: false }));
-          }
-        } catch (error) {
-          console.error('Error updating first time flag:', error);
-          setProfile(prev => ({ ...prev, is_first_time: false }));
-        }
-      };
-    
+        setProfile((prev) => ({ ...prev, is_first_time: false }));
+      }
+    } catch (error) {
+      console.error("Error updating first time flag:", error);
+      setProfile((prev) => ({ ...prev, is_first_time: false }));
+    }
+  };
   return (
     <LinearGradient
       colors={["#2E8B57", "#90EE90", "#006400"]}
-      style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}
+      className="flex-1 px-6"
     >
-      <View style={{ alignItems: 'center' }}>
-        <Text style={{ 
-          fontSize: 32, 
-          fontWeight: 'bold', 
-          color: 'white', 
-          textAlign: 'center', 
-          marginBottom: 40 
-        }}>
-          Welcome My G!!!
-        </Text>
-        
-        <TouchableOpacity 
-          onPress={handleNext}
-          style={{
-            backgroundColor: '#FF7A00',
-            paddingHorizontal: 40,
-            paddingVertical: 15,
-            borderRadius: 10,
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5,
-          }}
+      <View className="flex-1 justify-center items-center">
+        <Animated.View
+          entering={FadeInDown.delay(100).springify()}
+          className="w-full items-center mb-12 space-y-2"
         >
-          <Text style={{
-            color: 'white',
-            fontSize: 18,
-            fontWeight: 'bold',
-          }}>
-            Next
+          <Image
+            source={require("../assets/WhiteLogo.png")}
+            className="w-40 h-40 mb-4"
+            resizeMode="contain"
+          />
+          <Text className="text-white text-4xl font-semibold text-center">
+            Welcome to
           </Text>
-        </TouchableOpacity>
+          <Text className="text-white text-6xl font-extrabold text-center">
+            NutriNexus
+          </Text>
+        </Animated.View>
+
+        <Animated.View
+          entering={FadeInDown.delay(400)}
+          className="w-full items-center"
+        >
+          <TouchableOpacity
+            onPress={handleNext}
+            className="bg-orange-500 px-10 py-4 rounded-xl shadow-lg mt-16"
+          >
+            <Text className="text-white text-lg font-bold">Begin Journey</Text>
+          </TouchableOpacity>
+        </Animated.View>
       </View>
     </LinearGradient>
   );
