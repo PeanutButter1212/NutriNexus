@@ -33,15 +33,11 @@ export default function DetailScreen() {
   const [demographicAdjusted, setDemographicAdjusted] = useState(false);
 
   const [showPopup, setShowPopup] = useState("false")
-
+  const [loading, setLoading] = useState(false)
 
   const { calorieGoal, userDemographics } = useProfileData() 
   
   useEffect(() => {
-
-    console.log("user demographics: " + JSON.stringify(userDemographics, null, 2))
-    console.log("calorie goal: " + calorieGoal)
-    
     
     if (userDemographics && Object.keys(userDemographics).length > 0) {
       
@@ -80,8 +76,10 @@ export default function DetailScreen() {
   
 
   const handleSubmit = async () => {
+    setLoading(true)
     if (!weight || !height || !age || !calories || !gender) {
       Alert.alert("Missing info", "Please fill in all fields.");
+      setLoading(false)
       return;
     }
 
@@ -94,9 +92,11 @@ export default function DetailScreen() {
     });
 
     if (success) {
+      setLoading(false)
       setShowPopup(true)
     } else {
       Alert.alert("Error", "error lol")
+      setLoading(false)
     }
   };
 
@@ -284,6 +284,7 @@ export default function DetailScreen() {
 
         <TouchableOpacity
           onPress={handleSubmit}
+          disabled={loading}
           className="flex-row items-center justify-center w-full bg-green-600 rounded-xl mt-12 py-3 "
         >
           <Text className="text-white text-base font-medium font-bold">

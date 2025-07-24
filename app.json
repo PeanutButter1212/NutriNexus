@@ -7,13 +7,16 @@
     "scheme": "com.supabase",
     "userInterfaceStyle": "light",
     "newArchEnabled": false,
-    "icon": "./assets/images/ios-light.png",
-    "splash": {
-      "image": "./assets/images/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+    "icon": "./assets/images/icon.png",
     "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#ffffff",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200
+        }
+      ], 
       [
         "@react-native-google-signin/google-signin",
         {
@@ -42,9 +45,9 @@
         "googleMapsApiKey": "AIzaSyCSm07EZwl0k_6Sd1yM9RZLAjqtnbPoTkg" 
       },
       "icon": {
-        "dark": "./assets/images/ios-light.png",
-        "light": "./assets/images/ios-light.png",
-        "tinted": "./assets/images/ios-light.png"
+        "dark": "./assets/icons/ios-light.png",
+        "light": "./assets/icons/ios-light.png",
+        "tinted": "./assets/icons/ios-light.png"
       }, 
       "supportsTablet": true,
       "bundleIdentifier": "nutrinuxus.club",
