@@ -7,7 +7,7 @@
     "scheme": "com.supabase",
     "userInterfaceStyle": "light",
     "newArchEnabled": false,
-    "icon": "./assets/Logo_no_bg.png",
+    "icon": "./assets/images/icon.png",
     "splash": {
       "image": "./assets/Logo_no_bg.png",
       "resizeMode": "contain",
@@ -41,6 +41,11 @@
       "config" : {
         "googleMapsApiKey": "AIzaSyCSm07EZwl0k_6Sd1yM9RZLAjqtnbPoTkg" 
       },
+      "icon": {
+        "dark": "./assets/images/ios-light.png",
+        "light": "./assets/images/ios-light.png",
+        "tinted": "./assets/images/ios-light.png"
+      }, 
       "supportsTablet": true,
       "bundleIdentifier": "nutrinuxus.club",
       "infoPlist": {
@@ -56,17 +61,13 @@
         "NSLocationWhenInUseUsageDescription": "We use your location to show nearby foodspots on the map.",
        "NSLocationAlwaysAndWhenInUseUsageDescription": "We use your location to update your current position on the map."
       }
-  
-  
     
-    
-
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icons/adaptive-icon.png",
+        "monochromeImage": "./assets/icons/adaptive-icon.png", 
         "backgroundColor": "#ffffff"
-        
       },
       "permissions": [
   "ACTIVITY_RECOGNITION",
@@ -74,7 +75,7 @@
   "ACCESS_COARSE_LOCATION",
   "CAMERA",
   "RECORD_AUDIO"
-],
+    ],
       "edgeToEdgeEnabled": true,
       "package": "nutrinuxus.club",
       "config" : {
