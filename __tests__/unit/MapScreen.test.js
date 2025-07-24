@@ -7,6 +7,7 @@ import React from "react";
 import { render, fireEvent, waitFor } from "@testing-library/react-native";
 import MapScreen from "../../screens/MapScreen";
 import { useDistance as mockUseDistance } from "../../contexts/DistanceTrackingContext";
+import useProfileData from "../../hooks/useProfileData";
 
 //mock navigation
 const mockNavigate = jest.fn();
@@ -23,9 +24,14 @@ jest.mock("../../services/profileService", () => ({
   handleFirstVisit: (...args) => mockHandleFirstVisit(...args), //take in same arguments
 }));
 
+//mock profile and demo so should give 3189 steps based on method
 jest.mock("../../hooks/useProfileData", () => () => ({
   visited: ["visited-id"], //user alr visited this marker
   setVisited: mockSetVisited, //test if mark new place as visited after tapping marker
+  userDemographics: {
+    height: 170,
+    gender: "male",
+  },
 }));
 
 //mock coords for alr visited one and one in radius to test
@@ -38,8 +44,8 @@ jest.mock("../../hooks/useCoords", () => () => ({
     },
     {
       id: "new-id",
-      latitude: 1.3004,
-      longitude: 103.8004,
+      latitude: 1.30001,
+      longitude: 103.80001,
     },
   ],
   loading: false,
@@ -74,7 +80,7 @@ describe("MapScreen", () => {
       distance: 2250,
     }));
     const { getByText } = render(<MapScreen />);
-    expect(getByText("3000")).toBeTruthy();
+    expect(getByText("3189")).toBeTruthy();
     expect(getByText("2250 m")).toBeTruthy();
   });
 
