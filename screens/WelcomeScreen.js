@@ -33,7 +33,7 @@ export default function WelcomeScreen({ navigation }) {
   return (
     <LinearGradient
       colors={["#2E8B57", "#90EE90", "#006400"]}
-      className="flex-1 px-6"
+      style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}
     >
       <View className="flex-1 justify-center items-center">
         <Animated.View
