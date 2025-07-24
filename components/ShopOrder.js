@@ -4,6 +4,19 @@ import { LinearGradient } from "expo-linear-gradient";
 import pointLogo from '../assets/Points.png'
 
 export default function ShopOrder({item, onConfirm, onCancel}) {
+  const [loading, setLoading] = useState(false)
+
+  const handleConfirm = async () => {
+    console.log("set shop order loading to true")
+    setLoading(true);
+    try {
+      await onConfirm();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
     return (
         <View
         className="flex-1 items-center justify-center"
@@ -57,6 +70,7 @@ export default function ShopOrder({item, onConfirm, onCancel}) {
             <TouchableOpacity
             className="bg-red-500 px-12 py-3 rounded-l"
             onPress={onCancel}
+            disabled={loading}
             > 
               <Text
               className="text-center text-bold text-white"
@@ -67,7 +81,8 @@ export default function ShopOrder({item, onConfirm, onCancel}) {
     
             <TouchableOpacity
             className="bg-green-500 px-12 py-3 rounded-l"
-            onPress={onConfirm}
+            onPress={handleConfirm}
+            disabled={loading}
             > 
               <Text
               className="text-center text-bold text-white"
