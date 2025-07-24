@@ -372,7 +372,7 @@ export const AuthProvider = ({ children }) => {
               calorie_goal: 2200,
               age: 36,
               gender: "Male",
-              points: 1000,
+              points: 10000,
               is_first_time: true,
             },
             { onConflict: "id" }
