@@ -40,6 +40,16 @@ jest.mock("../../../services/profileService", () => ({
   handleFirstVisit: jest.fn(() => Promise.resolve()),
 }));
 
+//mock users demographics so should give 213 steps based on calculation
+jest.mock("../../../hooks/useProfileData", () => () => ({
+  visited: [],
+  setVisited: mockSetVisited,
+  userDemographics: {
+    height: 170,
+    gender: "male",
+  },
+}));
+
 describe("MapScreen integration", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -49,10 +59,10 @@ describe("MapScreen integration", () => {
     // mock Alert
     jest.spyOn(Alert, "alert").mockImplementation(() => {});
 
-    const { getAllByTestId, getByText } = render(<MapScreen />);
+    const { getAllByTestId, getByText, findByText } = render(<MapScreen />);
 
     //users see correct distance/steps
-    expect(getByText("200")).toBeTruthy();
+    expect(await findByText("213")).toBeTruthy();
     expect(getByText("150 m")).toBeTruthy();
 
     const markers = await waitFor(() => getAllByTestId(/^marker-/));
