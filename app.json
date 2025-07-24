@@ -7,9 +7,9 @@
     "scheme": "com.supabase",
     "userInterfaceStyle": "light",
     "newArchEnabled": false,
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/ios-light.png",
     "splash": {
-      "image": "./assets/Logo_no_bg.png",
+      "image": "./assets/images/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
