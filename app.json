@@ -4,20 +4,16 @@
     "slug": "NutriNexus",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png", 
     "scheme": "com.supabase",
     "userInterfaceStyle": "light",
     "newArchEnabled": false,
+    "icon": "./assets/Logo_no_bg.png",
+    "splash": {
+      "image": "./assets/Logo_no_bg.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "plugins": [
-      [
-        "expo-splash-screen",
-        {
-          "backgroundColor": "#ffffff",
-          "image": "./assets/icons/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain"
-        }
-      ],
       [
         "@react-native-google-signin/google-signin",
         {
@@ -43,13 +39,8 @@
     ],
     "ios": {
       "config" : {
-        "googleMapsApiKey": "AIzaSyCSm07EZwl0k_6Sd1yM9RZLAjqtnbPoTkg"
+        "googleMapsApiKey": "AIzaSyCSm07EZwl0k_6Sd1yM9RZLAjqtnbPoTkg" 
       },
-      "icon": {
-        "light": "./assets/icons/ios-light.png",
-        "dark": "./assets/icons/ios-light.png",
-        "tinted": "./assets/icons/ios-light.png"
-      }, 
       "supportsTablet": true,
       "bundleIdentifier": "nutrinuxus.club",
       "infoPlist": {
@@ -65,13 +56,17 @@
         "NSLocationWhenInUseUsageDescription": "We use your location to show nearby foodspots on the map.",
        "NSLocationAlwaysAndWhenInUseUsageDescription": "We use your location to update your current position on the map."
       }
+  
+  
+    
+    
 
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icons/adaptive-icon.png",
-        "monochromeImage": "./assets/icons/adaptive-icon.png",
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+        
       },
       "permissions": [
   "ACTIVITY_RECOGNITION",
@@ -86,6 +81,7 @@
         "googleMaps" : {
           "apiKey": "AIzaSyCSm07EZwl0k_6Sd1yM9RZLAjqtnbPoTkg"
         }
+
       }
     },
     "web": {
