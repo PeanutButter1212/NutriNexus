@@ -2,6 +2,7 @@ import React from "react";
 import { render, fireEvent, waitFor } from "@testing-library/react-native";
 import ShopScreen from "../../../screens/ShopScreen";
 
+//same mocks as unit test
 jest.mock("@react-navigation/native", () => ({
   useFocusEffect: jest.fn((callback) => callback()),
 }));
