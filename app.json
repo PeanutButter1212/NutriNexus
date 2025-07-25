@@ -8,15 +8,12 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": false,
     "icon": "./assets/images/icon.png",
+    "splash": {
+      "image": "./assets/images/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "plugins": [
-      [
-        "expo-splash-screen",
-        {
-          "backgroundColor": "#ffffff",
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200
-        }
-      ], 
       [
         "@react-native-google-signin/google-signin",
         {

@@ -261,14 +261,11 @@ export const AuthProvider = ({ children }) => {
         setAuthMethod("email");
         setIsAuthenticated(true);
         setUser(newProfileData);
-
-        navigation.navigate("MainTabs");
       } else {
         setProfile(profileData);
         setAuthMethod("email");
         setIsAuthenticated(true);
         setUser(profileData);
-        navigation.navigate("MainTabs");
       }
     } catch (err) {
       console.error("verifyOtp error:", err);
