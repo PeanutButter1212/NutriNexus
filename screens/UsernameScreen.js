@@ -111,6 +111,7 @@ export default function UsernameScreen({ navigation }) {
   
       if (result.canceled || result.cancelled) {
         console.log("User cancelled");
+        setLoading(false)
         return;
       }
   
@@ -126,6 +127,7 @@ export default function UsernameScreen({ navigation }) {
       
       if (!selectedUri) {
         alert("Could not get image. Please try again.");
+        setLoading(false)
         return;
       }
 

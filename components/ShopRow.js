@@ -85,7 +85,7 @@ const ShopRow = ({leftItem, rightItem, onGetPress}) => {
             
             {/* Right item with consistent spacing */}
             {rightItem && (
-                      <View className={`${Platform.OS === "ios" ? "ml-3" : "" }`}>
+                      <View className={`${Platform.OS === "ios" ? "mr-3" : "" }`}>
                     {renderItemBox(rightItem)}
                 </View>
             )}
