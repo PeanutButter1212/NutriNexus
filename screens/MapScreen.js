@@ -114,8 +114,6 @@ export default function MapScreen() {
         </View>
       </View>
 
-      {/* formula is distance / 0.75 or distance.toFixed(2) z-10 top-10 left-0 right-0 mx-auto w-72 max-w-ws bg-white items-center rounded-xl   */}
-
       <MapView
         ref={mapRef}
         style={{ flex: 1 }} //bruh need use default styling
