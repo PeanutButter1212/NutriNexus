@@ -50,37 +50,35 @@ jest.mock("../../../hooks/useProfileData", () => () => ({
   },
 }));
 
-describe("MapScreen integration", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+beforeEach(() => {
+  jest.clearAllMocks();
+});
 
-  it("Users interacts with 2 markers, one in radius and one out of radius", async () => {
-    // mock Alert
-    jest.spyOn(Alert, "alert").mockImplementation(() => {});
+it("Users interacts with 2 markers, one in radius and one out of radius", async () => {
+  // mock Alert
+  jest.spyOn(Alert, "alert").mockImplementation(() => {});
 
-    const { getAllByTestId, getByText, findByText } = render(<MapScreen />);
+  const { getAllByTestId, getByText, findByText } = render(<MapScreen />);
 
-    //users see correct distance/steps
-    expect(await findByText("213")).toBeTruthy();
-    expect(getByText("150 m")).toBeTruthy();
+  //users see correct distance/steps
+  expect(await findByText("213")).toBeTruthy();
+  expect(getByText("150 m")).toBeTruthy();
 
-    const markers = await waitFor(() => getAllByTestId(/^marker-/));
-    expect(markers.length).toBe(2);
+  const markers = await waitFor(() => getAllByTestId(/^marker-/));
+  expect(markers.length).toBe(2);
 
-    // In radius marker go to new screen and set to visted
-    fireEvent.press(markers[0]);
-    await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith("Location Details", {
-        locationrow: expect.objectContaining({ id: "in-radius" }),
-      });
-      expect(mockSetVisited).toHaveBeenCalledWith(expect.any(Function));
+  // In radius marker go to new screen and set to visted
+  fireEvent.press(markers[0]);
+  await waitFor(() => {
+    expect(mockNavigate).toHaveBeenCalledWith("Location Details", {
+      locationrow: expect.objectContaining({ id: "in-radius" }),
     });
-
-    // Out of radius marker trigegr alert
-    fireEvent.press(markers[1]);
-    expect(Alert.alert).toHaveBeenCalledWith(
-      "Too far please move closer to interact"
-    );
+    expect(mockSetVisited).toHaveBeenCalledWith(expect.any(Function));
   });
+
+  // Out of radius marker trigegr alert
+  fireEvent.press(markers[1]);
+  expect(Alert.alert).toHaveBeenCalledWith(
+    "Too far please move closer to interact"
+  );
 });

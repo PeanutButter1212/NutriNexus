@@ -25,69 +25,67 @@ jest.mock("../../../services/avatarService", () => ({
   saveEquippedItems: jest.fn(),
 }));
 
-describe("AvatarCustomisationScreen: Full Flow Integration", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
+beforeEach(() => {
+  jest.clearAllMocks();
 
-    useAccessoryInventory.mockReturnValue([
-      {
-        item_id: "socks",
-        image_url: "http://test.png",
-        slot: "hand",
-        position: {
-          topPct: 0.1,
-          leftPct: 0.1,
-          widthPct: 0.5,
-          heightPct: 0.5,
-        },
+  useAccessoryInventory.mockReturnValue([
+    {
+      item_id: "socks",
+      image_url: "http://test.png",
+      slot: "hand",
+      position: {
+        topPct: 0.1,
+        leftPct: 0.1,
+        widthPct: 0.5,
+        heightPct: 0.5,
       },
-    ]);
+    },
+  ]);
 
-    useEquippedItems.mockReturnValue({
-      head: null,
-      body: null,
-      hand: null,
-    });
-
-    useProfileData.mockReturnValue({
-      userDemographics: { gender: "Female" },
-    });
-
-    saveEquippedItems.mockResolvedValue(true);
+  useEquippedItems.mockReturnValue({
+    head: null,
+    body: null,
+    hand: null,
   });
 
-  it("loads avatar, switches tab, equips item and saves", async () => {
-    const { getByTestId, getByText } = render(
-      <NavigationContainer>
-        <AvatarCustomisationScreen />
-      </NavigationContainer>
-    );
+  useProfileData.mockReturnValue({
+    userDemographics: { gender: "Female" },
+  });
 
-    //Load correct gender avatar
-    const avatarImage = getByTestId("avatar-image");
-    expect(avatarImage.props.source).toMatchObject(
-      require("../../../assets/FemaleEdited.png")
-    );
+  saveEquippedItems.mockResolvedValue(true);
+});
 
-    //users switches between tabs
-    const headTab = getByTestId("tab-Head");
-    fireEvent.press(headTab);
+it("loads avatar, switches tab, equips item and saves", async () => {
+  const { getByTestId, getByText } = render(
+    <NavigationContainer>
+      <AvatarCustomisationScreen />
+    </NavigationContainer>
+  );
 
-    const handTab = getByTestId("tab-Hand");
-    fireEvent.press(handTab);
+  //Load correct gender avatar
+  const avatarImage = getByTestId("avatar-image");
+  expect(avatarImage.props.source).toMatchObject(
+    require("../../../assets/FemaleEdited.png")
+  );
 
-    //Equip item from hand tab
-    const accessoryBtn = getByTestId("accessory-button-socks");
-    fireEvent.press(accessoryBtn);
-    const equippedItem = getByTestId("equipped-socks");
-    expect(equippedItem).toBeTruthy();
+  //users switches between tabs
+  const headTab = getByTestId("tab-Head");
+  fireEvent.press(headTab);
 
-    //Press save button
-    const saveBtn = getByText("Save");
-    fireEvent.press(saveBtn);
+  const handTab = getByTestId("tab-Hand");
+  fireEvent.press(handTab);
 
-    await waitFor(() => {
-      expect(saveEquippedItems).toHaveBeenCalled();
-    });
+  //Equip item from hand tab
+  const accessoryBtn = getByTestId("accessory-button-socks");
+  fireEvent.press(accessoryBtn);
+  const equippedItem = getByTestId("equipped-socks");
+  expect(equippedItem).toBeTruthy();
+
+  //Press save button
+  const saveBtn = getByText("Save");
+  fireEvent.press(saveBtn);
+
+  await waitFor(() => {
+    expect(saveEquippedItems).toHaveBeenCalled();
   });
 });

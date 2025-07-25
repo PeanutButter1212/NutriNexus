@@ -66,5 +66,10 @@
     "jest-expo": "~53.0.7",
     "typescript": "~5.8.3"
   },
+  "scripts": {
+  "test": "jest",
+  "test:unit": "jest __tests__/unit --testPathIgnorePatterns=integrationtests",
+  "test:integration": "jest __tests__/unit/integrationtests"
+},
   "private": true
 }
