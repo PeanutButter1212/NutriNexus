@@ -1,6 +1,8 @@
 appId: nutrinuxus.club
 ---
 - launchApp
+
+#incase users never give permissions or location is off then need press button
 - runFlow:
     when:
       visible: "Turn On"

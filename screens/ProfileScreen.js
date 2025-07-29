@@ -263,7 +263,11 @@ export default function Profile() {
   };
 
   return (
-    <ScrollView className="flex-1 bg-white">
+    <ScrollView
+      className="flex-1 bg-white"
+      testID="profile-scroll"
+      accessibilityRole="scrollbar"
+    >
       <LinearGradient
         colors={["#2E8B57", "#90EE90", "#006400"]}
         style={{
@@ -478,7 +482,11 @@ export default function Profile() {
               paddingHorizontal: 35,
             }}
           >
-            <TouchableOpacity onPress={() => navigation.navigate("Shop")}>
+            <TouchableOpacity
+              testID="shopButton"
+              accessibilityRole="button"
+              onPress={() => navigation.navigate("Shop")}
+            >
               <Text className="text-3xl text-white"> Shop </Text>
             </TouchableOpacity>
           </LinearGradient>
@@ -501,6 +509,7 @@ export default function Profile() {
               onPress={() => {
                 navigation.navigate("Avatar Customisation");
               }}
+              testID="avatarButton"
             >
               <Text className="text-3xl text-white"> Avatar </Text>
             </TouchableOpacity>

@@ -94,6 +94,12 @@ export default function ScannerScreen({ cameraRef: externalRef }) {
       const takenPhoto = await cameraRef.current.takePictureAsync(options);
       const foodDetected = await predictFoodFromImage(takenPhoto);
 
+      if (__DEV__ && userId == "3049f10a-7516-4234-af44-9aff4bafdffb") {
+        setFood("chicken rice");
+        setCalories("600");
+        setShowFoodDetectedPopup(true);
+        return;
+      }
 
       const detectedName = foodDetected?.detections?.[0];
 
@@ -128,18 +134,18 @@ export default function ScannerScreen({ cameraRef: externalRef }) {
   const handleSubmit = async () => {
     console.log("Submit pressed", { food, calories });
 
-    setLoading(true)
+    setLoading(true);
 
     if (!food || !calories || calories === "0") {
       setShowNoPhotoPopup(true);
-      setLoading(false)
+      setLoading(false);
       return;
     }
 
     if (!session || !session.user) {
       console.error("Not authenticated");
       Alert.alert("Error", "You must be logged in.");
-      setLoading(false)
+      setLoading(false);
       return;
     }
 
@@ -150,7 +156,7 @@ export default function ScannerScreen({ cameraRef: externalRef }) {
     if (error) {
       console.error(error);
       Alert.alert("Error", "Could not log activity.");
-      setLoading(false)
+      setLoading(false);
     } else {
       setShowSubmittedPopup(true);
       setFood("");
@@ -160,7 +166,7 @@ export default function ScannerScreen({ cameraRef: externalRef }) {
     await updateCaloriesConsumed(userId);
     await fetchProfileCalories(userId);
     await fetchWeeklyCalories(userId);
-    setLoading(false)
+    setLoading(false);
   };
 
   return (

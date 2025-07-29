@@ -1,0 +1,39 @@
+appId: nutrinuxus.club
+---
+# - runFlow: signup_test.yaml
+
+- tapOn: "Social"
+- assertVisible: "Add Friends"
+- tapOn: "Add Friends"
+
+#Search and send request
+- tapOn: "Search username..."
+- inputText: "marcusngzh"
+- assertVisible: "marcusngzh"
+
+# need scroll then it will render the add friend button
+- scrollUntilVisible:
+    element:
+      id: "addFriend"
+    direction: DOWN
+
+- tapOn:
+    id: "addFriend"
+- tapOn: "Add Friend"
+- assertVisible: "Cancel Request"
+- tapOn: "Back"
+
+#Acceot request
+- tapOn: "View Friend Requests"
+- assertVisible: "Marcus"
+- tapOn:
+    id: "acceptFriendRequestButton"
+- tapOn: "Back"
+
+#  Visit friends profile
+- assertVisible: "Marcus"
+- tapOn:
+    id: "viewFriendProfileButton"
+- assertVisible: "Garden"
+- assertVisible: "Avatar"
+- assertVisible: "Garden"

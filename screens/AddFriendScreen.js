@@ -71,7 +71,7 @@ export default function AddFriendScreen({ navigation }) {
           bgColor: "bg-green-200",
           textColor: "text-black",
           iconColor: "black",
-          width:"",
+          width: "",
           disabled: true,
         };
       case "pending":
@@ -99,7 +99,7 @@ export default function AddFriendScreen({ navigation }) {
           bgColor: "bg-blue-500",
           textColor: "text-white",
           iconColor: "white",
-          width:"w-40",
+          width: "w-40",
           disabled: false,
         };
     }
@@ -193,6 +193,7 @@ export default function AddFriendScreen({ navigation }) {
 
                 <TouchableOpacity
                   className="mr-8 justify-center"
+                  testID="addFriend"
                   disabled={buttonConfig.disabled}
                   onPress={() => handleFriendAction(targetuser.user_id)}
                 >

@@ -1,0 +1,47 @@
+appId: nutrinuxus.club
+---
+- runFlow: signup_test.yaml
+
+# Go shop buy accessories
+
+# need scroll then it will render the shop button
+
+- assertVisible: "Welcome message"
+- scrollUntilVisible:
+    element:
+      id: "shopButton"
+    direction: DOWN
+
+- tapOn:
+    id: "shopButton"
+
+- assertVisible: "Decor"
+- tapOn: "Accessory"
+- scrollUntilVisible:
+    element:
+      id: "purchase-120b3b3a-837a-4394-a094-0d0e40bd4f42"
+    direction: DOWN
+- tapOn:
+    id: "purchase-120b3b3a-837a-4394-a094-0d0e40bd4f42"
+- assertVisible: "Confirm Purchase?"
+- tapOn: "Yes"
+- assertVisible: "Item purchased!"
+- tapOn: "Continue"
+- tapOn: "Back"
+- assertVisible: "Welcome message"
+
+- scrollUntilVisible:
+    element:
+      id: "avatarButton"
+    direction: DOWN
+- tapOn:
+    id: "avatarButton"
+- tapOn: "Hand"
+- tapOn:
+    id: "accessory-button-120b3b3a-837a-4394-a094-0d0e40bd4f42"
+
+- tapOn: "Save"
+- assertVisible: "Avatar Saved!"
+- tapOn: "Continue"
+
+- assertVisible: "equipped-120b3b3a-837a-4394-a094-0d0e40bd4f42"

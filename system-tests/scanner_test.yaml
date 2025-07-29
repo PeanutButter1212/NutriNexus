@@ -1,0 +1,28 @@
+appId: nutrinuxus.club
+---
+- runFlow: signup_test.yaml
+
+- tapOn: "Scanner"
+
+- assertVisible: "Upload"
+
+- tapOn: "Upload"
+
+- assertVisible: "Food Detected!"
+- tapOn: "Continue"
+
+- tapOn: "Submit"
+
+- assertVisible: "Update Success"
+- tapOn: "Continue"
+
+- tapOn: "Profile"
+
+- assertVisible: "Welcome message"
+
+- scroll
+- assertVisible: "Food Log"
+
+- tapOn: "Food Log"
+
+- assertVisible: "chicken rice"

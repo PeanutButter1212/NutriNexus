@@ -100,6 +100,7 @@ export default function AvatarCustomisationScreen() {
                 key={index}
                 source={{ uri: item.image_url }}
                 testID={`equipped-${item.item_id}`} //for testing with name
+                accessibilityLabel={`equipped-${item.item_id}`}
                 className="w-full h-full absolute"
                 resizeMode="contain"
                 style={{
