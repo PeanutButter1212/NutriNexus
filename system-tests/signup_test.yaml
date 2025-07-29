@@ -13,4 +13,23 @@ appId: nutrinuxus.club
     commands:
       - tapOn: "Allow while using the app"
 
+- assertVisible: "Email"
+- inputText:
+    label: "Email"
+    text: "test@example.com"
+
+- assertVisible: "Login"
+- tapOn:
+    id: "loginButton"
+- waitForAnimationToEnd
+
+- inputText:
+    text: "123456"
+
+- tapOn:
+    id: "authenticateButton"
+
+- tapOn:
+    id: "beginJourney"
+
 - assertVisible: "Welcome message"
