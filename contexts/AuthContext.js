@@ -154,6 +154,74 @@ export const AuthProvider = ({ children }) => {
   const verifyOtp = async (email, otp, navigation) => {
     try {
       console.log(email);
+
+      //for system testing so can bypass OTP
+
+      if (__DEV__ && email === "test@example.com" && otp === "123456") {
+        console.log("✅ Bypassing OTP check in dev mode");
+
+        const fakeId = "3049f10a-7516-4234-af44-9aff4bafdffb";
+        const username = "testuser";
+
+        const fakeUser = { id: fakeId, email };
+        const fakeSession = { access_token: "dev-token", user: fakeUser };
+
+        // 2. Insert into Supabase
+        await supabase.from("profiles").upsert(
+          {
+            id: fakeId,
+            username,
+            email,
+            is_first_time: true,
+            height: 170,
+            weight: 65,
+            calories: 2000,
+            age: 25,
+            gender: "Male",
+          },
+          { onConflict: "id" }
+        );
+
+        await supabase.from("username").upsert({
+          username,
+          user_id: fakeId,
+        });
+
+        await supabase.from("profile_page").upsert(
+          {
+            id: fakeId,
+            username,
+            email,
+            height: 170,
+            weight: 65,
+            calorie_goal: 2000,
+            age: 25,
+            gender: "Male",
+            points: 9999,
+            is_first_time: true,
+          },
+          { onConflict: "id" }
+        );
+
+        await insertDefaultInventoryItems(fakeId);
+
+        // 3. Simulate login
+        setSession(fakeSession);
+        setAuthMethod("email");
+        setIsAuthenticated(true);
+        setUser(fakeUser);
+
+        const { data: newProfileData, error: reloadError } = await supabase
+          .from("profile_page")
+          .select("*")
+          .eq("id", fakeId)
+          .maybeSingle();
+
+        if (reloadError) console.error(reloadError);
+        setProfile(newProfileData);
+        return;
+      }
+
       const { data, error } = await supabase.auth.verifyOtp({
         email,
         token: otp,

@@ -33,7 +33,12 @@ export default function WelcomeScreen({ navigation }) {
   return (
     <LinearGradient
       colors={["#2E8B57", "#90EE90", "#006400"]}
-      style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        paddingHorizontal: 24,
+      }}
     >
       <View className="flex-1 justify-center items-center">
         <Animated.View
@@ -58,6 +63,9 @@ export default function WelcomeScreen({ navigation }) {
           className="w-full items-center"
         >
           <TouchableOpacity
+            testID="beginJourney"
+            accessibilityLabel="beginJourney"
+            accessible={true}
             onPress={handleNext}
             className="bg-orange-500 px-10 py-4 rounded-xl shadow-lg mt-16"
           >

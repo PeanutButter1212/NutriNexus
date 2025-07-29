@@ -7,7 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
-  Modal
+  Modal,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { Image } from "react-native";
@@ -27,10 +27,10 @@ export default function LoginScreen({ navigation }) {
       return;
     }
     try {
-      setLoading(true)
+      setLoading(true);
       setErrorMessage("");
       const error = await signInWithOTP(email, navigation);
-      setLoading(false)
+      setLoading(false);
       if (error) {
         setErrorMessage(error);
       }
@@ -64,6 +64,9 @@ export default function LoginScreen({ navigation }) {
       {/* Username Input */}
       <TextInput
         value={email}
+        testID="emailInput"
+        accessibilityLabel="emailInput"
+        accessible={true}
         onChangeText={(text) => setEmail(text)}
         placeholder="Email"
         autoCapitalize="none"
@@ -96,9 +99,12 @@ export default function LoginScreen({ navigation }) {
           Continue with Google
         </Text>
       </TouchableOpacity>
-   
+
       {/* Login Button */}
       <TouchableOpacity
+        testID="loginButton"
+        accessibilityLabel="Login"
+        accessible={true}
         onPress={handleLogin}
         className="flex-row items-center justify-center w-full bg-green-600 rounded-xl mt-6 py-3"
         disabled={loading}
@@ -117,7 +123,7 @@ export default function LoginScreen({ navigation }) {
             style={{ width: 80, height: 80, marginTop: 15 }}
           />
         </View>
-    )}
+      )}
 
       {/*
 

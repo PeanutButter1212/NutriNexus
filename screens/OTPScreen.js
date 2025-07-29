@@ -17,21 +17,20 @@ export default function OTPScreen({ navigation, route }) {
   const { session, verifyOtp } = useAuth();
 
   const [otp, setOtp] = useState("");
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const { email } = route.params;
-  
 
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleOtpVerification = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       setErrorMessage("");
       await verifyOtp(email, otp, navigation);
-      setLoading(false)
+      setLoading(false);
     } catch (err) {
       setErrorMessage(err.message);
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -52,6 +51,7 @@ export default function OTPScreen({ navigation, route }) {
       <TextInput
         onChangeText={(text) => setOtp(text)}
         placeholder="6 digit code"
+        testID="otpInput"
         className="w-full border border-gray-300 rounded-xl mt-4 px-4 py-3 text-base"
       />
 
@@ -61,6 +61,7 @@ export default function OTPScreen({ navigation, route }) {
         onPress={handleOtpVerification}
         className="flex-row items-center justify-center w-full bg-green-600 rounded-xl mt-6 py-3"
         disabled={loading}
+        testID="authenticateButton"
       >
         <Text className="text-white text-base font-medium font-bold">
           Authenticate
@@ -76,8 +77,7 @@ export default function OTPScreen({ navigation, route }) {
             style={{ width: 80, height: 80, marginTop: 15 }}
           />
         </View>
-    )}
-
+      )}
     </View>
   );
 }

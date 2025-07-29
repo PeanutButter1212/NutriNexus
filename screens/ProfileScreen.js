@@ -12,7 +12,7 @@ import {
   Settings,
   Dimensions,
   ImageBackground,
-  Platform
+  Platform,
 } from "react-native";
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useAuth } from "../contexts/AuthContext";
@@ -63,9 +63,6 @@ export default function Profile() {
 
   const [activeBottomTab, setActiveBottomTab] = useState("statistics");
 
-
- 
-
   const avatarImage =
     userDemographics.gender === "Female" ? femaleAvatarImage : maleAvatarImage;
 
@@ -105,8 +102,6 @@ export default function Profile() {
         setLocalPoints(userPoints);
         setIsLoadingPoints(false);
 
-
-
         const username = await fetchUsername(session.user.id);
         setUsername(username);
       };
@@ -137,16 +132,20 @@ export default function Profile() {
   const [selectedDay, setSelectedDay] = useState("Total");
 
   const [isLoadingCalories, setIsLoadingCalories] = useState(true);
-  const [isLoadingPoints, setIsLoadingPoints] = useState(true); 
+  const [isLoadingPoints, setIsLoadingPoints] = useState(true);
   const [isLoadingSteps, setIsLoadingSteps] = useState(true);
 
   const shouldShowLoadingPoints = isLoadingPoints || localPoints === undefined;
-  const shouldShowLoadingSteps = isLoadingSteps || !userDemographics || Object.keys(userDemographics).length === 0;
+  const shouldShowLoadingSteps =
+    isLoadingSteps ||
+    !userDemographics ||
+    Object.keys(userDemographics).length === 0;
 
-
-// Use the loading state instead of checking for NaN
-const shouldShowLoading = isLoadingCalories || !userDemographics || Object.keys(userDemographics).length === 0;
-
+  // Use the loading state instead of checking for NaN
+  const shouldShowLoading =
+    isLoadingCalories ||
+    !userDemographics ||
+    Object.keys(userDemographics).length === 0;
 
   useEffect(() => {
     if (referenceData.length > 0) {
@@ -160,15 +159,16 @@ const shouldShowLoading = isLoadingCalories || !userDemographics || Object.keys(
     } else if (selectedDataType === "Calories Consumed") {
       setReferenceData(caloriesData);
     } else if (selectedDataType === "Calories Burnt") {
-      const caloriesBurntData = stepsData.map(stepLog => {
+      const caloriesBurntData = stepsData.map((stepLog) => {
         return {
           day: stepLog.day,
-          value: estimateCaloriesBurnt(stepLog.value, userDemographics.weight) || null
-        } 
-      } 
-    )
-    console.log(caloriesBurntData)
-    setReferenceData(caloriesBurntData)
+          value:
+            estimateCaloriesBurnt(stepLog.value, userDemographics.weight) ||
+            null,
+        };
+      });
+      console.log(caloriesBurntData);
+      setReferenceData(caloriesBurntData);
     }
   }, [selectedDataType, caloriesData]);
 
@@ -178,38 +178,36 @@ const shouldShowLoading = isLoadingCalories || !userDemographics || Object.keys(
 
   useEffect(() => {
     if (isFocused && userId && userDemographics) {
-      setIsLoadingCalories(true); 
-      setIsLoadingSteps(true); 
+      setIsLoadingCalories(true);
+      setIsLoadingSteps(true);
       updateCaloriesConsumed(userId).then((profileRow) => {
         const { calories_consumed, calorie_goal } = profileRow;
-  
+
         const steps = estimateStepCount(
           distance,
           userDemographics.height,
           userDemographics.gender
         );
         const burnt = estimateCaloriesBurnt(steps, userDemographics.weight);
-  
+
         const netCalories = calories_consumed - burnt;
-  
+
         setTotalCalories(netCalories);
         setCalorieGoal(calorie_goal);
-        setIsLoadingSteps(false)
+        setIsLoadingSteps(false);
         setIsLoadingCalories(false);
       });
     }
   }, [isFocused, userId, userDemographics]);
-  
 
   //console.log("totalCalories:", totalCalories);
   //console.log("calorieGoal:", calorieGoal);
   //console.log("progressPercentage:", progressPercentage);
 
-  const progressPercentage = 
-  (!calorieGoal || calorieGoal === 0 || !totalCalories && totalCalories !== 0) 
-    ? NaN 
-    : Math.min((totalCalories / calorieGoal) * 100, 100);
-  
+  const progressPercentage =
+    !calorieGoal || calorieGoal === 0 || (!totalCalories && totalCalories !== 0)
+      ? NaN
+      : Math.min((totalCalories / calorieGoal) * 100, 100);
 
   const canvasWidth = width;
   const canvasHeight = 350;
@@ -288,41 +286,50 @@ const shouldShowLoading = isLoadingCalories || !userDemographics || Object.keys(
           </ImageBackground>
         </TouchableOpacity>
 
-        <Text className="text-3xl font-bold text-white text-center mt-12 mb-4">
+        <Text
+          className="text-3xl font-bold text-white text-center mt-12 mb-4"
+          accessibilityLabel="Welcome message"
+        >
           Welcome Back,{" "}
           {username === "User" ? (profile ? profile.username : "") : username}!
         </Text>
 
         <View className="flex-1 justify-center items-center mb-16">
           <View className="relative items-center">
-          {shouldShowLoading  ? (
-          <View style={{
-            width: 140,
-            height: 140,
-            borderRadius: 70,
-            borderWidth: 10,
-            borderColor: '#FFFFFF',
-            backgroundColor: 'transparent',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-            <Text style={{ color: 'blue', fontSize: 40, fontWeight: 'bold' }}>...</Text>
-          </View>
-        ) : (
-          <CircularProgress
-            value={Math.floor(progressPercentage)}
-            valueSuffix={"%"}
-            radius={70}
-            progressValueColor={"blue"}
-            titleFontSize={10}
-            title={"Calories Limit"}
-            titleColor={"white"}
-            titleStyle={{ fontWeight: "bold" }}
-            activeStrokeColor={"#2465FD"}
-            activeStrokeSecondaryColor={"#C3305D"}
-            inActiveStrokeColor={"white"}
-          />
-        )}
+            {shouldShowLoading ? (
+              <View
+                style={{
+                  width: 140,
+                  height: 140,
+                  borderRadius: 70,
+                  borderWidth: 10,
+                  borderColor: "#FFFFFF",
+                  backgroundColor: "transparent",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{ color: "blue", fontSize: 40, fontWeight: "bold" }}
+                >
+                  ...
+                </Text>
+              </View>
+            ) : (
+              <CircularProgress
+                value={Math.floor(progressPercentage)}
+                valueSuffix={"%"}
+                radius={70}
+                progressValueColor={"blue"}
+                titleFontSize={10}
+                title={"Calories Limit"}
+                titleColor={"white"}
+                titleStyle={{ fontWeight: "bold" }}
+                activeStrokeColor={"#2465FD"}
+                activeStrokeSecondaryColor={"#C3305D"}
+                inActiveStrokeColor={"white"}
+              />
+            )}
 
             {/* Avatar view*/}
             <View className="w-56 h-96 relative items-center justify-center">
@@ -354,36 +361,41 @@ const shouldShowLoading = isLoadingCalories || !userDemographics || Object.keys(
               <View className="flex-row items-center">
                 <Image
                   source={require("../assets/Points.png")}
-                  className={`${
-                    Platform.OS === 'ios' ? 'w-8 h-8' : 'w-6 h-6'
-                  }`}
+                  className={`${Platform.OS === "ios" ? "w-8 h-8" : "w-6 h-6"}`}
                 />
 
-              <Text className={`text-stone-500 font-bold ml-1 ${
-                  Platform.OS === 'ios' ? 'text-xl' : 'text-lg'
-                }`}>
+                <Text
+                  className={`text-stone-500 font-bold ml-1 ${
+                    Platform.OS === "ios" ? "text-xl" : "text-lg"
+                  }`}
+                >
                   Points
                 </Text>
               </View>
               <View>
                 <Text className="text-black text-3xl font-extrabold">
-                {shouldShowLoadingPoints
-                  ? "..."
-                  : (localPoints === undefined
-                      ? (profile ? profile.points : 0)
-                      : localPoints)
-                }
+                  {shouldShowLoadingPoints
+                    ? "..."
+                    : localPoints === undefined
+                    ? profile
+                      ? profile.points
+                      : 0
+                    : localPoints}
                 </Text>
               </View>
             </View>
 
             <View className="bg-white rounded-xl p-4 flex-1 shadow-md mr-2">
               <View className="flex-row items-center">
-                <Ionicons name="footsteps" size={Platform.OS === "ios" ? 20 : 16} color="black" />
+                <Ionicons
+                  name="footsteps"
+                  size={Platform.OS === "ios" ? 20 : 16}
+                  color="black"
+                />
                 <Text
                   testID="steps-label"
                   className={`text-stone-500 font-bold ml-1 ${
-                    Platform.OS === 'ios' ? 'text-xl' : 'text-lg'
+                    Platform.OS === "ios" ? "text-xl" : "text-lg"
                   }`}
                 >
                   Steps
@@ -391,43 +403,63 @@ const shouldShowLoading = isLoadingCalories || !userDemographics || Object.keys(
               </View>
               <View>
                 <Text className="text-black text-3xl font-extrabold">
-                {shouldShowLoadingSteps
-                  ? "..."
-                  : (userDemographics
-                      ? estimateStepCount(
-                          distance,
-                          userDemographics.height,
-                          userDemographics.gender
-                        )
-                      : "0")
-                }
+                  {shouldShowLoadingSteps
+                    ? "..."
+                    : userDemographics
+                    ? estimateStepCount(
+                        distance,
+                        userDemographics.height,
+                        userDemographics.gender
+                      )
+                    : "0"}
                 </Text>
               </View>
             </View>
 
             <View className="bg-white rounded-xl p-4 flex-1 shadow-md">
               <View className="flex-row items-center mb-1">
-                <FontAwesome5 name="fire" size={Platform.OS === "ios" ? 20 : 16} color="black" />
-                <Text className={`text-stone-500 font-bold ml-1 ${
-                  Platform.OS === 'ios' ? 'text-base' : 'text-sm'
-                }`}>Burnt </Text>
-                <Text className={`text-stone-500 font-bold ${
-                  Platform.OS === 'ios' ? 'text-base' : 'text-sm'
-                }`}>Kcal</Text>
+                <FontAwesome5
+                  name="fire"
+                  size={Platform.OS === "ios" ? 20 : 16}
+                  color="black"
+                />
+                <Text
+                  className={`text-stone-500 font-bold ml-1 ${
+                    Platform.OS === "ios" ? "text-base" : "text-sm"
+                  }`}
+                >
+                  Burnt{" "}
+                </Text>
+                <Text
+                  className={`text-stone-500 font-bold ${
+                    Platform.OS === "ios" ? "text-base" : "text-sm"
+                  }`}
+                >
+                  Kcal
+                </Text>
               </View>
 
               <Text className="text-black text-3xl font-extrabold">
-              {userDemographics && 
-                !isNaN(estimateCaloriesBurnt(
-                  estimateStepCount(distance, userDemographics.height, userDemographics.gender),
-                  userDemographics.weight
-                ))
+                {userDemographics &&
+                !isNaN(
+                  estimateCaloriesBurnt(
+                    estimateStepCount(
+                      distance,
+                      userDemographics.height,
+                      userDemographics.gender
+                    ),
+                    userDemographics.weight
+                  )
+                )
                   ? estimateCaloriesBurnt(
-                      estimateStepCount(distance, userDemographics.height, userDemographics.gender),
+                      estimateStepCount(
+                        distance,
+                        userDemographics.height,
+                        userDemographics.gender
+                      ),
                       userDemographics.weight
                     )
-                  : "..."
-                }
+                  : "..."}
               </Text>
             </View>
           </View>
@@ -485,7 +517,7 @@ const shouldShowLoading = isLoadingCalories || !userDemographics || Object.keys(
           <>
             <View className="bg-white flex-row justify-between items-center px-3 mt-2 mb-8">
               <Text className="text-xl font-bold ml-3">Statistics</Text>
-              <View style={{ width: "45%"}}>
+              <View style={{ width: "45%" }}>
                 <DropdownComponent
                   value={selectedDataType}
                   onChange={setSelectedDataType}
@@ -528,13 +560,15 @@ const shouldShowLoading = isLoadingCalories || !userDemographics || Object.keys(
                 <Ionicons name="footsteps-sharp" size={52} color="#ba4a00" />
               ) : selectedDataType === "Calories Burnt" ? (
                 <FontAwesome5 name="fire" size={52} color="#FF7F50" />
-              ) : <Ionicons name="nutrition" size={52} color="#f21127" /> }
+              ) : (
+                <Ionicons name="nutrition" size={52} color="#f21127" />
+              )}
 
               <Text className="text-lg text-black font-semibold ml-3 ">
                 {dayLabelMap[selectedDay] || selectedDay}{" "}
                 {selectedDataType === "Steps"
                   ? "Steps Taken"
-                  : selectedDataType === "Calories Consumed" 
+                  : selectedDataType === "Calories Consumed"
                   ? "Consumed Calories"
                   : "Burnt Calories"}
               </Text>
