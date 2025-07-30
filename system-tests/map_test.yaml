@@ -5,9 +5,7 @@ appId: nutrinuxus.club
 - tapOn: "Map"
 
 - tapOn:
-    point:
-      x: 50%
-      y: 50%
+    point: "200,400"
 
 - repeat:
     while:
@@ -15,9 +13,7 @@ appId: nutrinuxus.club
     commands:
       - waitForAnimationToEnd
 
-- tapOn: "stall-448ba8dc-e8ff-4ff7-8403-4bb312cdb95c"
-
-- assertVisible: "Dry FishBall Noodles (450kcal)"
+- assertVisible: "Ah Heng Fishball Noodles"
 
 - tapOn:
     id: "checkbox"

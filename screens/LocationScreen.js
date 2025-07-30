@@ -207,6 +207,7 @@ export default function LocationScreen({ route }) {
           </Text>
 
           <ScrollView
+            testID="horizontal-stall-scroll"
             horizontal
             showsHorizontalScrollIndicator={false}
             className="w-full mb-6"
