@@ -1,0 +1,25 @@
+appId: nutrinuxus.club
+---
+# - runFlow: signup_test.yaml
+
+- tapOn: "Map"
+
+- tapOn:
+    point:
+      x: 50%
+      y: 50%
+
+- repeat:
+    while:
+      notVisible: "Happy Hawker"
+    commands:
+      - waitForAnimationToEnd
+
+- tapOn: "stall-448ba8dc-e8ff-4ff7-8403-4bb312cdb95c"
+
+- assertVisible: "Dry FishBall Noodles (450kcal)"
+
+- tapOn:
+    id: "checkbox"
+
+- assertVisible: "+10 points!"

@@ -25,7 +25,10 @@ import fishNoodlesImg from "../assets/FishNoodle_Stall.jpg";
 import useProfileData from "../hooks/useProfileData";
 import { retrieveCoords } from "../services/hawkerService";
 import { handleFirstVisit } from "../services/profileService";
-import { handleCheckboxes, fetchVisitedStalls } from "../services/stallVisitedService";
+import {
+  handleCheckboxes,
+  fetchVisitedStalls,
+} from "../services/stallVisitedService";
 //to center the horizontal scroll
 const screenWidth = Dimensions.get("window").width;
 const cardWidth = 256;
@@ -57,8 +60,6 @@ export default function LocationScreen({ route }) {
 
     fetchVisited();
   }, [userId, locationrow]);
-
-  
 
   useEffect(() => {
     const fetchStalls = async () => {
@@ -122,6 +123,7 @@ export default function LocationScreen({ route }) {
                   </Text>
                 )}
                 <TouchableOpacity
+                  testID="checkbox"
                   onPress={async () => {
                     console.log("Clicked checkbox for:");
                     const result = await handleCheckboxes(
@@ -213,6 +215,7 @@ export default function LocationScreen({ route }) {
             {stalls.map((stall, index) => (
               <TouchableOpacity
                 key={index}
+                testID={`stall-${stall.id}`}
                 className="w-64 mr-4 bg-white rounded-2xl  mb-4 shadow-md  overflow-hidden"
                 style={{ minHeight: 140 }}
                 onPress={() => {
