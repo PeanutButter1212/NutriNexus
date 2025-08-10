@@ -7,16 +7,10 @@ const InventoryColumn = ({ topItem, className }) => {
       className={`flex-col ${className || ""}`}
       testID={`inventory-container-${topItem.item_id}`}
     >
-      <View
-        className={`bg-amber-500 ${
-          Platform.OS === "ios" ? "w-36 h-36" : "w-32 h-32"
-        } justify-center items-center`}
-      >
         <View
           ref={topItem.slotRef}
-          className={`bg-amber-900 ${
-            Platform.OS === "ios" ? "w-28 h-28" : "w-24 h-24"
-          }  justify-center items-center`}
+          className={`bg-amber-900 border-8 border-amber-500 "w-28 h-28"
+          justify-center items-center`}
         >
           <View>{topItem.children}</View>
           <View
@@ -29,7 +23,6 @@ const InventoryColumn = ({ topItem, className }) => {
               {topItem.count}
             </Text>
           </View>
-        </View>
       </View>
     </View>
   );

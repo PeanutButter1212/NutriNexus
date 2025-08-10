@@ -38,7 +38,6 @@ export default function useProfileData() {
         const weeklySteps = await fetchWeeklySteps(userId);
         const profileUsername = await fetchUsername(userId);
         const visitedList = await fetchVisited(userId);
-        console.log("fetching profile pic efvjergjerugjre4oj");
         const pictureUrl = await fetchProfilePicture(userId);
 
         setTotalCalories(profileInfo.calories_consumed);

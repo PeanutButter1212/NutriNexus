@@ -54,7 +54,6 @@ export async function fetchEquippedItems(userId) {
     )
     .eq("user_id", userId);
 
-  console.log("Raw Supabase data:", data);
 
   if (error) {
     console.error("Failed to load", error);
@@ -89,7 +88,6 @@ export async function gatherAccessoryNetWorth(userId) {
   .select("item_id")
   .eq("user_id", userId)
 
-  console.log("data form gatherAccessoryInventory: " + data)
 
   if (error || !data) {
     console.error("Failed to fetch accessory inventory", accessoryError);
@@ -106,7 +104,7 @@ export async function gatherAccessoryNetWorth(userId) {
     totalPoints += costMap[item_id] || 0;
   }
 
-  console.log("totalpoints in accessory net worth: " + totalPoints)
+
 
   return totalPoints 
 

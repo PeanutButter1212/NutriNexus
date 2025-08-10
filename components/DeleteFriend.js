@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { LinearGradient } from "expo-linear-gradient";
 import pointLogo from '../assets/Points.png'
+import { Image as ExpoImage } from "expo-image";
 
-export default function DeleteFriend({username, onConfirm, onCancel}) {
+export default function DeleteFriend({username, onConfirm, onCancel, profilePic}) {
     return (
         <View
         className="flex-1 items-center justify-center"
@@ -21,7 +22,20 @@ export default function DeleteFriend({username, onConfirm, onCancel}) {
           >
             <Text className="text-3xl font-bold text-green-700 mb-4">Delete Friend?</Text>
             <View className="w-64 bg-yellow-300 flex-column rounded-xl items-center justify-center p-3"> 
-            <View className="rounded-full bg-green-300 p-12"></View>
+            <ExpoImage
+              source={profilePic}
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: 9999,
+                padding: 48,
+              }}
+              contentFit="cover"
+              transition={300}
+              placeholder="blur"
+              cachePolicy="memory-disk"
+            />
+
 
              <Text> {username} </Text>
     

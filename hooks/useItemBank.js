@@ -6,13 +6,12 @@ export default function useItemBank() {
 
   useEffect(() => {
     const loadItemBank = async () => {
-      console.log("loading item bank");
+
       const retrievedItemBank = await fetchItemBank();
       setItemBank(retrievedItemBank);
     };
     loadItemBank();
   }, []);
 
-  console.log("item bank: " + itemBank)
   return itemBank;
 }

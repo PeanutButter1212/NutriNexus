@@ -125,13 +125,13 @@ export default function LocationScreen({ route }) {
                 <TouchableOpacity
                   testID="checkbox"
                   onPress={async () => {
-                    console.log("Clicked checkbox for:");
+        
                     const result = await handleCheckboxes(
                       userId,
                       locationrow.id,
                       selectedStall.unique_id
                     );
-                    console.log("Result from handleCheckboxes:", result);
+                  
 
                     if (result?.success || result?.alreadyClaimed) {
                       setClaimedStalls((prev) => ({

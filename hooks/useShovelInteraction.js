@@ -59,14 +59,14 @@ export default function useShovelInteraction({
     
           const decor_id = retrievePlantResult.item_id
     
-          console.log("deleting from garden")
+  
     
           const deletionResult = await removeFromGarden(session.user.id, tile.col, tile.row)
           if (deletionResult.error) {
             console.log("Deletion Error: " + deletionResult.error)
           }
     
-          console.log("returning to inventory")
+  
           const inventoryReturnResult = await addtoDecorInventory(session.user.id, decor_id)
     
           if (inventoryReturnResult.error) {

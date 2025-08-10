@@ -23,7 +23,6 @@ const ShopService = {
                 await addtoDecorInventory(userId, item.id)
                 itemPurchased = true
             } else {
-                console.log("purchasing accessory")
                 const userInventory = await checkUserHasAccessory(userId, item.id)
                 if (!userInventory.success) {
                     console.log("Error purchasing accesssory: " + userAccessory.error.message)

@@ -66,9 +66,7 @@ export default function Profile() {
   const avatarImage =
     userDemographics.gender === "Female" ? femaleAvatarImage : maleAvatarImage;
 
-  useEffect(() => {
-    console.log("User demographics:", userDemographics);
-  }, [userDemographics]);
+
 
   //avatar accessories
   const [equipped, setEquipped] = useState({
@@ -167,7 +165,6 @@ export default function Profile() {
             null,
         };
       });
-      console.log(caloriesBurntData);
       setReferenceData(caloriesBurntData);
     }
   }, [selectedDataType, caloriesData]);
@@ -251,7 +248,6 @@ export default function Profile() {
           setSelectedDay(day);
           selectedBar.value = day;
           selectedValue.value = withTiming(value);
-          console.log({ value, day });
         } else {
           setSelectedDay("Total");
           selectedBar.value = null;

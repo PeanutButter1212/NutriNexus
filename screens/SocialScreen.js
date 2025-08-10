@@ -38,15 +38,14 @@ export default function SocialScreen({ navigation }) {
       const loadFriends = async () => {
         //console.log("hi");
         const rawFriends = await fetchApprovedRequests(currentId);
-        console.log(rawFriends);
-
+       
         const friendIds = rawFriends.map(
           (f) => (f.user_id === currentId ? f.friend_id : f.user_id) //obtain either ids based on who the user/friend is
         );
 
         const usernames = await fetchUsernameByIds(friendIds);
         setFriendList(usernames);
-        console.log("usernbames: " + JSON.stringify(usernames, null, 2));
+     
       };
       loadFriends();
     }, [currentId])
@@ -83,7 +82,7 @@ export default function SocialScreen({ navigation }) {
         {filteredResults.map((friend, index) => (
           <View
             key={index}
-            className="justify-between flex-row bg-white py-4 rounded-xl shadow-md mb-3 w-3/4 self-center"
+            className="justify-between flex-row bg-white py-4 rounded-xl shadow-md mb-3 w-[330px] self-center"
           >
             <View className="flex-row">
               <ExpoImage

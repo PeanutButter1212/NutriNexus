@@ -15,7 +15,6 @@ export default function useLayoutData() {
     useEffect(() => {
         async function fetchGardenLayout() {
             if (!userId || !itemBank || itemBank.length === 0) {
-                console.log("❌ Early return - missing data:", { userId: !!userId, itemBank: !!itemBank, itemBankLength: itemBank?.length });
                 return;
             }
             try {       
@@ -35,7 +34,6 @@ export default function useLayoutData() {
                 })
 
                 setUserLayout(mapped);
-                console.log("mapped: " + mapped)
              
             
 

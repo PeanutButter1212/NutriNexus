@@ -45,7 +45,6 @@ export const DistanceProvider = ({ children }) => {
     if (!loading && typeof fetchedDistance === "number") {
       setDistance(fetchedDistance);
       distanceRef.current = fetchedDistance;
-      console.log("Loaded distance from Supabase:", fetchedDistance);
       setInitialized(true);
     }
   }, [loading, fetchedDistance]);
@@ -142,7 +141,6 @@ export const DistanceProvider = ({ children }) => {
       if (currentDistance === 0) return;
 
       const steps = estimateStepCount(currentDistance, height, gender);
-      console.log("👣 Calculated steps:", steps);
       const today = new Date().toLocaleDateString("en-CA");
 
       const { data, error } = await supabase.auth.getUser();
@@ -170,12 +168,6 @@ export const DistanceProvider = ({ children }) => {
         !existingEntry ||
         (currentDistance > 0 && currentDistance > existingEntry.distance)
       ) {
-        console.log("Attempting to upsert:", {
-          user_id: user.id,
-          steps,
-          date: today,
-          distance: currentDistance,
-        });
 
         await supabase.from("step_log").upsert(
           {
@@ -187,16 +179,9 @@ export const DistanceProvider = ({ children }) => {
           { onConflict: ["user_id", "date"] }
         );
 
-        console.log("Attempting to upsert step_log with:", {
-          user_id: user.id,
-          steps,
-          date: today,
-          distance: currentDistance,
-        });
 
         const burnt = estimateCaloriesBurnt(steps, weight);
         await updateCaloriesBurnt(user.id, burnt);
-        console.log("Calories burnt updated:", burnt);
       }
     }, 10000); //update supabase every 10 sec
 

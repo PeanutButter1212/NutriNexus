@@ -52,7 +52,7 @@ export default function ShopScreen({navigation}) {
                     
                     const listOfAccessoriesOwned = await ShopService.fetchUserAccessories(session.user.id);
                     
-                    console.log("output from listOfAccessoriesOwned: " + JSON.stringify(listOfAccessoriesOwned, null, 2));
+                
                     
 
                     setOwnedAccessories(listOfAccessoriesOwned)
@@ -102,7 +102,6 @@ export default function ShopScreen({navigation}) {
 
     const renderShopItemRows = () => {
 
-        console.log("ownedAccessories: ", ownedAccessories);
 
         const columns = [];
         const filteredItemBank = itemBank.filter(item => item.type === currentTab)

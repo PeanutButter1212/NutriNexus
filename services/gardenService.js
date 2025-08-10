@@ -57,7 +57,7 @@ export async function handleAssetConsumption(userId, plantId) {
       .update({ count: newCount })
       .eq("id", data.id);
 
-    console.log("decreasing count: ");
+
 
     if (decrementError) {
       return {
@@ -80,7 +80,7 @@ export async function retrieveGardenLayout(userId) {
     .eq("user_id", userId);
 
   if (error) {
-    console.log("Error fetching user's garden layout: " + error);
+
   }
 
   return data;
@@ -226,7 +226,6 @@ export async function fetchDecorIdOnTile(userId, col, row) {
 
 export async function gatherDecorNetWorth(userId) {
 
-  console.log("userId passed to gatherDecorNetWorth:", userId);
 
   const { data, error } = await supabase
   .from("inventory")
@@ -234,7 +233,7 @@ export async function gatherDecorNetWorth(userId) {
   .eq("user_id", userId)
 
 
-  console.log("data in gatherDecorNetWorth: " + data)
+
 
   if (error || !data) {
     console.error("Failed to fetch inventory", error);
@@ -243,7 +242,7 @@ export async function gatherDecorNetWorth(userId) {
 
   const itemIds = data.map(item => item.item_id);
 
-  console.log("itemIds in user account on gatherDecorNetWorth: " + itemIds)
+ 
 
   const costMap = await getCostsMap(itemIds);
 

@@ -43,8 +43,6 @@ export default function FriendProfileScreen({ navigation }) {
     hand: null,
   });
 
-  console.log("equipped:", equipped);
-
   const { user } = useAuth();
   const currentId = user?.id;
 
@@ -137,7 +135,7 @@ export default function FriendProfileScreen({ navigation }) {
       contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 20 }}
     >
       <View className="items-center">
-        <View className="bg-white rounded-xl flex-row  w-[340px] py-8 mt-4 shadow-md rounded-xl">
+        <View className="bg-white rounded-xl flex-row  w-[340px] px-4 py-8 mt-4 shadow-md rounded-xl">
           <View className="justify-start flex-row items-center w-full">
             <ExpoImage
               source={profilePic}
@@ -145,7 +143,6 @@ export default function FriendProfileScreen({ navigation }) {
                 width: 48,
                 height: 48,
                 borderRadius: 9999,
-                marginLeft: 20,
                 padding: 48,
               }}
               contentFit="cover"
@@ -154,7 +151,7 @@ export default function FriendProfileScreen({ navigation }) {
               cachePolicy="memory-disk"
             />
 
-            <View className="flex-col ml-8">
+            <View className="flex-col ml-5">
               <View>
                 <Text className="font-nunito-extrabold text-2xl ml-1">
                   {username}
@@ -307,6 +304,7 @@ export default function FriendProfileScreen({ navigation }) {
               navigation.navigate("MainTabs", { screen: "Social" });
             }}
             onCancel={() => setShowDeleteModal(false)}
+            profilePic={profilePic}
           />
         </View>
       </Modal>

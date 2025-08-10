@@ -55,13 +55,7 @@ export async function insertFoodEntry({ userId, food, calories }) {
       time: timeSG,
     },
   ]);
-  console.log("Inserting:", {
-    food,
-    calories,
-    userId,
-    date: dateSG,
-    time: timeSG,
-  });
+ 
   return { error };
 }
 

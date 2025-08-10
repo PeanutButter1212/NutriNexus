@@ -20,7 +20,6 @@ export default function FriendRequestScreen({ navigation }) {
 
   //fetches list on load
   useEffect(() => {
-    console.log(currentId);
 
     const loadRequests = async () => {
       try {
@@ -57,7 +56,7 @@ export default function FriendRequestScreen({ navigation }) {
         {requests.map((friend, index) => (
           <View
             key={index}
-            className="justify-between flex-row bg-white py-4 rounded-xl shadow-md mb-3 w-3/4 self-center"
+            className="justify-between flex-row bg-white py-4 rounded-xl shadow-md mb-3 px-3 w-[360px] self-center"
           >
             <View className="flex-row">
               <ExpoImage
@@ -65,8 +64,7 @@ export default function FriendRequestScreen({ navigation }) {
                 style={{
                   width: 48,
                   height: 48,
-                  borderRadius: 9999,
-                  marginLeft: 20,
+                  borderRadius: 9999
                 }}
                 contentFit="cover"
                 transition={300}
@@ -80,7 +78,7 @@ export default function FriendRequestScreen({ navigation }) {
 
             <View className="flex-row">
               <TouchableOpacity
-                className="mr-4 justify-center"
+                className="mr-3 justify-center"
                 onPress={async () => {
                   const success = await deleteFriendRequest(
                     friend.user_id,
@@ -95,7 +93,7 @@ export default function FriendRequestScreen({ navigation }) {
                   }
                 }}
               >
-                <View className="bg-red-500 px-4 rounded-xl">
+                <View className="bg-red-500 px-4 rounded-xl ml-3">
                   <Feather name="x" size={24} color="white" />
                 </View>
               </TouchableOpacity>

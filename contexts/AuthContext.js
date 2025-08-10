@@ -28,7 +28,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    console.log("Configuring Google Sign-In");
     GoogleSignin.configure({
       scopes: ["https://www.googleapis.com/auth/userinfo.email"],
       webClientId:
@@ -42,7 +41,6 @@ export const AuthProvider = ({ children }) => {
 
     const fetchProfile = async (userId) => {
       try {
-        console.log("Fetching profile for userId:", userId);
         const { data: profileData, error } = await supabase
           .from("profile_page")
           .select("*")
@@ -54,7 +52,6 @@ export const AuthProvider = ({ children }) => {
           return;
         }
 
-        console.log("Profile fetched successfully:", profileData?.username);
         setProfile(profileData);
         setUser(profileData);
         setIsAuthenticated(true);
@@ -65,7 +62,6 @@ export const AuthProvider = ({ children }) => {
 
     supabase.auth.getSession().then(({ data }) => {
       const session = data.session;
-      console.log("Initial session:", session ? "exists" : "null");
       setSession(session);
 
       if (session?.user?.id) {
@@ -80,7 +76,6 @@ export const AuthProvider = ({ children }) => {
         if (newSession?.user?.id) {
           await fetchProfile(newSession.user.id);
         } else {
-          console.log("Clearing profile data");
           setProfile(null);
           setUser(null);
           setIsAuthenticated(false);
@@ -89,7 +84,6 @@ export const AuthProvider = ({ children }) => {
     );
 
     return () => {
-      console.log("Cleaning up auth listener");
       listener?.subscription?.unsubscribe();
     };
   }, []);
@@ -153,12 +147,10 @@ export const AuthProvider = ({ children }) => {
 
   const verifyOtp = async (email, otp, navigation) => {
     try {
-      console.log(email);
 
       //for system testing so can bypass OTP
 
       if (__DEV__ && email === "test@example.com" && otp === "123456") {
-        console.log("✅ Bypassing OTP check in dev mode");
 
         const fakeId = "3049f10a-7516-4234-af44-9aff4bafdffb";
         const username = "testuser";
@@ -229,7 +221,6 @@ export const AuthProvider = ({ children }) => {
       });
 
       if (error) {
-        console.log(error);
         throw new Error("OTP verification failed. Please try again.");
       }
 
@@ -283,7 +274,7 @@ export const AuthProvider = ({ children }) => {
           throw usernameInsertError;
         }
 
-        console.log("attempting to insert items: ");
+     
         const inventorySuccess = await insertDefaultInventoryItems(userId);
         if (!inventorySuccess) {
           console.warn(
@@ -308,10 +299,7 @@ export const AuthProvider = ({ children }) => {
             { onConflict: "id" }
           );
 
-        console.log(
-          "Insertion data:",
-          JSON.stringify(extendedProfileData, null, 2)
-        );
+       
 
         if (extendedProfileDataError) {
           throw extendedProfileDataError;
@@ -348,7 +336,7 @@ export const AuthProvider = ({ children }) => {
       }
 
       const userInfo = await GoogleSignin.signIn();
-      console.log("Full userInfo object:", JSON.stringify(userInfo, null, 2));
+  
 
       if (!userInfo.data?.idToken) {
         throw new Error("No ID token returned by Google");

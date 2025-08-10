@@ -164,7 +164,6 @@ export default function MapScreen() {
                   longitude: locationrow.longitude,
                 }}
                 onPress={() => {
-                  console.log("inRadius: " + inRadius);
                   if (inRadius) {
                     handleFirstVisit(userId, locationrow.id).then(() => {
                       setVisited((prev) => [...prev, locationrow.id]);

@@ -70,7 +70,7 @@ export async function fetchProfileCalories(userId) {
     .eq("id", userId)
     .maybeSingle();
 
-  console.log(data);
+
 
   if (error) {
     console.error("fetchProfileCalories error", error);
@@ -97,14 +97,14 @@ export async function fetchUsername(userId) {
 //retrieve points info
 
 export async function fetchPoints(userId) {
-  console.log("userId passed to fetchPoints:", userId);
+
   const { data, error } = await supabase
     .from("profile_page")
     .select("points")
     .eq("id", userId)
     .single();
 
-  console.log("Fetched points data:", data);
+
 
   return data?.points;
 }
@@ -112,7 +112,7 @@ export async function fetchPoints(userId) {
 //retrieve info to check if visited location marker
 
 export async function fetchVisited(userId) {
-  console.log("userId passed to fetchPoints:", userId);
+
   const { data, error } = await supabase
     .from("profile_page")
     .select("visited")
@@ -130,14 +130,14 @@ export async function fetchVisited(userId) {
 //add to array if already visited
 
 export async function handleFirstVisit(userId, placeId) {
-  console.log("handlefirstvisit called");
+
   const { data, error } = await supabase
     .from("profile_page")
     .select("visited, points")
     .eq("id", userId)
     .single();
 
-  console.log("handlefirstivist check for visit: " + data);
+
 
   const currentVisited = data?.visited || [];
   const currentPoints = data?.points || 0;
@@ -179,7 +179,7 @@ export async function handleFirstVisit(userId, placeId) {
   if (insertError) {
     console.error("Insert failed:", insertError);
   } else {
-    console.log("Inserted row:", insertData);
+   
   }
 }
 
@@ -390,7 +390,7 @@ export async function updateCaloriesConsumed(userId) {
       .eq("id", userId)
       .single();
 
-    console.log("Final profileRow:", profileRow);
+
 
     return profileRow;
   } catch (err) {
@@ -447,7 +447,7 @@ export default async function handleCheckboxes(userId, checkBoxKey) {
   const currentPoints = data?.points || 0;
 
   if (claimed.includes(checkBoxKey)) {
-    console.log("alr claimed", checkBoxKey);
+  
     return { success: false, alreadyClaimed: true };
   }
 
@@ -489,7 +489,7 @@ export async function insertDefaultInventoryItems(userId) {
     count: 5,
   }));
 
-  console.log("mapped decor inventory entries");
+
 
   const { data, error } = await supabase
     .from("inventory")
@@ -507,7 +507,7 @@ export async function insertDefaultInventoryItems(userId) {
     "8f0ad901-0c1c-4bbb-81e9-a9a87bc84b02",
   ];
 
-  console.log("mapped accessory stuff");
+ 
 
   const { data: itemInfoDetail, error: itemInfoError } = await supabase
     .from("item")
@@ -668,7 +668,7 @@ export async function fetchAccessoryInventory(userId) {
       .eq("user_id", userId);
 
     if (error) {
-      console.log(error.message);
+     
       return {
         success: false,
         error: error,
@@ -676,10 +676,7 @@ export async function fetchAccessoryInventory(userId) {
       };
     }
 
-    console.log(
-      "data from fetchinvrntory from fetchaccessoryinventory: " +
-        JSON.stringify(data, null, 2)
-    );
+  
 
     return {
       success: true,
@@ -750,9 +747,7 @@ export async function updateUsername(userId, username) {
 
 export const uploadProfileImage = async (userId, uri) => {
   try {
-    console.log("=== UPLOAD FUNCTION START ===");
-    console.log("userId:", userId);
-    console.log("uri:", uri);
+   
 
     if (!uri) {
       throw new Error("No URI provided to uploadProfileImage");
@@ -781,13 +776,12 @@ export const uploadProfileImage = async (userId, uri) => {
       throw error;
     }
 
-    console.log("Storage upload successful:", data);
+
 
     const { data: urlData } = supabase.storage
       .from("profile-pictures")
       .getPublicUrl(filePath);
 
-    console.log("Public URL:", urlData.publicUrl);
     return urlData.publicUrl;
   } catch (err) {
     console.error("uploadProfileImage error:", err);
@@ -796,17 +790,14 @@ export const uploadProfileImage = async (userId, uri) => {
 };
 
 export async function retrieveTotalEarnedPoints(userId) {
-  console.log("retrieving decorPoints");
+
   const decorPoints = await gatherDecorNetWorth(userId);
-  console.log("decorPoints: " + decorPoints);
 
-  console.log("retrieving accessoryPoints");
+
+  
   const accessoryPoints = await gatherAccessoryNetWorth(userId);
-  console.log("accessoryPoints: " + accessoryPoints);
 
-  console.log("retrieving current points");
   const currentPoints = await fetchPoints(userId);
-  console.log("currentPoints: " + currentPoints);
 
   const totalPoints = decorPoints + accessoryPoints + currentPoints;
   return totalPoints;

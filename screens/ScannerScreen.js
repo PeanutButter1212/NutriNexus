@@ -132,7 +132,6 @@ export default function ScannerScreen({ cameraRef: externalRef }) {
   };
 
   const handleSubmit = async () => {
-    console.log("Submit pressed", { food, calories });
 
     setLoading(true);
 

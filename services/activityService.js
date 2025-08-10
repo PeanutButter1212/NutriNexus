@@ -17,7 +17,7 @@ export async function activityService(session) {
     .eq("date", today)
     .maybeSingle();
 
-  console.log("Data from Supabase:", data);
+
 
   if (error) {
     console.error("Error fetching data");
@@ -41,6 +41,6 @@ export async function updateCaloriesBurnt(userId, caloriesBurnt) {
     throw error;
   }
 
-  console.log("Updated calories_burnt to:", caloriesBurnt);
+
   return true;
 }

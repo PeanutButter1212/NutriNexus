@@ -57,7 +57,6 @@ export default function UsernameScreen({ navigation }) {
         const cachedImage = await AsyncStorage.getItem(key);
         
         if (cachedImage) {
-          console.log("Loading cached image immediately:", cachedImage);
           setCurrentDisplayImage(cachedImage);
         }
       } catch (error) {
@@ -77,13 +76,13 @@ export default function UsernameScreen({ navigation }) {
       }
 
       if (profilePic) {
-        console.log("Updating with fresh profilePic:", profilePic);
+   
         setCurrentDisplayImage(profilePic);
         
         try {
           const key = getCacheKey(userId);
           await AsyncStorage.setItem(key, profilePic);
-          console.log("Cache updated with fresh data");
+         
         } catch (error) {
           console.error("Error updating cache:", error);
         }
@@ -110,7 +109,6 @@ export default function UsernameScreen({ navigation }) {
   
   
       if (result.canceled || result.cancelled) {
-        console.log("User cancelled");
         setLoading(false)
         return;
       }
@@ -122,7 +120,6 @@ export default function UsernameScreen({ navigation }) {
         selectedUri = result.assets[0].uri;
       } else if (result.uri) {
         selectedUri = result.uri;
-        console.log("Got URI from result:", selectedUri);
       }
       
       if (!selectedUri) {
@@ -212,9 +209,9 @@ export default function UsernameScreen({ navigation }) {
     <View className="items-center flex-1"> 
 
     <View
-    className="mt-48"
+    className="mt-36"
     > 
-    <Text className="text-4xl font-bold text-black text-center">
+    <Text className="text-3xl font-bold text-green-600 text-center">
         Edit Profile Information
      </Text>
     
@@ -222,7 +219,7 @@ export default function UsernameScreen({ navigation }) {
     </View>
 
     <Text
-    className="text-3xl font-bold mt-8"
+    className="text-2xl text-black font-bold mt-8"
     >
       Profile Picture
     </Text>
@@ -234,7 +231,7 @@ export default function UsernameScreen({ navigation }) {
             ? currentDisplayImage
             : "https://rkrdnsnujizdskzbdwlp.supabase.co/storage/v1/object/public/profile-pictures//Green_Background.png"
   }
-  style={{ width: 128, height: 128, borderRadius: 64, marginTop: 32 }}
+  style={{ width: 128, height: 128, borderRadius: 64, marginTop: 16 }}
   contentFit="cover"
   placeholder="blur"
 />
@@ -243,11 +240,11 @@ export default function UsernameScreen({ navigation }) {
       <TouchableOpacity 
       disabled={loading}
       onPress={handleChangePhoto}>
-      <Text className="mt-2 underline text-sky-700 text-base">Change Photo</Text>
+      <Text className="mt-4 underline text-sky-700 text-base">Change Photo</Text>
       </TouchableOpacity>
 
     <Text
-    className="text-3xl font-bold mt-4"
+    className="text-2xl font-bold mt-6 text-black"
     >
      Username 
     </Text>

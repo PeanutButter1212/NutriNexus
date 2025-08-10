@@ -1,7 +1,7 @@
 import { supabase } from "../lib/supabase";
 import { fetchPoints } from "../services/profileService";
 export async function handleCheckboxes(userId, centreId, stallId) {
-  console.log("handleCheckboxes:", { userId, centreId, stallId });
+
 
   const { data: stallVisitsInCentre, error } = await supabase
     .from("user_stall_visits")
@@ -11,8 +11,6 @@ export async function handleCheckboxes(userId, centreId, stallId) {
     .single();
 
 
-
-  console.log("done with checking stalls visited by user in centre");
 
   if (error) {
     console.error("Error detecting stall visits: ", error);
