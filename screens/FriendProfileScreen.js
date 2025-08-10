@@ -76,16 +76,15 @@ export default function FriendProfileScreen({ navigation }) {
         setUsername(username);
 
         const numberFriends = await fetchNumberofFriends(friendId);
-        console.log(numberFriends);
+   
         setNumFriends(numberFriends);
 
         const numberLocations = await fetchNumberVisited(friendId);
-        console.log(numberLocations);
+  
         setNumLoc(numberLocations);
 
         const layout = await retrieveGardenLayout(friendId);
-        console.log("Garden layout raw:", layout);
-
+       
         const plants = await fetchPlants();
 
         const profilePicUrl = await fetchProfilePicture(friendId);
@@ -151,9 +150,13 @@ export default function FriendProfileScreen({ navigation }) {
               cachePolicy="memory-disk"
             />
 
-            <View className="flex-col ml-5">
+            <View className="ml-5 flex-1 min-w-0 overflow-hidden">
               <View>
-                <Text className="font-nunito-extrabold text-2xl ml-1">
+                <Text 
+                className="font-nunito-extrabold text-xl ml-1"
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                >
                   {username}
                 </Text>
               </View>
